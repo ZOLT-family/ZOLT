@@ -7,8 +7,9 @@ objective moment written into Pons's own factory contract.
 Zolt Odds is a Yes/No market on that moment: will this launch graduate before the deadline? Parimutuel, settled
 by reading the factory's state, with no oracle, no committee and no owner.
 
-**Status: unaudited and not deployed.** Event contracts on outcomes; not offered to persons in the United States
-or anywhere else they are not lawful. Nothing here is investment advice.
+**Status: deployed on chain 4663 at `0xaC86B04D48033b2454b132EDED596E0c61A5b097` (23 Sep 2026), unaudited.**
+Event contracts on outcomes; not offered to persons in the United States or anywhere else they are not lawful.
+Nothing here is investment advice. Stake what you can lose in a bug.
 
 ## What is in here
 

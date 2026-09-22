@@ -18,7 +18,7 @@ Shorter, if the field is tight:
 >
 > Parimutuel, 1% fee, weight falls with time so last-second money can't dilute early money.
 >
-> Unaudited, not for US persons. zolt-smoky.vercel.app
+> Live on chain 4663 at 0xaC86…b097, unaudited, not for US persons. zolt-smoky.vercel.app · github.com/ZOLT-family/ZOLT
 
 ## Rules for anything posted
 

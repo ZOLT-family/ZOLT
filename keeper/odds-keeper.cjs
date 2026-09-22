@@ -47,6 +47,24 @@ const factoryAbi = parseAbi([
 ]);
 const view = (abi, to, fn, args = []) => decodeFunctionResult({ abi, functionName: fn, data: rpc('eth_call', [{ to, data: encodeFunctionData({ abi, functionName: fn, args }) }, 'latest']) });
 
+// Many reads in one eth_call through Multicall3, so a pass over a few hundred launches takes seconds, not minutes.
+// A sub-call that reverts comes back as null.
+const MULTICALL3 = '0xcA11bde05977b3631167028862bE2a173976CA11';
+const mcAbi = parseAbi(['function aggregate3((address target,bool allowFailure,bytes callData)[] calls) view returns ((bool success,bytes returnData)[] returnData)']);
+function multicall(reads) {
+  const out = [];
+  for (let i = 0; i < reads.length; i += 200) {
+    const group = reads.slice(i, i + 200);
+    const data = encodeFunctionData({ abi: mcAbi, functionName: 'aggregate3', args: [group.map((r) => ({ target: r.to, allowFailure: true, callData: encodeFunctionData({ abi: r.abi, functionName: r.fn, args: r.args || [] }) }))] });
+    const res = decodeFunctionResult({ abi: mcAbi, functionName: 'aggregate3', data: rpc('eth_call', [{ to: MULTICALL3, data }, 'latest']) });
+    res.forEach((r, k) => {
+      const read = group[k];
+      out.push(r.success && r.returnData !== '0x' ? decodeFunctionResult({ abi: read.abi, functionName: read.fn, data: r.returnData }) : null);
+    });
+  }
+  return out;
+}
+
 function log(...m) { console.log(new Date().toISOString(), ...m); }
 
 const FACTORY = getAddress(view(oddsAbi, ODDS, 'factory'));
@@ -77,14 +95,19 @@ async function pass() {
     }
     cursor = head;
   }
-  // refresh outcome and phase for every market still on file
+  // refresh outcome and phase for every market still on file: two multicalls, however many markets there are
   const phaseOf = {};
-  for (const id of Object.keys(open)) {
-    const m = open[id];
-    const onChain = view(oddsAbi, ODDS, 'market', [BigInt(id)]);
-    m.outcome = Number(onChain.outcome);
-    if (m.outcome !== 0) { log(`market ${id} resolved: ${['open', 'YES', 'NO', 'void'][m.outcome]}`); delete open[id]; continue; }
-    if (phaseOf[m.token.toLowerCase()] === undefined) phaseOf[m.token.toLowerCase()] = Number(view(factoryAbi, FACTORY, 'getLaunchedToken', [m.token]).phase);
+  const ids = Object.keys(open);
+  if (ids.length) {
+    const outcomes = multicall(ids.map((id) => ({ to: ODDS, abi: oddsAbi, fn: 'market', args: [BigInt(id)] })));
+    ids.forEach((id, k) => {
+      if (!outcomes[k]) return;
+      open[id].outcome = Number(outcomes[k].outcome);
+      if (open[id].outcome !== 0) { log(`market ${id} resolved: ${['open', 'YES', 'NO', 'void'][open[id].outcome]}`); delete open[id]; }
+    });
+    const tokens = [...new Set(Object.values(open).map((m) => m.token.toLowerCase()))];
+    const phases = multicall(tokens.map((t) => ({ to: FACTORY, abi: factoryAbi, fn: 'getLaunchedToken', args: [t] })));
+    tokens.forEach((t, k) => { if (phases[k]) phaseOf[t] = Number(phases[k].phase); });
   }
   const now = parseInt(rpc('eth_getBlockByNumber', ['latest', false]).timestamp, 16);
   const actions = planActions(Object.values(open), phaseOf, now);
@@ -101,16 +124,21 @@ async function pass() {
   if (AUTO_OPEN) {
     const span = Math.ceil(OPEN_CFG.maxAgeSeconds * 10) + 100;
     const launched = getLogsChunked({ address: FACTORY, topics: [T_LAUNCHED] }, head - span, head).map(decodeTokenLaunched);
-    const candidates = [];
+    // three reads per launch, all in a few multicalls
+    const reads = [];
     for (const l of launched) {
-      const lt = view(factoryAbi, FACTORY, 'getLaunchedToken', [l.token]);
-      if (!lt.exists) continue;
-      let reserve = 0n;
-      try { reserve = view(curveAbi, l.curve, 'realQuoteReserve'); } catch (e) { continue; }
-      const hasOpen = Number(view(oddsAbi, ODDS, 'openMarket', [l.token, OPEN_CFG.window])) !== 0;
-      const launchedAt = now - (head - l.block) / 10;
-      candidates.push({ token: l.token, launchedAt, phase: Number(lt.phase), fill: l.threshold > 0n ? Number(reserve * 10000n / l.threshold) / 10000 : 0, hasOpen });
+      reads.push({ to: FACTORY, abi: factoryAbi, fn: 'getLaunchedToken', args: [l.token] });
+      reads.push({ to: l.curve, abi: curveAbi, fn: 'realQuoteReserve' });
+      reads.push({ to: ODDS, abi: oddsAbi, fn: 'openMarket', args: [l.token, OPEN_CFG.window] });
     }
+    const res = multicall(reads);
+    const candidates = [];
+    launched.forEach((l, k) => {
+      const lt = res[k * 3], reserve = res[k * 3 + 1], slot = res[k * 3 + 2];
+      if (!lt || !lt.exists || reserve === null || slot === null) return;
+      const launchedAt = now - (head - l.block) / 10;
+      candidates.push({ token: l.token, launchedAt, phase: Number(lt.phase), fill: l.threshold > 0n ? Number(reserve * 10000n / l.threshold) / 10000 : 0, hasOpen: Number(slot) !== 0 });
+    });
     opens = planOpens(candidates, now, OPEN_CFG);
     for (const o of opens) {
       if (SEND) {
