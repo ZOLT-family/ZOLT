@@ -80,7 +80,7 @@ Tiga baris "masih ngambil" itu sengaja dijadiin test, supaya gak ada yang ngira 
 2. **Ngunci pool:** modul bisa minta fee sampai 99,99%, padahal Doppler nolak di atas 10% dan penolakannya ngebatalin semua swap. Ketemu dari baca source Doppler, bukan dari test → dipatok 10% + `try/catch`.
 3. **Ngunci pool:** modul yang dipasang tanpa `onInitialization` revert di `onSwap` → sekarang diam.
 
-**Deploy yang udah disiapin (belum dikirim):** `contracts/deploy/stepguard-4663.json`. Alamat hook `0xed3D93c9dD52A7e52Ff038d4311Be9AF4eDd7080`, lewat proxy CREATE2 Arachnid `0x4e59…956C` (ada di 4663). Simulasi `eth_call` ke chain live balikin alamat itu persis; ~1,45 juta gas (≈0,00007 ETH di harga gas sekarang); kode 6.357 byte.
+**Deploy yang udah disiapin (belum dikirim):** `contracts/deploy/stepguard-4663.json` (mainnet) dan `contracts/deploy/stepguard-46630.json` (testnet; PoolManager di testnet ada di alamat yang sama dan bytecode-nya identik, dicek hash-nya; simulasi testnet ~1,63 juta gas). Alamat hook-nya sama di dua chain. Alamat hook `0xed3D93c9dD52A7e52Ff038d4311Be9AF4eDd7080`, lewat proxy CREATE2 Arachnid `0x4e59…956C` (ada di 4663). Simulasi `eth_call` ke chain live balikin alamat itu persis; ~1,45 juta gas (≈0,00007 ETH di harga gas sekarang); kode 6.357 byte.
 
 **Keeper:** `keeper/keeper.cjs`, dry-run default. Replay ke 31 step historis jalan; satu pass live jalan. Ngirim cuma kalau dikasih `--send`, `--module`, dan `KEEPER_PRIVATE_KEY`.
 
@@ -111,8 +111,8 @@ Tiga baris "masih ngambil" itu sengaja dijadiin test, supaya gak ada yang ngira 
 
 **Tinggal (dan gak bisa gue tutup sendiri):**
 1. **Audit independen** sebelum ada likuiditas.
-2. **Keputusan lo buat deploy.** Butuh kunci yang didanai (~0,00007 ETH). Gue gak pegang kunci dan gak bakal ngirim tanpa lo minta eksplisit. Saran: testnet 46630 dulu (butuh alamat PoolManager testnet; `mine-salt.cjs --chain 46630 --rpc … --pool-manager …`).
-3. **Ngobrol sama calon pengguna:** launchpad (Doppler, dan yang pakai PairV4Hook / Pons / LaunchHook) dan pembuat modul Rehype. Mereka satu-satunya jalur ke skala.
+2. **Keputusan lo buat deploy.** Transaksi testnet dan mainnet udah siap (unsigned). Butuh kunci yang didanai. Gue gak pegang kunci dan gak bakal ngirim tanpa lo minta eksplisit. Saran: testnet 46630 dulu.
+3. **Ngobrol sama calon pengguna** (draft pesan ada di `OUTREACH_DRAFTS.md`, belum dikirim): launchpad (Doppler, dan yang pakai PairV4Hook / Pons / LaunchHook) dan pembuat modul Rehype. Mereka satu-satunya jalur ke skala.
 4. **Legal read.**
 5. **Kalau ada split beneran:** jalanin ulang pipeline `research/`. Itu satu-satunya hal yang bisa ngubah kata "exposed" jadi "drained".
 
@@ -124,7 +124,9 @@ contracts/src/StepguardDopplerModule.sol   modul Doppler
 contracts/src/StepMath.sol                 rumus bersama
 contracts/test/*.t.sol                     26 test (hook, modul, gladi deploy)
 contracts/scripts/mine-salt.cjs            mining salt + simulasi live → deploy/stepguard-<chainId>.json
-contracts/deploy/stepguard-4663.json       transaksi deploy UNSIGNED + hasil simulasi
+contracts/deploy/stepguard-4663.json       transaksi deploy mainnet UNSIGNED + simulasi
+contracts/deploy/stepguard-46630.json      transaksi deploy testnet UNSIGNED + simulasi
+OUTREACH_DRAFTS.md                         draft pesan ke Doppler, pembuat modul, launchpad (BELUM dikirim)
 contracts/SECURITY.md                      review internal (bukan audit)
 contracts/README.md                        dokumentasi teknis (EN)
 keeper/                                    keeper modul Doppler + 5 test

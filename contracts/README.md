@@ -102,14 +102,15 @@ The last run is recorded in `../evidence/tests.txt`. The author's own review is 
 
 ```bash
 npm run build
-npm run mine        # chain 4663; for testnet: node scripts/mine-salt.cjs --chain 46630 --rpc <url> --pool-manager 0x...
+npm run mine        # chain 4663
+node scripts/mine-salt.cjs --chain 46630 --rpc https://rpc.testnet.chain.robinhood.com --pool-manager 0x8366a39cc670b4001a1121b8f6a443a643e40951
 ```
 
 `scripts/mine-salt.cjs` mines a salt for the deterministic CREATE2 proxy (`0x4e59b44847b379578588920cA78FbF26c0B4956C`,
 present on 4663), checks the proxy and the PoolManager exist, simulates the deployment against the live chain with
 `eth_call` and `eth_estimateGas`, and writes the unsigned transaction to `deploy/stepguard-<chainId>.json`. For 4663
 with the default parameters: hook address `0xed3D93c9dD52A7e52Ff038d4311Be9AF4eDd7080`, the simulation returns that
-address, about 1.45M gas, 6,357 bytes of runtime code. Nothing has been sent. The address changes with any change to
+address, about 1.45M gas, 6,357 bytes of runtime code. Testnet 46630 is prepared the same way (`deploy/stepguard-46630.json`): the PoolManager sits at the same address with identical runtime bytecode (hashes compared), so the hook address is the same too. Nothing has been sent. The address changes with any change to
 the bytecode or constructor arguments.
 
 ## Keeper
