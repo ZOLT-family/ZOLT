@@ -99,3 +99,12 @@ html = html.replace(/\{\{(\w+)\}\}/g, (m, k) => {
 });
 fs.writeFileSync(path.join(__dirname, 'index.html'), html);
 console.log('wrote site/index.html', html.length, 'chars');
+
+// A standalone copy for opening straight from disk or hosting anywhere: the artifact platform adds the doctype,
+// charset and viewport itself; a plain browser needs them in the file.
+const standalone = '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
+  + '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+  + '<meta name="description" content="Stepguard: stock-token splits on Robinhood Chain, and a Uniswap v4 hook that charges them to the trader instead of the LPs.">\n'
+  + '</head>\n<body>\n' + html + '\n</body>\n</html>\n';
+fs.writeFileSync(path.join(__dirname, 'stepguard.html'), standalone);
+console.log('wrote site/stepguard.html (standalone)', standalone.length, 'chars');
