@@ -1,68 +1,59 @@
-# Zolt
+# Zolt Odds
 
-A stock token on Robinhood Chain (4663) can change what one token stands for. The issuer posts a new
-multiplier and the second it takes effect; at that second every balance means more shares. Nothing moves in
-a pool that holds it — no transfer, no event, no new price — so the pool keeps quoting the old share count
-and the first trader takes the difference from the LPs.
+Every few seconds someone launches a token on Pons, the largest launchpad on Robinhood Chain (4663). About one
+in a hundred reaches the 4.2 ETH that moves it from its bonding curve into a real pool. That crossing is a single,
+objective moment written into Pons's own factory contract.
 
-Zolt is a Uniswap v4 hook that reads the same notice the pool ignores and charges the gap to whoever trades
-into it.
+Zolt Odds is a Yes/No market on that moment: will this launch graduate before the deadline? Parimutuel, settled
+by reading the factory's state, with no oracle, no committee and no owner.
 
-**Status: unaudited, unsigned, not deployed.** No liquidity should sit behind this contract until an
-independent audit. Nothing here is investment advice.
+**Status: unaudited and not deployed.** Event contracts on outcomes; not offered to persons in the United States
+or anywhere else they are not lawful. Nothing here is investment advice.
 
 ## What is in here
 
 | path | what it is |
 | --- | --- |
-| `contracts/src/Zolt.sol` | the v4 hook: registers a pool's stock side, arms on a scheduled multiplier, charges `1 − P/T` to the one direction that would take value, clears when the pool catches up |
-| `contracts/src/ZoltDopplerModule.sol` | the same maths as a Doppler plug-in, for new Doppler launches. Runs *after* a swap, woken by a keeper, and Doppler caps a module's fee at 10% — it softens a split, it does not stop one |
-| `contracts/src/StepMath.sol` | the formula on its own, small enough for the authors of existing modules to adopt |
-| `contracts/scripts/mine-salt.cjs` | mines the CREATE2 salt that puts the hook's permission bits in its address, simulates the deploy, writes `contracts/deploy/zolt-<chainId>.json` (unsigned) |
-| `contracts/scripts/send-deploy.cjs` | the only script that can send a transaction. Dry-run unless `--yes`; re-checks the build, the chain id, the empty address and a live simulation first |
-| `keeper/` | watches for `UIMultiplierUpdated`, pokes the Doppler module before the step lands. Dry-run by default |
-| `research/` | the read-only scripts that produced everything in `evidence/` |
-| `evidence/` | what the chain actually said, as JSON. Every number on the site traces to a file here |
-| `site/` | the page: `template.html` + `build-site.cjs` → `index.html`, `zolt.html`, `public/` |
+| `contracts/src/ZoltOdds.sol` | the market: open, stake (time-weighted), witnessYes / witnessNo / voidUnobserved, claim. 1% of the losing pool to a fixed treasury |
+| `contracts/test/ZoltOdds.t.sol` | 17 tests, including every-wei conservation over 256 random markets and a re-entrancy attempt |
+| `contracts/scripts/deploy-odds.cjs` | the only script that can send a transaction. Dry-run unless `--yes`; checks the chain id, probes the factory, simulates, writes a plan |
+| `keeper/odds-keeper.cjs` | records outcomes the moment they are knowable so no market waits on a holder. Dry-run unless `--send` |
+| `site/` | the page: `template.html` + `build-site.cjs` → `index.html`, `zolt.html`, `public/`. The board reads the chain from the browser; staking signs through the reader's own wallet |
+| `site/public/api/rpc.js` | a read-only JSON-RPC relay for readers whose network cannot reach the public RPC host |
+| `research/` | read-only scripts; `evidence/pons-24h.json` and `evidence/pons-calibration.json` are the base rate the page quotes |
+| `contracts/src/Zolt.sol`, `ZoltDopplerModule.sol`, `StepMath.sol` | the earlier work: a Uniswap v4 hook that prices ERC-8056 stock-token splits into swaps. Tested (26), not deployed, kept as an appendix; its page is archived at `/guard` |
 
-## Reproducing the evidence
+## How a market resolves
 
-All of it is read-only. The RPC goes through `curl --doh-url` because the local ISP hijacks DNS for the
-RPC host; override the endpoint with `RH_RPC` and the pacing with `RH_GAP_MS`.
+Pons's factory keeps a `phase` per launch: `NotGraduated`, then `Swept` the instant a buy crosses the threshold,
+then `PoolCreated` (or `Rescued`). Leaving `NotGraduated` is the event.
 
-```bash
-node research/fetch-mult-logs.cjs     # every UIMultiplierUpdated log -> evidence/mult_logs.json
-node research/discover-pools.cjs      # every v4 and v3 pool holding a stock token -> evidence/pools.json
-node research/measure-steps.cjs       # what happened around each step -> evidence/steps.json
-node research/analyze-steps.cjs       # what is attributable to the step itself -> evidence/steps-attributed.json
-node research/exposure-census.cjs     # what is sitting in pools today -> evidence/exposure.json
-node research/crwd-history.cjs        # the one pool that held CRWD at its x4
-node research/doppler-probe.cjs       # Doppler pools and module slots -> evidence/doppler.json
-node research/doppler-authorities.cjs # who may change a module -> evidence/doppler-authorities.json
-```
+- `witnessYes(id)`: allowed while `block.timestamp <= deadline` and phase is not `NotGraduated`.
+- `witnessNo(id)`: allowed once `block.timestamp > deadline` and phase is still `NotGraduated`.
+- `voidUnobserved(id)`: a day after the deadline, if neither was recorded (the launch graduated after the deadline
+  before anyone recorded NO). Every stake is refunded.
 
-`fetch-mult-logs.cjs` is incremental: it starts from the last log on disk unless you pass `--full`. When it
-prints new logs, the four scripts after it need rerunning and the site needs rebuilding.
+Stakes carry weight equal to size × seconds until staking closes (the first half of the window), so a stake
+placed when the answer is nearly known earns almost nothing from the pot. Once a launch graduates, stakes stop.
 
 ## Tests
 
 ```bash
-cd contracts && npx hardhat test    # 26 Solidity tests against Uniswap's own v4-core PoolManager
-node --test keeper/logic.test.cjs   # 5 keeper tests
+cd contracts && npx hardhat test solidity   # 43 Solidity tests (17 market, 26 split guard)
+node --test keeper/odds-logic.test.cjs      # 6 keeper tests
+node --test site/site.test.cjs              # 11 page tests: figures match files, one transaction target, relay is read-only
 ```
 
-`contracts/test/Deployment.t.sol` mines a salt inside the EVM and deploys the real bytecode — no `vm.etch`,
-so the address the tests use is the address the deploy script would produce.
-
-## The site
+## Reproducing the base rate
 
 ```bash
-node site/build-site.cjs            # evidence + template -> site/index.html, zolt.html, public/
-node site/serve.cjs                 # http://localhost:4521
+node research/pons-24h.cjs           # launches, graduations, time to graduation, pair tokens -> evidence/pons-24h.json
+node research/pons-calibration.cjs   # curve fill at 2 and 10 minutes vs sweeping within the hour -> evidence/pons-calibration.json
 ```
 
-The builder throws if the template asks for a value it cannot source from `evidence/`, which is the point:
-the page cannot claim a number that no file backs.
+The 24-hour measurement reads `TokenLaunched` and `PoolGraduated` from the factory; the calibration reads `CurveBuy`
+and `CurveSell` on every sampled curve, because the public node is not an archive node and historical balances
+are not available. Both go through `research/rpc.cjs` (curl with DNS-over-HTTPS; override with `RH_RPC`).
 
 ## Deploying
 
@@ -70,20 +61,20 @@ Not done, and not something this repo will do for you.
 
 ```bash
 cd contracts
-node scripts/mine-salt.cjs --chain 4663      # writes the unsigned plan
-node scripts/send-deploy.cjs --chain 4663    # dry run, prints what it would send
-node scripts/send-deploy.cjs --chain 4663 --yes   # signs, with DEPLOYER_PRIVATE_KEY or --key-file
+node scripts/deploy-odds.cjs --chain 4663                          # dry run, writes deploy/odds-4663.json
+node scripts/deploy-odds.cjs --chain 4663 --treasury 0x… --yes     # signs with DEPLOYER_PRIVATE_KEY or --key-file
+node ../keeper/odds-keeper.cjs --odds 0x… --send                   # afterwards, with KEEPER_PRIVATE_KEY
+node ../site/build-site.cjs                                        # the page picks up deploy/odds-4663.deployed.json
 ```
 
-The key never appears in the output. After an audit, and only after one.
+After an audit, and only after one.
 
-## What this cannot do
+## Limits
 
-- **No pool that exists today.** A pool's hook is fixed when the pool is created, and almost every Doppler
-  module slot is frozen behind a burned timelock. The value already in pools stays exposed.
-- **The Doppler module only softens.** 10% cap, and it hears about a swap after it happens.
-- **It cannot move a pool's price.** It charges the gap; the pool catches up as trades arrive.
-- **It fails open.** If a token stops answering the ERC-8056 reads, the pool trades at the normal fee.
+- Unaudited.
+- It reads the Pons V2 factory at `0x7ed598bcef8bd9edd8c97a195c6d13f40801ec7e`. A new factory means a new market.
+- A creator can buy the curve to 4.2 ETH. That is the thing the market is about; price it.
+- A graduation after the deadline that nobody witnessed voids the market. The keeper exists to keep that rare.
+- A parimutuel pays what the other side staked. Thin pools pay thin.
 
-Stock tokens on Robinhood Chain are tokenised debt securities issued by Robinhood Assets (Jersey) Ltd. This
-project is not affiliated with Robinhood Markets, Uniswap Labs or Whetstone Research.
+Not affiliated with Pons, Robinhood Markets, Uniswap Labs or Whetstone Research.

@@ -1,137 +1,61 @@
-# Zolt — brief
+# Zolt Odds — brief
 
-> **Status (23 Sep 2026):** prototype lengkap. Hook + modul Doppler + keeper + tooling deploy. **26 test kontrak + 5 test keeper lolos** di PoolManager Uniswap v4 asli. Transaksi deploy buat mainnet 4663 dan testnet 46630 udah disiapin dan disimulasi ke chain live, **tapi belum dikirim**. Repo git lokal (`main`), belum di-push ke mana pun. **Belum diaudit, belum ada dana siapa pun di belakangnya.** Semua angka on-chain di dokumen ini keluar dari script di `research/` dan tersimpan di `evidence/`.
+> **Status (23 Sep 2026):** narasi dirombak total hari ini. Produknya sekarang **Zolt Odds — "The first launch odds market on Robinhood Chain."** Kontrak `ZoltOdds.sol` jadi (**17 test Solidity lolos**, total suite repo 43), keeper jadi (**6 test**), halaman live jadi (**11 test**), script deploy jadi dan udah di-dry-run ke mainnet (1.366.277 gas ≈ 0,00007 ETH). **Belum dideploy** — butuh kunci yang didanai, dijalanin sendiri sama pemilik. **Belum diaudit.** Event contract → **bukan buat orang AS**. Semua angka di dokumen ini keluar dari `research/` dan tersimpan di `evidence/`. Kerja lama soal split stock token diarsipin di `/guard` dan `contracts/src/Zolt.sol`; gak dihapus, gak dipromosiin.
 
 ---
 
 ## 1. Narasi
 
-**Zolt — split-proof liquidity for stock tokens.**
+**Will it graduate?** Tiap beberapa detik ada token baru di Pons. Hampir semuanya mati di bonding curve; sekitar satu dari seratus nyampe **4,2 ETH** dan pindah ke pool beneran. Detik penyeberangan itu **satu momen objektif yang ditulis di kontrak Pons sendiri** (`phase` di `PonsV2LaunchFactory` keluar dari `NotGraduated`).
 
-> The share count changes. Your pool doesn't know. Zolt does.
+Zolt Odds = pasar Ya/Tidak di momen itu. Pilih launch yang masih di kurva, taruh ETH di **YES (graduate dalam window)** atau **NO**, chain yang nyelesaiin. **Tanpa oracle, tanpa komite, tanpa operator.**
 
-Stock token di Robinhood Chain (ERC-8056) bisa ngubah **berapa share yang diwakili satu token**. Jadwalnya ditulis on-chain beberapa menit sebelum berlaku (`newUIMultiplier()`, `effectiveAt()`). Pool DEX menghargai token mentah dan gak pernah baca angka itu. Setelah step naik, pool masih jual di jumlah share lama. Siapa pun yang dagang duluan ke arah yang untung ngambil selisihnya dari LP.
+Bio X: *The first launch odds market on Robinhood Chain.* (Draft lengkap di `X_COPY.md`, belum diposting.)
 
-Zolt baca jadwal yang sama, lalu nagih selisih itu ke orang yang dagang ke arah step. Fee itu masuk ke LP.
+## 2. Kenapa sekarang (semua terverifikasi 23 Sep 2026)
 
-**Kalimat satu baris (buat orang non-teknis):** *Kalau satu token tiba-tiba mewakili 4 share, pool lo masih jual dia seharga 1 share. Zolt nutup celah itu.*
-
-**Posisi yang jujur setelah semua pengukuran:** Zolt ngelindungin **pool yang dibuka berikutnya**, bukan ~$47 juta yang udah ada di pool sekarang. Pool yang udah ada gak bisa diubah oleh siapa pun (lihat §5). Jadi pembelinya **launchpad dan pembuat modul**, bukan LP satu-satu.
-
-## 2. Kenapa sekarang
-
-Semua angka di bawah diukur read-only dari chain 4663 (21–23 Sep 2026).
-
-| Yang diukur | Hasil | File |
+| Fakta | Angka | Sumber |
 |---|---|---|
-| Step multiplier sejak launch | **37 event di 34 ticker**. Umumnya diumumkan **524–588 detik** sebelum berlaku; CRWD 12,5 jam dan 1,2 jam | `mult_logs.json`, `steps.json` |
-| Pool yang megang token yang pernah step | **35.145 pool v4 + 1.009 pool v3**. NVDA sendiri ada di 13.089 pool waktu step terakhirnya | `pools.json` |
-| Nilai stock token yang duduk di pool | **$46,6 juta** (32 token yang punya feed Chainlink; 160 token lain juga punya saldo pool tapi gak ada feed). SPY: 61% supply ada di pool. NVDA: 50,5% | `exposure.json` |
-| Yang beneran diambil karena step | **$80,39 + 0,00022 ETH**, total dari 37 step. Metrik mentah nyatet $658,10, tapi sebagian besar itu pergerakan pasar biasa | `steps-attributed.json` |
-| Step gede satu-satunya (CRWD ×4, 2 Jul) | Cuma **1 pool** yang ada, dan pool itu cuma pernah punya **1 swap** seumur hidup (debu, 6 Sep). Gak ada yang ngambil | `crwd-history.json` |
-| Siapa yang megang pool-pool itu | **31.454** pool v4 udah punya hook (970 hook berbeda). Terbesar: **Doppler `DopplerHookInitializer` = 22.916 pool** | `steps-attributed.json` |
-| Bisa gak Doppler pasang modul baru di pool lama? | **Gak.** Di **22.892 dari 22.916** pool Doppler, timelock-nya `0x…dEaD` (13.419) atau `0x0` (9.473) tanpa delegasi. Slot modulnya beku selamanya. 22.733 slot udah keisi: modul `0x6f02…0f77` (13.519, gak terverifikasi) dan `RehypeDopplerHookInitializer` (8.952) | `doppler.json`, `doppler-authorities.json` |
-| Governance Doppler | Airlock owner = **Safe 1.4.1, 3-dari-6** (`0x21E2…7A66`) | `doppler-authorities.json` |
+| Pons = mesin fee terbesar di chain | $5,95 juta fee/hari (2–3 Sep), 25 ribu token/hari, $544 juta volume | CoinDesk |
+| Launch per hari (kita ukur sendiri) | **9.930** launch, **120** graduate (**1,2%**) di blok 68.979.266–69.843.266 | `evidence/pons-24h.json` |
+| Yang graduate, cepet | p10 **1 detik**, p25 51 s, **median 180 s**, p75 917 s, p90 5.337 s, terlama 12,3 jam; 68/103 dalam 10 menit, 90/103 dalam 1 jam | `pons-24h.json` |
+| Isi kurva di menit ke-2 udah nentuin | <0,05 ETH → hampir gak pernah sweep; ≥3 ETH → hampir selalu (sampel 369 dari 7.925 launch ETH, re-weight ke populasi) | `evidence/pons-calibration.json` |
+| Pair | 78% ETH; sisanya USDG, META, SPY, QQQ, dll. | `pons-24h.json` |
+| Prediction market lagi puncak | $36 miliar Q1 2026; Kalshi nyalip Polymarket; HIP-4 Hyperliquid permissionless 29 Agu | TRM, bex.co, crypto.news |
+| Di chain ini belum ada | Meridian = kurasi RFQ (USDe), PopDEX = perps; **pasar outcome per launch: gak ketemu** | pencarian 23 Sep |
 
-**Artinya, dan ini harus dibaca jujur:**
-- Hipotesis awal "pool dikuras tiap step" **gak terbukti**. Step kecil masih di bawah fee pool, dan satu-satunya step gede kejadian waktu pasarnya belum ada.
-- Pasarnya sekarang jauh lebih gede: waktu CRWD split cuma ada 1 pool; sekarang ~36.150 pool dan ~$47 juta. Split berikutnya bakal kena semuanya di detik yang sama.
-- **Tapi pool-pool itu gak bisa dilindungin di level pool oleh siapa pun**, termasuk Zolt: hook-nya dikunci pas pool dibuat, dan slot modul Doppler-nya udah dibekukan.
+**Yang bikin ini jujur:** base rate 1,2% artinya pasar yang sehat itu NO gede lawan YES kecil — YES dibayar berkali lipat kalau kena. Bukan "50:50 seru-seruan".
 
-Kata yang boleh dipakai: *exposed, gives away, quotes the old share count*. Kata yang **gak boleh** dipakai sampai ada tx hash-nya: *drained, robbed, exploited*. Klaim yang **gak boleh** dipakai: "protects today's pools".
+## 3. Mekanisme (`contracts/src/ZoltOdds.sol`)
 
-Batas pengukuran: jendela 60 menit per step; cuma pool dengan quote USDG/ETH yang dihitung harganya; v3 cuma dihitung buat 28 token yang pernah step; harga pakai print Chainlink terakhir (weekend = print Jumat); atribusi per trade = min(untung nyata, qty × harga pra-step × (rasio − 1)), jadi ini batas atas. Belum ada split yang dijadwalkan yang bisa gue sebut: `/rhj/corporate-actions` cuma berisi CASH_DIVIDEND.
+1. **Open** — siapa pun buka pasar buat launch Pons yang masih `NotGraduated`, window **10 menit / 1 jam / 6 jam**. Satu pasar terbuka per (token, window).
+2. **Stake** — cuma **paruh pertama** window. **Bobot = jumlah × detik tersisa sampai tutup**: uang yang masuk sedetik sebelum tutup (pas jawabannya udah hampir jelas) nyaris gak dapet pot. Minimum 0,0001 ETH.
+3. **Stop** — begitu launch graduate, stake ditolak dua sisi (kontrak baca factory tiap stake).
+4. **Resolve** — tiga fungsi, siapa pun boleh manggil:
+   - `witnessYes(id)`: sebelum deadline **dan** `phase ≠ 0` → YES.
+   - `witnessNo(id)`: setelah deadline **dan** `phase = 0` → NO.
+   - `voidUnobserved(id)`: deadline + 1 hari masih terbuka (graduate setelah deadline sebelum ada yang nyatet NO) → **refund semua**.
+5. **Claim** — pemenang: modal + porsi berbobot dari pool kalah dikurangi **fee 1%** ke `treasury` (immutable). Pasar satu sisi → refund.
 
-## 3. Mekanisme
+Gak ada owner, gak ada pause, gak ada upgrade. `forceSweptGraduation` milik Pons (buat launch yang pool-nya gak bisa di-seed) juga ngeluarin dari `NotGraduated` → dihitung YES (threshold-nya emang kesentuh).
 
-**Hook (`Zolt.sol`), buat pool baru:**
-1. **Register** (`afterInitialize`): catat sisi mana yang stock token ERC-8056 dan multiplier yang dicerminin harga awal. Pool tanpa stock token dan pool fee statis ditolak.
-2. **Arm** (`beforeSwap`): tiap swap, baca `uiMultiplier()`, `newUIMultiplier()`, `effectiveAt()`. Kalau jumlah share berubah, atau bakal berubah dalam `lookahead`, catat harga target = harga pool × baru ÷ lama. Dua step beruntun, pool stock/stock, dan jadwal yang dibatalin semuanya dikomposisi.
-3. **Charge**: swap ke arah yang ngambil nilai dari LP bayar fee = selisih harga pool vs target (`1 − P/T` buat beli setelah step naik, `1 − T/P` buat jual setelah reverse split), dibulatkan ke atas. Arah sebaliknya bayar fee normal.
-4. **Clear**: guard lepas kalau pool udah dagang dalam fee normal dari target, kalau harga nyebrang target, atau kalau `guardWindow` habis.
+**Temuan penting waktu riset:** `sweptAt` di struct factory **cuma hidup selama fase Swept** (dinolin pas pool dibikin), jadi resolusi gak bisa pakai timestamp — makanya pakai saksi. Tanpa saksi YES sebelum deadline, pasar gak bisa dinyatakan YES setelahnya; keeper (`keeper/odds-keeper.cjs`) ada supaya itu gak pernah nyangkut.
 
-**Modul Doppler (`ZoltDopplerModule.sol`), buat launch Doppler baru yang milih modul ini:** logika sama, tapi jalan **setelah** swap dan nyetel fee buat swap berikutnya, fee-nya berlaku dua arah, dan dipatok di **10%** (batas `MAX_LP_FEE` Doppler). Keeper manggil `poke(asset)` begitu jadwal diumumin. Aturan keras di kontrak: **gak pernah revert di dalam `onSwap`**, karena revert di situ ngunci semua swap di pool.
+## 4. Yang user pakai
 
-**Rumus bersama (`StepMath.sol`)** dipakai dua-duanya. Ini juga yang bisa di-copy pembuat modul lain.
+Halaman **zolt-smoky.vercel.app** §01: browser baca chain sendiri (log `TokenLaunched` 30 menit terakhir, `getLaunchedToken` + `realQuoteReserve()` lewat **Multicall3** karena RPC publik nolak batch 80 call dengan 429), nampilin 40 launch terakhir + isi kurva + pasar terbuka. Tiket: pilih launch → window → YES/NO → jumlah → wallet nandatanganin `openAndStake` **ke alamat kontrak dan gak ke mana-mana lagi** (test halaman ngunci: cuma satu `eth_sendTransaction`, `to: ODDS`). Klaim & saksi juga dari halaman. Kalau jaringan pembaca gak bisa nyampe RPC (ISP hijack DNS, kayak di sini), halaman jatuh ke relay `/api/rpc` yang cuma nerusin method baca.
 
-Selector ERC-8056 dicek live di chain 4663: `uiMultiplier 0xa60bf13d`, `newUIMultiplier 0xdc767007`, `effectiveAt 0x97a4064f`. Semantik dicek ke spec EIP-8056 dan ke nilai live NVDA/CRM/TSLA.
+Sebelum kontrak dideploy, papan jalan **read-only preview** (tombol stake mati, tulisannya "not deployed").
 
-## 4. Bukti
+## 5. Yang belum, dan siapa yang bisa
 
-**26 test Solidity** di PoolManager `@uniswap/v4-core` 1.0.2 + **5 test keeper** (log: `evidence/tests.txt`). Tiap skenario dijalanin di pool polos (fee 0,30%, tanpa hook) dan pool Zolt (base fee 0,30%), harga awal dan likuiditas sama:
+- **Deploy** (pemilik): `cd contracts && node scripts/deploy-odds.cjs --chain 4663 --treasury 0x… --yes` dengan `DEPLOYER_PRIVATE_KEY`. Setelah itu `node site/build-site.cjs` + deploy Vercel → papan aktif otomatis (builder baca `contracts/deploy/odds-4663.deployed.json`).
+- **Keeper** (pemilik atau siapa pun): `node keeper/odds-keeper.cjs --odds 0x… --send` dengan `KEEPER_PRIVATE_KEY`.
+- **Audit independen** — belum. Jangan promosiin sebagai aman.
+- **Legal** — event contract; non-AS; bukan nasihat investasi. Belum direview pengacara.
+- **X** — bio + post pertama di `X_COPY.md`, belum diposting.
+- **zolt.family** — belum dibeli.
 
-| Skenario | Pool polos | Pool Zolt |
-|---|---|---|
-| Beli 1.000 quote tepat setelah step ×4 | > 2.500 diambil | ≤ 0 |
-| Beli yang sama 10 menit sebelum `effectiveAt` | > 2.500 diambil | ≤ 0 |
-| Jual ke harga basi setelah reverse split ×0,5 | > 400 diambil | ≤ 0 |
-| Dua step ×2 sebelum ada yang reprice | > 2.500 diambil | ≤ 0 |
-| Issuer ngebatalin jadwal setelah guard aktif | — | balik ke fee normal |
-| Fuzz 256 run: step ×1,005–×5, trade 10–5.000 | selalu lebih besar | gak pernah di atas 0 |
-| Modul Doppler, `poke` pas jadwal diumumin, step +5% | > 3 diambil | ≤ 0 |
-| Modul Doppler **tanpa** `poke`: trade pertama setelah step | — | **masih ngambil** |
-| Modul Doppler, split ×4 (dipatok 10%) | lebih besar dari kolom kanan | **> 2.000 masih diambil**, cuma lebih kecil dari pool polos |
-| Gladi deploy: mining salt CREATE2, tanpa `vm.etch`, PoolManager validasi alamat, trade step ×4 | — | ≤ 0 |
+## 6. Batas yang harus disebut di mana pun
 
-Tiga baris "masih ngambil" itu sengaja dijadiin test, supaya gak ada yang ngira modul Doppler itu split-proof.
-
-**Bug yang ketemu dan dibenerin selama pengembangan** (rinciannya di `contracts/SECURITY.md`):
-1. Guard kebalik arah setelah harga nyebrang target → sekarang lepas begitu nyebrang.
-2. **Ngunci pool:** modul bisa minta fee sampai 99,99%, padahal Doppler nolak di atas 10% dan penolakannya ngebatalin semua swap. Ketemu dari baca source Doppler, bukan dari test → dipatok 10% + `try/catch`.
-3. **Ngunci pool:** modul yang dipasang tanpa `onInitialization` revert di `onSwap` → sekarang diam.
-
-**Deploy yang udah disiapin (belum dikirim):** `contracts/deploy/zolt-4663.json` (mainnet) dan `contracts/deploy/zolt-46630.json` (testnet; PoolManager di testnet ada di alamat yang sama dan bytecode-nya identik, dicek hash-nya; simulasi testnet ~1,63 juta gas). Alamat hook-nya sama di dua chain. Alamat hook `0xed3D93c9dD52A7e52Ff038d4311Be9AF4eDd7080`, lewat proxy CREATE2 Arachnid `0x4e59…956C` (ada di 4663). Simulasi `eth_call` ke chain live balikin alamat itu persis; ~1,45 juta gas (≈0,00007 ETH di harga gas sekarang); kode 6.357 byte.
-
-**Keeper:** `keeper/keeper.cjs`, dry-run default. Replay ke 37 step historis jalan; satu pass live jalan. Ngirim cuma kalau dikasih `--send`, `--module`, dan `KEEPER_PRIVATE_KEY`.
-
-## 5. Batas jujur
-
-- **Gak ada satu pun pool yang sekarang ada yang bisa dilindungin.** Hook v4 dikunci pas pool dibuat. Di Doppler, slot modul 22.892 dari 22.916 pool udah beku (timelock `0x0`/`0x…dEaD`). Zolt **cuma buat pool baru**. Jalurnya: (a) launchpad yang bikin pool baru milih hook atau modul Zolt, atau (b) pembuat modul yang udah ada (Rehype dan `0x6f02…`) masukin `StepMath` ke versi berikutnya.
-- **Modul Doppler cuma ngelindungin sebagian buat split.** Batas fee 10% dari Doppler berarti step di atas ~10% (semua split) cuma kepotong sebagian. Buat split, cuma bentuk hook yang ngelindungin penuh.
-- **Modul Doppler telat satu langkah.** Tanpa keeper, trade pertama setelah step lolos.
-- **Hook gak bisa gerakin harga.** Dia cuma nagih selisih; pool yang gak ada yang dagang akan terbuka lagi setelah `guardWindow`.
-- **Target dikunci pas arming.** Kalau pasar gerak selama guard aktif, fee bisa lebih gede atau lebih kecil dari selisih sebenarnya.
-- **Cuma ngelindungin LP-nya sendiri.** Trader tetap bisa ngambil step dari pool lain.
-- **Fail open.** Kalau token berhenti jawab (misal setelah issuer upgrade lewat beacon), hook pakai multiplier terakhir dan fee normal.
-- **Token jahat bisa ngabisin gas** di pool yang dia pasangin sendiri (bukan pool lain). Dicatat di `SECURITY.md` buat auditor.
-- **Belum diaudit.** `SECURITY.md` itu review internal, bukan audit.
-- **Modul Doppler cuma dites pakai stand-in**, bukan kontrak Doppler asli.
-- **Legal.** Zolt gak nyentuh dana user dan gak ngasih nasihat, tapi dia infrastruktur buat pasar sekuritas utang ter-tokenisasi. Belum ada legal read.
-
-## 6. Yang udah beres vs yang tinggal
-
-**Beres:**
-- Riset on-chain (7 script read-only, 9 file evidence).
-- Hook + modul Doppler + rumus bersama, 26 test.
-- Probe Doppler: governance, slot, timelock. Hasilnya nutup jalur pool lama, dan itu udah jadi keputusan desain di atas.
-- Keeper (5 test, replay, dry-run live).
-- Tooling deploy: salt, transaksi unsigned, simulasi live.
-- Review keamanan internal (`contracts/SECURITY.md`).
-- Landing page yang dibangun dari evidence.
-
-**Tinggal (dan gak bisa gue tutup sendiri):**
-1. **Audit independen** sebelum ada likuiditas.
-2. **Keputusan lo buat deploy.** Transaksi testnet dan mainnet udah siap (unsigned). Butuh kunci yang didanai. Gue gak pegang kunci dan gak bakal ngirim tanpa lo minta eksplisit. Saran: testnet 46630 dulu.
-3. **Ngobrol sama calon pengguna** (draft pesan ada di `OUTREACH_DRAFTS.md`, belum dikirim): launchpad (Doppler, dan yang pakai PairV4Hook / Pons / LaunchHook) dan pembuat modul Rehype. Mereka satu-satunya jalur ke skala.
-4. **Legal read.**
-5. **Kalau ada split beneran:** jalanin ulang pipeline `research/`. Itu satu-satunya hal yang bisa ngubah kata "exposed" jadi "drained".
-
-## 7. File
-
-```
-contracts/src/Zolt.sol                hook
-contracts/src/ZoltDopplerModule.sol   modul Doppler
-contracts/src/StepMath.sol                 rumus bersama
-contracts/test/*.t.sol                     26 test (hook, modul, gladi deploy)
-contracts/scripts/mine-salt.cjs            mining salt + simulasi live → deploy/zolt-<chainId>.json
-contracts/deploy/zolt-4663.json       transaksi deploy mainnet UNSIGNED + simulasi
-contracts/deploy/zolt-46630.json      transaksi deploy testnet UNSIGNED + simulasi
-OUTREACH_DRAFTS.md                         draft pesan ke Doppler, pembuat modul, launchpad (BELUM dikirim)
-contracts/SECURITY.md                      review internal (bukan audit)
-contracts/README.md                        dokumentasi teknis (EN)
-keeper/                                    keeper modul Doppler + 5 test
-research/*.cjs                             script pengukuran on-chain (read-only)
-evidence/*.json, tests.txt                 hasil pengukuran + log test
-site/build-site.cjs → site/index.html      landing, dibangun dari evidence
-                                           (live privat: https://claude.ai/artifact/KrN2veXETFRwekwme3R7xc)
-```
+Unaudited. Non-AS. Kontraknya baca factory Pons yang sekarang — kalau Pons ganti factory, butuh kontrak baru. Kreator bisa "beli jawabannya" (beli kurva sampai 4,2 ETH) — itu bukan cacat, itu yang dipasarkan. Graduasi telat bisa void (refund). Pool tipis bayar tipis. Chain-nya pernah berhenti 14 menit (4 Sep).

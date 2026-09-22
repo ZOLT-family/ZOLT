@@ -4,9 +4,18 @@
 // Deliberately narrow: POST only, JSON only, read-only methods, a bounded batch, no URL taken from the caller,
 // no credentials of any kind. It cannot be used to send a transaction.
 const UPSTREAM = 'https://rpc.mainnet.chain.robinhood.com';
-const ALLOWED = new Set(['eth_call', 'eth_blockNumber', 'eth_chainId', 'eth_getBalance', 'eth_getCode']);
+const ALLOWED = new Set(['eth_call', 'eth_blockNumber', 'eth_chainId', 'eth_getBalance', 'eth_getCode', 'eth_getBlockByNumber', 'eth_getLogs']);
 const MAX_CALLS = 200;
 const MAX_BYTES = 256 * 1024;
+const MAX_LOG_RANGE = 216_000; // 6 hours of 0.1 s blocks; and a log query must name the contract it reads
+
+// eth_getLogs is the one read that can be made expensive; keep it to one contract and a bounded range
+function logsAreBounded(c) {
+  const f = c.params && c.params[0];
+  if (!f || typeof f !== 'object' || typeof f.address !== 'string') return false;
+  const from = parseInt(f.fromBlock, 16), to = parseInt(f.toBlock, 16);
+  return Number.isFinite(from) && Number.isFinite(to) && to >= from && to - from <= MAX_LOG_RANGE;
+}
 
 module.exports = async function handler(req, res) {
   res.setHeader('cache-control', 'no-store');
@@ -25,6 +34,9 @@ module.exports = async function handler(req, res) {
   for (const c of calls) {
     if (!c || typeof c.method !== 'string' || !ALLOWED.has(c.method)) {
       return res.status(403).json({ error: 'this relay only forwards read-only calls: ' + [...ALLOWED].join(', ') });
+    }
+    if (c.method === 'eth_getLogs' && !logsAreBounded(c)) {
+      return res.status(403).json({ error: 'eth_getLogs must name an address and span at most ' + MAX_LOG_RANGE + ' blocks' });
     }
   }
 

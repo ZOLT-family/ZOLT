@@ -71,12 +71,15 @@ const view = (abi, to, fn, args = []) => decodeFunctionResult({ abi, functionNam
     key = null;
   }
   const from = account ? account.address : '0x000000000000000000000000000000000000bEEF';
-  const treasury = getAddress(arg('treasury', from));
-  if (treasury === '0x000000000000000000000000000000000000bEEF') die('pass --treasury when running without a key');
+  // without a key or --treasury this is a plan, not a deployment: the simulation borrows the factory address as a
+  // stand-in treasury (the constructor refuses zero) and the plan records that no treasury has been chosen yet
+  const treasuryArg = arg('treasury', null);
+  const treasury = treasuryArg ? getAddress(treasuryArg) : account ? from : null;
+  if (!treasury && YES) die('pass --treasury or a key');
 
   // 3. initcode and a live simulation
   const artifact = JSON.parse(fs.readFileSync(path.join(ROOT, 'artifacts', 'src', 'ZoltOdds.sol', 'ZoltOdds.json'), 'utf8'));
-  const initcode = concatHex([artifact.bytecode, encodeAbiParameters([{ type: 'address' }, { type: 'address' }], [FACTORY, treasury])]);
+  const initcode = concatHex([artifact.bytecode, encodeAbiParameters([{ type: 'address' }, { type: 'address' }], [FACTORY, treasury || FACTORY])]);
   const nonce = parseInt(rpc('eth_getTransactionCount', [from, 'pending']), 16);
   const predicted = getContractAddress({ from, nonce: BigInt(nonce) });
   let gas;

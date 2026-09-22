@@ -1,5 +1,5 @@
-// Builds site/index.html from site/template.html and the evidence files, so every number on the page traces to
-// a JSON file in evidence/ or contracts/deploy/.
+// Builds the Zolt Odds page from site/template.html and the evidence files, so every number on the page traces
+// to a JSON file in evidence/, a test file, or a deployment record in contracts/deploy/.
 //   node site/build-site.cjs
 const fs = require('fs');
 const path = require('path');
@@ -7,128 +7,114 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const EVID = path.join(ROOT, 'evidence');
 const read = (f) => JSON.parse(fs.readFileSync(path.join(EVID, f), 'utf8'));
-const maybe = (f) => (fs.existsSync(path.join(EVID, f)) ? read(f) : null);
-
-const steps = read('steps.json').steps;
-const pools = read('pools.json');
-const attributed = read('steps-attributed.json');
-const exposure = read('exposure.json');
-const crwd = read('crwd-history.json');
-const doppler = maybe('doppler.json');
-const dopplerAuth = maybe('doppler-authorities.json');
-const deploy = JSON.parse(fs.readFileSync(path.join(ROOT, 'contracts', 'deploy', 'zolt-4663.json'), 'utf8'));
-const testsTxt = fs.readFileSync(path.join(EVID, 'tests.txt'), 'utf8');
+const maybe = (f) => (fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : null);
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const int = (n) => Math.round(Number(n)).toLocaleString('en-US');
-const usd = (n) => '$' + Number(n).toLocaleString('en-US', { maximumFractionDigits: n < 100 ? 0 : 0 });
-const millions = (n) => '$' + (n / 1e6).toFixed(1) + 'M';
-const iso = (s) => s.replace('.000Z', 'Z').replace('T', ' ').slice(0, 16) + ' UTC';
+const pct = (a, b, d = 1) => (b ? (100 * a / b).toFixed(d) + '%' : '–');
+const dur = (s) => (s === null || s === undefined ? '–' : s < 90 ? Math.round(s) + ' s' : s < 5400 ? (s / 60).toFixed(s < 600 ? 1 : 0) + ' min' : (s / 3600).toFixed(1) + ' h');
 
-// the newest entry in the ledger: the card in the masthead always shows the most recent step, not a fixed ticker
-const last = steps[steps.length - 1];
-const leads = steps.map((s) => s.leadSeconds).filter((x) => x > 0 && x < 3600).sort((a, b) => a - b);
-const burned = dopplerAuth ? dopplerAuth.timelocks.filter((t) => /^0x0{40}$|^0x0{36}dead$/i.test(t.timelock)).reduce((a, t) => a + t.pools, 0) : 0;
+// ------------------------------------------------------------------ the base rate: 24 hours of Pons V2
+const pons = read('pons-24h.json');
+const durs = pons.timeToGraduationSeconds.slice().sort((a, b) => a - b);
+const q = (p) => (durs.length ? durs[Math.min(durs.length - 1, Math.floor(p * durs.length))] : null);
+const within = (s) => durs.filter((d) => d <= s).length;
+const ETH = '0x0000000000000000000000000000000000000000';
+const pairTotal = Object.values(pons.pairTokens).reduce((a, b) => a + b, 0);
 
-// the marquee: all steps, oldest first
-const marquee = '<ul>' + steps.map((s) => {
-  const r = s.newMultiplier / s.oldMultiplier;
-  const label = r >= 1.5 ? '×' + r.toFixed(3) : '+' + ((r - 1) * 100).toFixed(r - 1 < 0.0001 ? 5 : 3) + '%';
-  return `<li${r >= 1.5 ? ' class="big"' : ''}><b>${esc(s.sym)}</b><span class="s">${label}</span>${esc(s.effectiveAt.slice(0, 10))} · ${int(s.leadSeconds)} s notice · ${int(s.poolsExposed)} pool${s.poolsExposed === 1 ? '' : 's'}</li>`;
-}).join('') + '</ul>';
-
-// the ledger: one ruled row per step, oldest first, numbered the way a book of entries would be
-const stepRows = steps.map((s, i) => {
-  const r = s.newMultiplier / s.oldMultiplier;
-  const big = r >= 1.5;
-  const label = big ? '×' + r.toFixed(3) : '+' + ((r - 1) * 100).toFixed(r - 1 < 0.0001 ? 5 : 3) + '%';
-  const att = (attributed.summary.find((x) => x.sym === s.sym && x.effectiveAt === s.effectiveAt) || {}).stepAttributable;
-  const taken = att === undefined ? '–' : '$' + (att < 1 ? att.toFixed(2) : int(att));
-  return `          <tr${big ? ' class="big"' : ''}><td class="ix">${String(i + 1).padStart(2, '0')}</td><td class="sym">${esc(s.sym)}</td><td class="dt">${esc(s.effectiveAt.slice(0, 10))}</td><td class="n mult">${label}</td><td class="n">${int(s.leadSeconds)} s</td><td class="n">${int(s.poolsExposed)}</td><td class="n">${taken}</td></tr>`;
-}).join('\n');
-
-// exposure rows: top 8 by value, one scale
-const top = exposure.rows.filter((r) => r.usdInPools).slice(0, 8);
-const max = top[0].usdInPools;
-const exposureBars = top.map((r) => `        <div class="xrow" role="listitem"><span class="t">${esc(r.sym)}</span><span class="track"><span class="fill" style="width:${(100 * r.usdInPools / max).toFixed(1)}%"></span></span><span class="v">${millions(r.usdInPools)}</span><span class="v dim">${r.shareOfSupplyInPoolsPct}% of supply</span></div>`).join('\n');
-
-// The token table the page reads the chain with: every active stock token, its address, how many pools hold
-// it, and whether it has stepped before. Compact on purpose — it ships inside the page.
+// pair tokens: symbols come from the stock-token list when the address is one, otherwise the address is shown
 const assets = read('assets.json').assets;
-const poolCount = {};
-for (const p of [...pools.v4, ...pools.v3]) {
-  const t = (p.stockToken || '').toLowerCase();
-  poolCount[t] = (poolCount[t] || 0) + 1;
-}
-const steppedTokens = new Set(steps.map((s) => s.token.toLowerCase()));
-const tokenRows = assets
-  .filter((a) => a.status === 'ASSET_STATUS_ACTIVE' && a.deployments && a.deployments[0])
-  .map((a) => {
-    const addr = a.deployments[0].contractAddress;
-    const key = addr.toLowerCase();
-    // pools were only ever counted for tokens that have already stepped, so -1 means "never looked", not "none"
-    const stepped = steppedTokens.has(key);
-    return [a.tokenSymbol, addr, stepped ? (poolCount[key] || 0) : -1, stepped ? 1 : 0];
-  })
-  .sort((a, b) => b[2] - a[2] || a[0].localeCompare(b[0]));
+const symOf = { [ETH]: 'ETH', '0x5fc5360d0400a0fd4f2af552add042d716f1d168': 'USDG' };
+for (const a of assets) symOf[a.deployments[0].contractAddress.toLowerCase()] = a.tokenSymbol;
+const pairs = Object.entries(pons.pairTokens).sort((a, b) => b[1] - a[1]);
+const top = pairs.slice(0, 7);
+const other = pairs.slice(7).reduce((a, [, n]) => a + n, 0);
+const barMax = top[0][1];
+const bar = (label, n) => `              <div class="bar"><span class="mono">${esc(label)}</span><span class="track"><span class="fill" style="width:${(100 * n / barMax).toFixed(1)}%"></span></span><span class="v">${int(n)}</span></div>`;
+const pairBars = top.map(([addr, n]) => bar(symOf[addr.toLowerCase()] || addr.slice(0, 8) + '…', n)).concat(other ? [bar(`${pairs.length - 7} others`, other)] : []).join('\n');
 
-// the simulator's first frame: 4:1 split, 1,000 quote, same rule as the page script and the contract
-const X = 1000; const Y = 100000; const P0 = Y / X; const BASE = 0.003; const R = 4; const Q = 1000;
-const buy = (q, fee) => X - (X * Y) / (Y + q * (1 - fee));
-const stepFee = Math.min(0.999999, Math.max(BASE, Math.ceil((1 - 1 / R) * 1e6) / 1e6));
-const bareWorth = buy(Q, BASE) * P0 * R;
-const guardWorth = buy(Q, stepFee) * P0 * R;
+// ------------------------------------------------------------------ calibration: how full at two minutes, and did it sweep
+const cal = maybe(path.join(EVID, 'pons-calibration.json'));
+let calibration = '';
+if (cal && cal.rows && cal.rows.length && cal.ethLaunches) {
+  const rows = cal.rows;
+  const sweptRows = rows.filter((r) => r.sweptBlock !== null).length;
+  const nonSweptRows = rows.length - sweptRows;
+  // every swept launch in the window is in the sample; the rest were sampled one in N, so each stands for N launches
+  const weightNon = nonSweptRows ? (cal.ethLaunches - sweptRows) / nonSweptRows : 1;
+  const buckets = [['under 0.05 ETH', 0, 0.05], ['0.05 – 0.2', 0.05, 0.2], ['0.2 – 0.5', 0.2, 0.5], ['0.5 – 1', 0.5, 1], ['1 – 2', 1, 2], ['2 – 3', 2, 3], ['3 ETH and up', 3, Infinity]];
+  const line = ([label, lo, hi]) => {
+    const inB = rows.filter((r) => r.eth120 >= lo && r.eth120 < hi);
+    const s1h = inB.filter((r) => r.secondsToSweep !== null && r.secondsToSweep <= 3600);
+    const w = inB.reduce((a, r) => a + (r.sweptBlock !== null ? 1 : weightNon), 0);
+    const est = w ? (100 * s1h.length / w) : 0;
+    return `                  <tr><td>${esc(label)}</td><td class="n">${int(inB.length)}</td><td class="n">${int(s1h.length)}</td><td class="n${est >= 50 ? ' bad' : ''}">${inB.length ? est.toFixed(est < 10 ? 1 : 0) + '%' : '–'}</td></tr>`;
+  };
+  calibration = `            <div class="ledger" style="margin-top:18px">
+              <table>
+                <thead><tr><th>ETH on the curve at 2 min</th><th class="n">Sampled</th><th class="n">Swept &lt; 1 h</th><th class="n">Est. rate</th></tr></thead>
+                <tbody>
+${buckets.map(line).join('\n')}
+                </tbody>
+                <tfoot><tr><td colspan="4">${int(rows.length)} ETH-paired launches sampled out of ${int(cal.ethLaunches)}: every one that swept, plus one in ${Math.round(weightNon)} of the rest, so the estimate re-weights the sample back to the population. Blocks ${int(cal.from)}–${int(cal.to)}. Read from <code>CurveBuy</code> and <code>CurveSell</code> on each curve.</td></tr></tfoot>
+              </table>
+            </div>
+            <p class="foot">Two minutes in, the curve has usually already decided. That is why the 10-minute window exists, and why weight falls with time: the information arrives fast.</p>`;
+}
+
+// ------------------------------------------------------------------ tests and deployment
+const countTests = (file, re) => (fs.readFileSync(path.join(ROOT, file), 'utf8').match(re) || []).length;
+const oddsTests = countTests('contracts/test/ZoltOdds.t.sol', /function test/g);
+const oddsKeeperTests = countTests('keeper/odds-logic.test.cjs', /^test\(/gm);
+
+const FACTORY = '0x7eD598BcEf8bd9Edd8C97A195C6d13f40801EC7e';
+const deployed = maybe(path.join(ROOT, 'contracts', 'deploy', 'odds-4663.deployed.json'));
+const plan = maybe(path.join(ROOT, 'contracts', 'deploy', 'odds-4663.json'));
+const live = deployed && deployed.status === 'DEPLOYED' ? deployed : null;
+const gasPlan = live || plan;
+const gasEth = gasPlan && gasPlan.estimatedGas ? (gasPlan.estimatedGas * 0.05e-9).toFixed(5) : '–'; // at a 0.05 gwei gas price, roughly what the chain has charged
 
 const values = {
-  solTests: (testsTxt.match(/(\d+) passing/) || [])[1] || '–',
-  keeperTests: (testsTxt.match(/ℹ pass (\d+)/) || [])[1] || '–',
-  stepsCount: steps.length,
-  stepAttr: usd(attributed.totals.stepAttributableAllSteps),
-  stepAttrEth: attributed.totals.stepAttributableAllStepsETH,
-  usdExposed: millions(exposure.usdInPoolsPricedTokens),
-  poolsTotal: int(pools.v4.length + pools.v3.length),
-  v4: int(pools.v4.length),
-  hooked: int(attributed.totals.v4PoolsWithAHook),
-  crwdSwaps: int(crwd.swapsEver),
-  pricedTokens: exposure.pricedTokens,
-  unpricedTokens: exposure.unpricedTokensWithPoolBalance,
-  head: int(exposure.head),
-  lastSym: esc(last.sym),
-  lastBlock: int(last.emitBlock),
-  lastEmitAt: iso(last.emitAt),
-  lastOld: last.oldMultiplier.toFixed(6),
-  lastNew: last.newMultiplier.toFixed(6),
-  lastEff: iso(last.effectiveAt),
-  lastLead: int(last.leadSeconds),
-  lastPools: int(last.poolsExposed),
-  leadMin: leads[0],
-  leadMax: leads[leads.length - 1],
-  dopplerPools: int(doppler ? doppler.dopplerPools : 0),
-  burned: int(burned),
-  openSlots: int((doppler ? doppler.dopplerPools : 0) - burned),
-  slotTaken: int(doppler ? doppler.slotTaken : 0),
-  slotEmpty: int(doppler ? doppler.slotEmpty : 0),
-  safe: dopplerAuth && dopplerAuth.safe.threshold ? `Safe ${dopplerAuth.safe.version} · ${dopplerAuth.safe.threshold}-of-${dopplerAuth.safe.owners.length}` : '–',
-  deployAddr: deploy.predictedAddress,
-  deployFlags: deploy.flagsInAddress,
-  saltsTried: int(deploy.saltsTried),
-  deployGas: deploy.simulation ? int(deploy.simulation.estimatedGas) : '–',
-  deployBytes: deploy.simulation ? int(deploy.simulation.runtimeBytes) : '–',
-  simBareTaken: '+' + int(bareWorth - Q),
-  simBareWorth: int(bareWorth),
-  simGuardWorth: int(guardWorth),
-  simKept: int(Q * stepFee),
-  simFeePct: (stepFee * 100).toFixed(0) + '%',
-  marquee,
-  stepRows,
-  exposureBars,
-  tokenCount: tokenRows.length,
+  launches24h: int(pons.launches),
+  grads24h: int(pons.graduations),
+  gradRate24h: pct(pons.graduations, pons.launches),
+  gradInWindow: int(pons.gradLaunchedInWindow),
+  gradEarlier: int(pons.gradLaunchedEarlier),
+  gradP10: dur(q(0.1)), gradP25: dur(q(0.25)), gradMedian: dur(q(0.5)), gradP75: dur(q(0.75)), gradP90: dur(q(0.9)), gradMax: dur(durs[durs.length - 1]),
+  gradWithin10m: int(within(600)), gradWithin10mPct: pct(within(600), durs.length),
+  gradWithin1h: int(within(3600)), gradWithin1hPct: pct(within(3600), durs.length),
+  gradWithin6h: int(within(21600)), gradWithin6hPct: pct(within(21600), durs.length),
+  gradWithin24h: int(within(86400)), gradWithin24hPct: pct(within(86400), durs.length),
+  ethPairPct: pct(pons.pairTokens[ETH] || 0, pairTotal),
+  ponsFrom: int(pons.from),
+  ponsHead: int(pons.head),
+  pairBars,
+  calibration,
+  oddsTests,
+  oddsKeeperTests,
+  stateLine: live ? 'unaudited<br>live' : 'unaudited<br>not deployed',
+  stampLine: live ? 'Unaudited · deployed · use with care' : 'Unsigned · simulated · not sent',
+  deployState: live ? 'deployed' : 'unsigned',
+  oddsShort: live ? live.address.slice(0, 6) + '…' + live.address.slice(-4) : 'not deployed',
+  oddsAddr: live ? live.address : 'not deployed — the page runs in read-only preview until it is',
+  factoryAddr: FACTORY,
+  treasuryAddr: live ? live.treasury : (plan && plan.treasury) || 'set at deployment',
+  deployGasOdds: gasPlan && gasPlan.estimatedGas ? int(gasPlan.estimatedGas) : '–',
+  deployEthOdds: gasEth,
   json: JSON.stringify({
-    lead: int(last.leadSeconds),
-    doppler: { pools: doppler ? doppler.dopplerPools : 0, burned },
     rpc: 'https://rpc.mainnet.chain.robinhood.com',
     chainId: 4663,
-    tokens: tokenRows,
+    factory: FACTORY,
+    odds: live ? live.address : null,
+    sel: {
+      symbol: '0x95d89b41', launched: '0x3cf28b5a', reserve: '0x4f1f58fd', market: '0x28861d22',
+      openAndStake: '0x34feb02b', claim: '0x379607f5', payout: '0xbe95e01a',
+      witnessYes: '0x9d73a63c', witnessNo: '0xbfc7b653', voidUnobserved: '0x9fcb4976',
+    },
+    topics: {
+      launched: '0x8d4aad4953d0ca700d468f3753aa14432d1b35b43ec6409f051fb6aa43a89607',
+      opened: '0x13d3642a6d52374b58ee776c95940fcf6486c6f740891e6d11070c1411e1d3a8',
+    },
   }).replace(/</g, '\\u003c'),
 };
 
@@ -143,10 +129,8 @@ console.log('wrote site/index.html', html.length, 'chars');
 // A standalone copy for opening straight from disk or hosting anywhere: the artifact platform adds the doctype,
 // charset and viewport itself; a plain browser needs them in the file, and a shared link needs the cards.
 const SITE = 'https://zolt-smoky.vercel.app/';
-const DESC = 'A stock token can change what one token stands for. Pools keep quoting the old share count. '
-  + 'Zolt is a Uniswap v4 hook that reads the notice first and charges the gap to whoever trades into it. '
-  + 'Unaudited and not deployed.';
-// the staircase mark, inline so the tab icon costs no request
+const DESC = 'Yes/No markets on whether a freshly launched Pons token graduates in time, settled from the chain’s own state. '
+  + 'The first launch odds market on Robinhood Chain. Unaudited.';
 const ICON = '<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 26 26\'>'
   + '<rect width=\'26\' height=\'26\' fill=\'%23E6EBE2\'/>'
   + '<path d=\'M2 22h6v-6h6v-6h6V4h4\' fill=\'none\' stroke=\'%23B9861F\' stroke-width=\'3\'/>'
@@ -160,23 +144,25 @@ const head = [
   '<link rel="icon" href="data:image/svg+xml,' + ICON + '">',
   '<meta property="og:type" content="website">',
   '<meta property="og:site_name" content="Zolt">',
-  '<meta property="og:title" content="Zolt — the share count changes, your pool doesn’t know">',
+  '<meta property="og:title" content="Zolt Odds — will it graduate?">',
   '<meta property="og:description" content="' + DESC + '">',
   '<meta property="og:url" content="' + SITE + '">',
   '<meta name="twitter:card" content="summary">',
-  '<meta name="twitter:title" content="Zolt — the share count changes, your pool doesn’t know">',
+  '<meta name="twitter:title" content="Zolt Odds — will it graduate?">',
   '<meta name="twitter:description" content="' + DESC + '">',
 ].join('\n');
 const standalone = '<!doctype html>\n<html lang="en">\n<head>\n' + head + '\n</head>\n<body>\n' + html + '\n</body>\n</html>\n';
 fs.writeFileSync(path.join(__dirname, 'zolt.html'), standalone);
 console.log('wrote site/zolt.html (standalone)', standalone.length, 'chars');
 
-// The folder Vercel serves: the page, and the two files a crawler asks for.
+// The folder Vercel serves: the page, the archived split-guard page, and the two files a crawler asks for.
 const PUB = path.join(__dirname, 'public');
 fs.mkdirSync(PUB, { recursive: true });
 fs.writeFileSync(path.join(PUB, 'index.html'), standalone);
+fs.copyFileSync(path.join(__dirname, 'guard.html'), path.join(PUB, 'guard.html'));
 fs.writeFileSync(path.join(PUB, 'robots.txt'), 'User-agent: *\nAllow: /\nSitemap: ' + SITE + 'sitemap.xml\n');
 fs.writeFileSync(path.join(PUB, 'sitemap.xml'),
   '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-  + '  <url><loc>' + SITE + '</loc><lastmod>' + new Date().toISOString().slice(0, 10) + '</lastmod></url>\n</urlset>\n');
-console.log('wrote site/public/{index.html,robots.txt,sitemap.xml} (deploy folder)');
+  + '  <url><loc>' + SITE + '</loc><lastmod>' + new Date().toISOString().slice(0, 10) + '</lastmod></url>\n'
+  + '  <url><loc>' + SITE + 'guard</loc><lastmod>' + new Date().toISOString().slice(0, 10) + '</lastmod></url>\n</urlset>\n');
+console.log('wrote site/public/{index.html,guard.html,robots.txt,sitemap.xml} (deploy folder)');
