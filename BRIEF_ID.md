@@ -1,6 +1,6 @@
 # Stepguard — brief
 
-> **Status (22 Sep 2026):** prototype lengkap. Hook + modul Doppler + keeper + tooling deploy. **26 test kontrak + 5 test keeper lolos** di PoolManager Uniswap v4 asli. Transaksi deploy buat chain 4663 udah disiapin dan disimulasi ke chain live, **tapi belum dikirim**. **Belum diaudit, belum ada dana siapa pun di belakangnya.** Semua angka on-chain di dokumen ini keluar dari script di `research/` dan tersimpan di `evidence/`.
+> **Status (22 Sep 2026):** prototype lengkap. Hook + modul Doppler + keeper + tooling deploy. **26 test kontrak + 5 test keeper lolos** di PoolManager Uniswap v4 asli. Transaksi deploy buat mainnet 4663 dan testnet 46630 udah disiapin dan disimulasi ke chain live, **tapi belum dikirim**. Repo git lokal (`main`), belum di-push ke mana pun. **Belum diaudit, belum ada dana siapa pun di belakangnya.** Semua angka on-chain di dokumen ini keluar dari script di `research/` dan tersimpan di `evidence/`.
 
 ---
 
