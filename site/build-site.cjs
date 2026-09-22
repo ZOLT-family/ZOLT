@@ -159,6 +159,19 @@ const standalone = '<!doctype html>\n<html lang="en">\n<head>\n' + head + '\n</h
 fs.writeFileSync(path.join(__dirname, 'zolt.html'), standalone);
 console.log('wrote site/zolt.html (standalone)', standalone.length, 'chars');
 
+// The deploy page: a wallet signs the contract creation, nothing on disk holds a key. Built with this build's
+// bytecode so what gets deployed is what was tested. Served locally by site/serve.cjs; never copied to public/.
+const artifactFile = path.join(ROOT, 'contracts', 'artifacts', 'src', 'ZoltOdds.sol', 'ZoltOdds.json');
+if (fs.existsSync(artifactFile)) {
+  const artifact = JSON.parse(fs.readFileSync(artifactFile, 'utf8'));
+  const deployPage = fs.readFileSync(path.join(__dirname, 'deploy-template.html'), 'utf8')
+    .replace(/\{\{factoryAddr\}\}/g, FACTORY)
+    .replace(/\{\{bytecode\}\}/g, artifact.bytecode)
+    .replace(/\{\{deployGas\}\}/g, gasPlan && gasPlan.estimatedGas ? int(gasPlan.estimatedGas) : '1.4 million');
+  fs.writeFileSync(path.join(__dirname, 'deploy.html'), deployPage);
+  console.log('wrote site/deploy.html (local deploy page, bytecode of this build)');
+}
+
 // The folder Vercel serves: the page, the archived split-guard page, and the two files a crawler asks for.
 const PUB = path.join(__dirname, 'public');
 fs.mkdirSync(PUB, { recursive: true });

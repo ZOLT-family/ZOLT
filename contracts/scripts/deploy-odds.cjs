@@ -3,6 +3,8 @@
 //
 //   node scripts/deploy-odds.cjs --chain 4663                 # dry run: checks everything, writes the plan, sends nothing
 //   node scripts/deploy-odds.cjs --chain 4663 --yes           # sign and send
+//   node scripts/deploy-odds.cjs --chain 4663 --verify 0x…    # a contract deployed some other way (site/deploy.html):
+//                                                             # check it on chain and write deploy/odds-<chain>.deployed.json
 //
 // Key: env DEPLOYER_PRIVATE_KEY, or --key-file <path to a file holding the 0x… key>.
 // Treasury (receives the 1% fee on losing pools): --treasury 0x…; defaults to the deployer.
@@ -50,7 +52,42 @@ const oddsAbi = parseAbi([
 ]);
 const view = (abi, to, fn, args = []) => decodeFunctionResult({ abi, functionName: fn, data: rpc('eth_call', [{ to, data: encodeFunctionData({ abi, functionName: fn, args }) }, 'latest']) });
 
+// Verify a contract that was deployed from a wallet (site/deploy.html): same checks as after a scripted send.
+function verifyOnly(address) {
+  const artifact = JSON.parse(fs.readFileSync(path.join(ROOT, 'artifacts', 'src', 'ZoltOdds.sol', 'ZoltOdds.json'), 'utf8'));
+  const chainId = parseInt(rpc('eth_chainId', []), 16);
+  if (chainId !== CHAIN) die(`chain mismatch: RPC ${chainId}, asked ${CHAIN}`);
+  const code = rpc('eth_getCode', [address, 'latest']);
+  if (code === '0x') die('no code at ' + address);
+  // the length check comes first: a contract that is not ZoltOdds would revert on the views below
+  if (code.length !== artifact.deployedBytecode.length) die('the code at ' + address + ' is not this build of ZoltOdds (' + (code.length - 2) / 2 + ' bytes on chain, ' + (artifact.deployedBytecode.length - 2) / 2 + ' in the build)');
+  const checks = {
+    codePresent: true,
+    runtimeLengthMatchesBuild: true,
+    factory: getAddress(view(oddsAbi, address, 'factory')),
+    treasury: getAddress(view(oddsAbi, address, 'treasury')),
+    feeBps: Number(view(oddsAbi, address, 'FEE_BPS')),
+    marketCount: Number(view(oddsAbi, address, 'marketCount')),
+  };
+  checks.paramsOk = checks.factory === FACTORY && checks.feeBps === 100;
+  console.log('verify', JSON.stringify(checks));
+  if (!checks.runtimeLengthMatchesBuild) die('the code on chain is not this build of ZoltOdds');
+  if (!checks.paramsOk) die('the contract reads a different factory or charges a different fee');
+  const record = {
+    chainId: CHAIN, contract: 'ZoltOdds', address, factory: checks.factory, treasury: checks.treasury,
+    runtimeBytes: (artifact.deployedBytecode.length - 2) / 2, status: 'DEPLOYED', deployedVia: 'wallet',
+    verifiedAt: new Date().toISOString(), verification: checks,
+  };
+  fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
+  fs.writeFileSync(OUT_FILE, JSON.stringify(record, null, 1));
+  console.log('ok  wrote', path.relative(process.cwd(), OUT_FILE));
+  console.log('\nVerified. It is unaudited: say so wherever it is announced. Rebuild the site to switch the board on.');
+}
+
 (async () => {
+  const verifyAddr = arg('verify', null);
+  if (verifyAddr) { verifyOnly(getAddress(verifyAddr)); return; }
+
   // 1. chain and factory
   const chainId = parseInt(rpc('eth_chainId', []), 16);
   if (chainId !== CHAIN) die(`chain mismatch: RPC ${chainId}, asked ${CHAIN}`);

@@ -67,17 +67,32 @@ are not available. Both go through `research/rpc.cjs` (curl with DNS-over-HTTPS;
 
 ## Deploying
 
-Not done, and not something this repo will do for you.
+Not done, and not something this repo will do for you. Two ways; both leave the signing to you.
+
+From a wallet, no key on disk:
+
+```bash
+node site/build-site.cjs && node site/serve.cjs      # then open http://localhost:4521/deploy.html
+cd contracts && node scripts/deploy-odds.cjs --chain 4663 --verify 0x…   # record and check what the wallet created
+```
+
+From a key file:
 
 ```bash
 cd contracts
 node scripts/deploy-odds.cjs --chain 4663                          # dry run, writes deploy/odds-4663.json
 node scripts/deploy-odds.cjs --chain 4663 --treasury 0x… --yes     # signs with DEPLOYER_PRIVATE_KEY or --key-file
-node ../keeper/odds-keeper.cjs --odds 0x… --send                   # afterwards, with KEEPER_PRIVATE_KEY
-node ../site/build-site.cjs                                        # the page picks up deploy/odds-4663.deployed.json
 ```
 
-After an audit, and only after one.
+Then, either way:
+
+```bash
+node keeper/new-keeper-key.cjs                                     # a burner for the keeper; fund its address with a little ETH
+KEEPER_PRIVATE_KEY=$(cat keeper/keeper.key) node keeper/odds-keeper.cjs --odds 0x… --send [--auto-open]
+node site/build-site.cjs                                           # the page picks up deploy/odds-4663.deployed.json and switches the board on
+```
+
+After an audit, and only after one. `AUDIT_BRIEF.md` is the brief.
 
 ## Limits
 
