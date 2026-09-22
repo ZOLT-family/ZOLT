@@ -36,15 +36,14 @@ const marquee = '<ul>' + steps.map((s) => {
   return `<li${r >= 1.5 ? ' class="big"' : ''}><b>${esc(s.sym)}</b><span class="s">${label}</span>${esc(s.effectiveAt.slice(0, 10))} · ${int(s.leadSeconds)} s notice · ${int(s.poolsExposed)} pool${s.poolsExposed === 1 ? '' : 's'}</li>`;
 }).join('') + '</ul>';
 
-// the step grid: one small card per step, newest first, the way a listing reads
-const stepCards = steps.slice().reverse().map((s) => {
+// the ledger: one ruled row per step, oldest first, numbered the way a book of entries would be
+const stepRows = steps.map((s, i) => {
   const r = s.newMultiplier / s.oldMultiplier;
   const big = r >= 1.5;
-  const label = big ? '×' + r.toFixed(0) : '+' + ((r - 1) * 100).toFixed(r - 1 < 0.0001 ? 5 : 3) + '%';
+  const label = big ? '×' + r.toFixed(3) : '+' + ((r - 1) * 100).toFixed(r - 1 < 0.0001 ? 5 : 3) + '%';
   const att = (attributed.summary.find((x) => x.sym === s.sym && x.effectiveAt === s.effectiveAt) || {}).stepAttributable;
-  const taken = att === undefined ? 'not measured' : (att < 1 ? '$' + att.toFixed(2) : '$' + int(att)) + ' attributable';
-  const title = `${s.sym} ${label} · effective ${s.effectiveAt.slice(0, 10)} · ${int(s.leadSeconds)} s notice · ${int(s.poolsExposed)} pools · ${taken}`;
-  return `<article class="step${big ? ' big' : ''}" title="${esc(title)}"><div class="r1"><span class="sym">${esc(s.sym)}</span><span class="val">${label}</span></div><div class="r2">${esc(s.effectiveAt.slice(0, 10))} · ${int(s.leadSeconds)} s notice</div><div class="r2 dim">${int(s.poolsExposed)} pool${s.poolsExposed === 1 ? '' : 's'} · ${esc(taken)}</div></article>`;
+  const taken = att === undefined ? '–' : '$' + (att < 1 ? att.toFixed(2) : int(att));
+  return `          <tr${big ? ' class="big"' : ''}><td class="ix">${String(i + 1).padStart(2, '0')}</td><td class="sym">${esc(s.sym)}</td><td class="dt">${esc(s.effectiveAt.slice(0, 10))}</td><td class="n mult">${label}</td><td class="n">${int(s.leadSeconds)} s</td><td class="n">${int(s.poolsExposed)}</td><td class="n">${taken}</td></tr>`;
 }).join('\n');
 
 // exposure rows: top 8 by value, one scale
@@ -99,7 +98,7 @@ const values = {
   simKept: int(Q * stepFee),
   simFeePct: (stepFee * 100).toFixed(0) + '%',
   marquee,
-  stepCards,
+  stepRows,
   exposureBars,
   json: JSON.stringify({ lead: int(nvda.leadSeconds), doppler: { pools: doppler ? doppler.dopplerPools : 0, burned } }).replace(/</g, '\\u003c'),
 };

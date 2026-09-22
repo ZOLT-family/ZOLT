@@ -3,336 +3,451 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:ital,wdth,wght@0,50..150,100..900;1,50..150,100..900&family=Gloock&family=Onest:wght@400;500;600&family=Fragment+Mono&display=swap">
 <style>
-/* A working document, not a billboard: paper ground, square corners, hairline rules, hard offset shadows.
-   Oxblood is the ink, gold is the accent, ember warns, sage marks the safe side. */
+/* A book of entries: green-bar ledger paper, a bound spine down the left, numbered sections, banded rows.
+   Vermillion marks what is taken, teal marks what is held, amber is the metal. */
 :root{
-  --paper:#EFE7D9; --sheet:#FAF6EC; --sheet-2:#F3EADA; --edge:#3A1B22;
-  --ink:#241016; --ink-2:#6B5044; --ink-3:#8F7466;
-  --line:rgba(58,27,34,.18); --line-2:rgba(58,27,34,.1); --stamp:#C9B99F;
-  --ground:#1C0B0F; --ground-2:#2A1218; --on-ground:#F2E8DA; --on-ground-2:#B9A395;
-  --gold:#B8862B; --gold-lit:#E9B949; --gold-deep:#7A5716;
-  --ember:#C4390F; --sage:#3F6B4F;
+  --paper:#E6EBE2; --sheet:#F3F6F0; --band:#DBE4D5; --edge:#11171A;
+  --ink:#11171A; --ink-2:#4A5852; --ink-3:#7C8A82;
+  --line:rgba(17,23,26,.16); --line-2:rgba(17,23,26,.08);
+  --carbon:#0F1514; --carbon-2:#18211E; --on-carbon:#E6EBE2; --on-carbon-2:#93A69C;
+  --signal:#D2401F; --teal:#0E5A50; --amber:#B9861F; --amber-lit:#E6B74A;
   --display:"Anybody","Arial Narrow",system-ui,sans-serif;
   --serif:"Gloock",Georgia,"Times New Roman",serif;
   --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"Fragment Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+  --spine:152px;
   color-scheme:light;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font:14.5px/1.62 var(--body);-webkit-font-smoothing:antialiased;
-  background-image:linear-gradient(rgba(58,27,34,.028) 1px,transparent 1px);background-size:100% 28px}
-::selection{background:var(--gold-lit);color:var(--ink)}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.62 var(--body);-webkit-font-smoothing:antialiased}
+::selection{background:var(--amber-lit);color:var(--ink)}
 a{color:var(--ink)}
-:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
 p{margin:0}
 h1,h2,h3{margin:0;font-weight:400}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .dim{color:var(--ink-3)}
-.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(14px,3vw,30px)}
-.lab{font:400 10.5px/1.5 var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--ink-2)}
+.lab{font:400 10.5px/1.5 var(--mono);text-transform:uppercase;letter-spacing:.14em;color:var(--ink-3)}
 
-/* --------------------------------------------------------------- topbar */
-.topbar{margin:22px auto 0;max-width:1180px;border:2px solid var(--edge);background:var(--sheet);
-  box-shadow:5px 5px 0 var(--stamp);display:flex;align-items:stretch;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:10px;padding:13px 18px;text-decoration:none;color:var(--ink);border-right:2px solid var(--edge)}
-.brand svg{width:22px;height:22px}
-.brand b{font-family:var(--display);font-variation-settings:"wdth" 122,"wght" 900;font-size:19px;letter-spacing:.01em}
-.topnav{display:flex;align-items:center;gap:2px;padding-inline:8px;flex:1;flex-wrap:wrap}
-.topnav a{font:400 11.5px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);text-decoration:none;padding:9px 11px}
-.topnav a:hover{background:var(--gold-lit);color:var(--ink)}
-.state{display:flex;align-items:center;gap:8px;padding:12px 16px;border-left:2px solid var(--edge);font:400 11px var(--mono);text-transform:uppercase;letter-spacing:.08em;background:var(--ember);color:#FFF3E9}
-/* flex-basis, not width: `flex:1` above sets basis 0 and a plain width would lose to it */
-@media (max-width:820px){.topnav{order:3;flex:1 0 100%;border-top:2px solid var(--edge);justify-content:center}.brand{flex:1}.state{flex:1;justify-content:center;text-align:center}}
+/* --------------------------------------------------------------- splash */
+.splash{position:fixed;inset:0;z-index:100;background:var(--carbon);color:var(--on-carbon);
+  display:grid;place-items:center;transition:transform .55s cubic-bezier(.7,0,.2,1),opacity .35s .2s}
+.splash.gone{transform:translateY(-101%);opacity:0;pointer-events:none}
+html.splash-on{overflow:hidden}
+.sp{width:min(430px,86vw);display:grid;gap:18px}
+.sp-top{display:flex;align-items:center;gap:14px}
+.sp-top svg{width:42px;height:42px;flex:0 0 auto}
+.sp-top path{stroke-dasharray:60;stroke-dashoffset:60;animation:draw .7s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.sp-name{font-family:var(--display);font-size:38px;line-height:1;text-transform:uppercase;
+  font-variation-settings:"wdth" 60,"wght" 900;animation:widen .9s .25s cubic-bezier(.3,0,.2,1) forwards}
+@keyframes widen{to{font-variation-settings:"wdth" 132,"wght" 900}}
+.sp-log{list-style:none;margin:0;padding:0;display:grid;gap:7px;font:400 11.5px var(--mono);color:var(--on-carbon-2)}
+.sp-log li{display:flex;justify-content:space-between;gap:12px;opacity:0;animation:fadein .3s forwards}
+.sp-log li:nth-child(1){animation-delay:.30s}
+.sp-log li:nth-child(2){animation-delay:.50s}
+.sp-log li:nth-child(3){animation-delay:.70s}
+.sp-log b{font-weight:400;color:var(--amber-lit)}
+@keyframes fadein{to{opacity:1}}
+.sp-bar{height:3px;background:rgba(230,235,226,.18);overflow:hidden}
+.sp-bar i{display:block;height:100%;width:100%;background:var(--amber-lit);transform:scaleX(0);transform-origin:left;
+  animation:fill 1.15s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes fill{to{transform:scaleX(1)}}
+.sp-skip{font:400 10px var(--mono);text-transform:uppercase;letter-spacing:.14em;color:var(--on-carbon-2);text-align:right}
 
-/* --------------------------------------------------------------- page head */
-.phead{padding:30px 0 20px;border-bottom:1px solid var(--line)}
-.phead h1{font-family:var(--serif);font-size:clamp(28px,3.6vw,42px);line-height:1.08;letter-spacing:-.01em;margin:10px 0 12px;max-width:22ch}
-.phead h1 em{font-style:normal;color:var(--ember)}
-.phead p{max-width:74ch;color:var(--ink-2)}
-.phead p + p{margin-top:8px}
+/* --------------------------------------------------------------- shell + spine */
+.shell{display:grid;grid-template-columns:var(--spine) minmax(0,1fr);min-height:100vh}
+.spine{border-right:1px solid var(--edge);background:var(--sheet);position:sticky;top:0;height:100vh;
+  display:flex;flex-direction:column;justify-content:space-between;padding:16px 0}
+.mark{display:flex;flex-direction:column;align-items:center;gap:14px;text-decoration:none;color:var(--ink)}
+.mark svg{width:26px;height:26px}
+.mark .wm{writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--display);
+  font-variation-settings:"wdth" 128,"wght" 900;font-size:23px;letter-spacing:.14em}
+.spine nav{display:grid;gap:0;border-block:1px solid var(--line)}
+.spine nav a{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:baseline;padding:10px 14px;
+  text-decoration:none;font:400 11px var(--mono);text-transform:uppercase;letter-spacing:.09em;color:var(--ink-2);
+  border-bottom:1px solid var(--line-2)}
+.spine nav a:last-child{border-bottom:0}
+.spine nav a i{font-style:normal;color:var(--ink-3)}
+.spine nav a:hover{background:var(--band);color:var(--ink)}
+.spine-foot{display:grid;gap:8px;padding:0 14px;font:400 10px var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}
+.spine-foot b{font-weight:400;color:var(--signal);border:1px solid var(--signal);padding:6px 8px;text-align:center}
+@media (max-width:1080px){
+  :root{--spine:0px}
+  .shell{grid-template-columns:1fr}
+  .spine{position:static;height:auto;flex-direction:row;align-items:center;gap:14px;padding:10px 14px;
+    border-right:0;border-bottom:1px solid var(--edge);flex-wrap:wrap}
+  .mark{flex-direction:row;gap:9px}
+  .mark .wm{writing-mode:horizontal-tb;transform:none;font-size:19px;letter-spacing:.04em}
+  .spine nav{grid-auto-flow:column;grid-auto-columns:max-content;border:0;overflow-x:auto;flex:1}
+  .spine nav a{border-bottom:0;padding:8px 10px;grid-template-columns:1fr}
+  .spine nav a i{display:none}
+  .spine-foot{padding:0;gap:0}
+}
 
-/* --------------------------------------------------------------- stat strip */
-.strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--line)}
-@media (max-width:860px){.strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:480px){.strip{grid-template-columns:1fr}}
-.stat{padding:18px 22px 20px;border-right:1px solid var(--line-2)}
+/* --------------------------------------------------------------- page body */
+.page{padding:0 0 40px}
+.row{padding-inline:clamp(16px,2.6vw,34px)}
+.masthead{border-bottom:1px solid var(--edge);padding-block:34px 0}
+.masthead h1{font-family:var(--display);text-transform:uppercase;font-variation-settings:"wdth" 62,"wght" 900;
+  font-size:clamp(38px,6.2vw,86px);line-height:.92;letter-spacing:-.015em;margin:14px 0 0;max-width:15ch}
+.masthead h1 em{display:block;font-family:var(--serif);font-style:normal;text-transform:none;letter-spacing:0;
+  font-variation-settings:normal;font-size:.52em;line-height:1.05;color:var(--signal);margin-top:10px}
+.mast-body{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(18px,3vw,54px);
+  padding-block:22px 26px}
+@media (max-width:900px){.mast-body{grid-template-columns:1fr;gap:16px}}
+.mast-body p{color:var(--ink-2);max-width:66ch}
+.mast-body p + p{margin-top:10px}
+.filecard{border:1px solid var(--edge);background:var(--sheet)}
+.filecard .hd{display:flex;justify-content:space-between;gap:10px;padding:9px 12px;background:var(--edge);color:var(--sheet);
+  font:400 10px var(--mono);text-transform:uppercase;letter-spacing:.12em}
+.filecard dl{display:grid;grid-template-columns:auto 1fr;gap:0;margin:0;font:400 11.5px var(--mono)}
+.filecard dt{padding:8px 12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--line-2)}
+.filecard dd{margin:0;padding:8px 12px;text-align:right;border-bottom:1px solid var(--line-2);word-break:break-all}
+.filecard dt:nth-last-of-type(1),.filecard dd:nth-last-of-type(1){border-bottom:0}
+
+/* --------------------------------------------------------------- stat band */
+.band-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--edge);background:var(--band)}
+@media (max-width:860px){.band-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:460px){.band-row{grid-template-columns:1fr}}
+.stat{padding:16px clamp(16px,2.6vw,34px) 18px;border-right:1px solid var(--line)}
 .stat:last-child{border-right:0}
-.stat .n{font-family:var(--display);font-variation-settings:"wdth" 92,"wght" 800;font-size:clamp(28px,3vw,38px);line-height:1;margin:8px 0 6px}
-.stat .n.em{color:var(--ember)}
-.stat .n.go{color:var(--gold)}
-.stat .s{font:400 11.5px/1.5 var(--mono);color:var(--ink-3)}
+.stat .n{font-family:var(--display);font-variation-settings:"wdth" 78,"wght" 900;font-size:clamp(26px,3vw,40px);line-height:1;margin:7px 0 5px}
+.stat .n.sg{color:var(--signal)}
+.stat .n.tl{color:var(--teal)}
+.stat .s{font:400 11px/1.5 var(--mono);color:var(--ink-3)}
 
-/* --------------------------------------------------------------- section rule */
-.srule{display:flex;align-items:center;gap:14px;padding:22px 0 14px}
-.srule .t{font:400 10.5px var(--mono);text-transform:uppercase;letter-spacing:.14em;color:var(--ink-2)}
-.srule .l{flex:1;height:1px;background:var(--line);min-width:20px}
-.srule .o{display:flex;gap:3px}
-.srule .o i{width:4px;height:12px;background:var(--gold);display:block;opacity:.55}
-.srule .o i:nth-child(2n){opacity:.28}
+/* --------------------------------------------------------------- sections */
+.sec{border-bottom:1px solid var(--edge);padding-block:26px 30px}
+.sec-head{display:grid;grid-template-columns:52px minmax(0,1fr);gap:0 14px;align-items:baseline;margin-bottom:18px}
+.sec-head .ix{font:400 11px var(--mono);color:var(--signal);letter-spacing:.06em}
+.sec-head h2{font-family:var(--display);text-transform:uppercase;font-variation-settings:"wdth" 86,"wght" 800;
+  font-size:clamp(20px,2.3vw,28px);line-height:1}
+.sec-head p{grid-column:2;margin-top:8px;color:var(--ink-2);max-width:74ch}
+.sec-body{display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px}
+.sec-body > .gutter{font:400 10px var(--mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.1em;
+  writing-mode:vertical-rl;justify-self:center}
+@media (max-width:760px){.sec-head{grid-template-columns:1fr}.sec-head .ix{margin-bottom:6px}.sec-head p{grid-column:1}
+  .sec-body{grid-template-columns:1fr}.sec-body > .gutter{display:none}}
 
-/* --------------------------------------------------------------- panels + grid */
-.cols{display:grid;grid-template-columns:minmax(0,1.72fr) minmax(0,1fr);gap:18px;align-items:start;padding-bottom:26px}
-@media (max-width:980px){.cols{grid-template-columns:1fr}}
-.panel{background:var(--sheet);border:1px solid var(--line);box-shadow:2px 2px 0 rgba(58,27,34,.07);padding:20px 22px}
-.panel + .panel{margin-top:18px}
-.panel > h2{font-family:var(--display);font-variation-settings:"wdth" 84,"wght" 800;font-size:20px;text-transform:uppercase;line-height:1.1}
-.panel .sub{margin-top:8px;color:var(--ink-2);max-width:70ch}
-.side{position:sticky;top:18px}
-@media (max-width:980px){.side{position:static}}
-.head-row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:16px}
-.head-row .lab{white-space:nowrap}
-
-/* --------------------------------------------------------------- simulator */
+/* --------------------------------------------------------------- the model */
+.model{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:18px;align-items:start}
+@media (max-width:900px){.model{grid-template-columns:1fr}}
+.controls{border:1px solid var(--edge);background:var(--sheet);padding:18px}
 .chips{display:flex;flex-wrap:wrap;border:1px solid var(--edge);width:max-content;max-width:100%}
-.chips button{font:400 12.5px var(--mono);color:var(--ink);background:var(--sheet-2);border:0;border-right:1px solid var(--edge);padding:11px 15px;cursor:pointer}
+.chips button{font:400 12.5px var(--mono);color:var(--ink);background:transparent;border:0;border-right:1px solid var(--edge);padding:10px 14px;cursor:pointer}
 .chips button:last-child{border-right:0}
-.chips button:hover{background:var(--gold-lit)}
+.chips button:hover{background:var(--band)}
 .chips button[aria-pressed="true"]{background:var(--edge);color:var(--sheet)}
-.field{display:grid;gap:9px;margin-top:18px}
-.range{display:flex;align-items:center;gap:14px}
-.range output{font:400 13px var(--mono);min-width:9ch;text-align:right}
-input[type=range]{flex:1;appearance:none;-webkit-appearance:none;height:8px;border:1px solid var(--edge);
-  background:linear-gradient(90deg,var(--gold-lit) var(--pc,5%),var(--sheet-2) var(--pc,5%))}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:22px;background:var(--edge);cursor:ew-resize;border:0}
-input[type=range]::-moz-range-thumb{width:16px;height:22px;background:var(--edge);cursor:ew-resize;border:0;border-radius:0}
-.duel{display:grid;grid-template-columns:1fr 1fr;margin-top:20px;border:1px solid var(--edge)}
-@media (max-width:640px){.duel{grid-template-columns:1fr}}
-.side-by{padding:18px;border-right:1px solid var(--edge)}
+.field{display:grid;gap:8px;margin-top:16px}
+.range{display:flex;align-items:center;gap:12px}
+.range output{font:400 13px var(--mono);min-width:8ch;text-align:right}
+input[type=range]{flex:1;appearance:none;-webkit-appearance:none;height:26px;background:transparent}
+input[type=range]::-webkit-slider-runnable-track{height:8px;border:1px solid var(--edge);
+  background:linear-gradient(90deg,var(--amber-lit) var(--pc,5%),var(--band) var(--pc,5%))}
+input[type=range]::-moz-range-track{height:8px;border:1px solid var(--edge);
+  background:linear-gradient(90deg,var(--amber-lit) var(--pc,5%),var(--band) var(--pc,5%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:22px;margin-top:-8px;background:var(--edge);border:0;cursor:ew-resize}
+input[type=range]::-moz-range-thumb{width:14px;height:22px;background:var(--edge);border:0;border-radius:0;cursor:ew-resize}
+.readout-2{margin-top:18px;border-top:1px solid var(--line);padding-top:14px;display:grid;gap:6px;font:400 11.5px var(--mono);color:var(--ink-3)}
+.readout-2 div{display:flex;justify-content:space-between;gap:12px}
+.readout-2 b{font-weight:400;color:var(--ink)}
+.duel{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--edge)}
+@media (max-width:620px){.duel{grid-template-columns:1fr}}
+.side-by{padding:16px 18px;border-right:1px solid var(--edge);background:var(--sheet)}
 .side-by:last-child{border-right:0}
-@media (max-width:640px){.side-by{border-right:0;border-bottom:1px solid var(--edge)}.side-by:last-child{border-bottom:0}}
-.side-by .k{font:400 10.5px var(--mono);text-transform:uppercase;letter-spacing:.1em;display:flex;justify-content:space-between;gap:10px}
-.side-by.bare .k{color:var(--ember)}
-.side-by.guard .k{color:var(--sage)}
-.side-by .big{font-family:var(--display);font-variation-settings:"wdth" 82,"wght" 800;font-size:clamp(30px,4vw,44px);line-height:1;margin:10px 0 4px}
-.side-by.bare .big{color:var(--ember)}
-.side-by.guard .big{color:var(--sage)}
-.side-by .cap{font-size:13px;color:var(--ink-2)}
-.side-by dl{display:grid;grid-template-columns:1fr auto;gap:5px 12px;margin:14px 0 0;padding-top:12px;border-top:1px dashed var(--line);font:400 12px var(--mono);color:var(--ink-3)}
+@media (max-width:620px){.side-by{border-right:0;border-bottom:1px solid var(--edge)}.side-by:last-child{border-bottom:0}}
+.side-by .k{font:400 10px var(--mono);text-transform:uppercase;letter-spacing:.12em;display:flex;justify-content:space-between;gap:8px}
+.side-by.bare .k{color:var(--signal)}
+.side-by.guard .k{color:var(--teal)}
+.side-by .big{font-family:var(--display);font-variation-settings:"wdth" 74,"wght" 900;font-size:clamp(30px,4vw,46px);line-height:1;margin:10px 0 3px}
+.side-by.bare .big{color:var(--signal)}
+.side-by.guard .big{color:var(--teal)}
+.side-by .cap{font-size:12.5px;color:var(--ink-2)}
+.gauge{width:100%;height:74px;margin-top:10px;display:block}
+.needle{transform-box:fill-box;transform-origin:50% 100%;transition:transform .6s cubic-bezier(.34,1.3,.64,1)}
+.side-by dl{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin:12px 0 0;padding-top:10px;border-top:1px dashed var(--line);font:400 11.5px var(--mono);color:var(--ink-3)}
 .side-by dd{margin:0;color:var(--ink);text-align:right}
-.scale{width:100%;height:56px;margin-top:6px}
-.beam{transform-box:fill-box;transform-origin:center;transition:transform .55s cubic-bezier(.34,1.3,.64,1)}
-.foot{margin-top:14px;font:400 11.5px/1.6 var(--mono);color:var(--ink-3)}
+.foot{margin-top:14px;font:400 11px/1.6 var(--mono);color:var(--ink-3)}
 
-/* --------------------------------------------------------------- step grid */
-.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:10px}
-.step{border:1px solid var(--line);background:var(--sheet-2);padding:12px 13px;display:grid;gap:4px;transition:transform .14s,box-shadow .14s}
-.step:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--stamp)}
-.step .r1{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.step .sym{font-family:var(--display);font-variation-settings:"wdth" 118,"wght" 800;font-size:16px}
-.step .val{font:400 12.5px var(--mono);color:var(--gold-deep)}
-.step .r2{font:400 10.5px/1.45 var(--mono);color:var(--ink-3)}
-.step.big{background:var(--ember);border-color:var(--ember);color:#FFF1E7}
-.step.big .val{color:#FFD9C6}
-.step.big .r2{color:#FFD9C6}
-.step.big .r2.dim{color:#F6C3AC}
+/* --------------------------------------------------------------- ledger */
+.ledger{border:1px solid var(--edge);background:var(--sheet);overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:620px}
+.ledger th{font:400 9.5px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--sheet);
+  background:var(--edge);padding:8px 12px;text-align:left;position:sticky;top:0}
+.ledger th.n{text-align:right}
+.ledger td{padding:7px 12px;font-size:13px;border-bottom:1px solid var(--line-2)}
+.ledger tbody tr:nth-child(even){background:var(--band)}
+.ledger tbody tr:hover{background:var(--amber-lit)}
+.ledger td.ix{font:400 10.5px var(--mono);color:var(--ink-3);width:44px}
+.ledger td.sym{font-family:var(--display);font-variation-settings:"wdth" 120,"wght" 800;font-size:15px;width:84px}
+.ledger td.dt,.ledger td.n{font:400 11.5px var(--mono);font-variant-numeric:tabular-nums}
+.ledger td.n{text-align:right}
+.ledger td.mult{color:var(--amber)}
+.ledger tr.big td{background:var(--signal);color:#FFF1EC;border-bottom-color:rgba(255,255,255,.2)}
+.ledger tr.big td.mult,.ledger tr.big td.ix{color:#FFD9CB}
+.ledger tr.big:hover td{background:#B8360F}
+.ledger tfoot td{font:400 11px var(--mono);color:var(--ink-3);padding:9px 12px;border-top:1px solid var(--edge)}
 
 /* --------------------------------------------------------------- exposure */
-.xrow{display:grid;grid-template-columns:56px 1fr 74px 118px;gap:12px;align-items:center;font:400 12px var(--mono);padding:7px 0;border-bottom:1px dashed var(--line-2)}
+.xrow{display:grid;grid-template-columns:56px 1fr 74px 116px;gap:12px;align-items:center;font:400 11.5px var(--mono);
+  padding:7px clamp(8px,1.4vw,14px);border-bottom:1px solid var(--line-2)}
+.xrow:nth-child(even){background:var(--band)}
 .xrow:last-child{border-bottom:0}
 .xrow .t{font-family:var(--display);font-variation-settings:"wdth" 118,"wght" 800;font-size:14px}
-.xrow .track{height:12px;background:var(--sheet-2);border:1px solid var(--line-2)}
-.xrow .fill{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--edge) 0 3px,transparent 3px 5px)}
+.xrow .track{height:10px;background:var(--sheet);border:1px solid var(--line)}
+.xrow .fill{display:block;height:100%;background:var(--teal)}
 .xrow .v{text-align:right}
-@media (max-width:640px){.xrow{grid-template-columns:48px 1fr 70px}.xrow .v.dim{display:none}}
+@media (max-width:620px){.xrow{grid-template-columns:48px 1fr 70px}.xrow .v.dim{display:none}}
+.xwrap{border:1px solid var(--edge);background:var(--sheet)}
 
-/* --------------------------------------------------------------- notes sidebar */
-.notes{counter-reset:n;display:grid;margin:0;padding:0;list-style:none}
-.notes li{counter-increment:n;display:grid;grid-template-columns:22px 1fr;gap:12px;padding:13px 0;border-bottom:1px dashed var(--line)}
+/* --------------------------------------------------------------- notes, limits */
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.note-box{border:1px solid var(--edge);background:var(--sheet);padding:16px 18px}
+.note-box > .lab{display:block;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.notes{counter-reset:n;list-style:none;margin:0;padding:0}
+.notes li{counter-increment:n;display:grid;grid-template-columns:26px 1fr;gap:10px;padding:11px 0;border-bottom:1px dashed var(--line)}
 .notes li:last-child{border-bottom:0}
-.notes li::before{content:counter(n);font:400 11px var(--mono);color:var(--gold-deep);padding-top:3px}
-/* the number is the first grid item; the title and the line under it both live in the second column */
-.notes li b{grid-column:2;font-family:var(--display);font-variation-settings:"wdth" 96,"wght" 800;font-size:14px;text-transform:uppercase;letter-spacing:.02em}
-.notes li span{grid-column:2;color:var(--ink-2);font-size:13.5px}
-.limits div{padding:12px 0;border-bottom:1px dashed var(--line)}
+.notes li::before{content:counter(n,decimal-leading-zero);font:400 10.5px var(--mono);color:var(--signal);padding-top:3px}
+.notes li b{grid-column:2;font-family:var(--display);font-variation-settings:"wdth" 98,"wght" 800;font-size:13.5px;text-transform:uppercase;letter-spacing:.03em}
+.notes li span{grid-column:2;color:var(--ink-2);font-size:13px}
+.limits div{padding:11px 0;border-bottom:1px dashed var(--line)}
 .limits div:last-child{border-bottom:0}
-.limits b{display:block;font:400 11px var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--ember);margin-bottom:4px}
-.limits p{font-size:13.5px;color:var(--ink-2)}
-.readout{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font:400 11.5px var(--mono);margin:4px 0 0}
-.readout dt{color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em}
-.readout dd{margin:0;word-break:break-all;text-align:right}
-.chipline{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.chipline span{font:400 10.5px var(--mono);text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--line);padding:6px 9px;color:var(--ink-2)}
+.limits b{display:block;font:400 10.5px var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--signal);margin-bottom:3px}
+.limits p{font-size:13px;color:var(--ink-2)}
+code{font:11.5px var(--mono);background:var(--band);padding:1px 5px}
 
-/* --------------------------------------------------------------- inverted block */
-.dark{background:var(--ground);color:var(--on-ground);border:2px solid var(--edge);box-shadow:5px 5px 0 var(--stamp);padding:22px}
-.dark h2{font-family:var(--display);font-variation-settings:"wdth" 84,"wght" 800;font-size:20px;text-transform:uppercase}
-.dark .sub{color:var(--on-ground-2);max-width:74ch;margin-top:8px}
-.dots{position:relative;margin-top:16px;border:1px solid rgba(242,232,218,.16);background:var(--ground-2);padding:10px}
-#dots{width:100%;display:block;aspect-ratio:3.4/1}
-.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:10px;font:400 11px var(--mono);color:var(--on-ground-2)}
+/* --------------------------------------------------------------- carbon block */
+.carbon{background:var(--carbon);color:var(--on-carbon);padding:22px;
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+.carbon h3{font-family:var(--display);font-variation-settings:"wdth" 86,"wght" 800;font-size:19px;text-transform:uppercase}
+.carbon p{color:var(--on-carbon-2);max-width:74ch;margin-top:8px}
+.carbon code{background:rgba(230,235,226,.12)}
+.dots{margin-top:16px;border:1px solid rgba(230,235,226,.16);background:var(--carbon-2);padding:9px}
+#dots{width:100%;display:block;aspect-ratio:3.6/1}
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:9px;font:400 10.5px var(--mono);color:var(--on-carbon-2)}
 .legend i{width:9px;height:9px;display:inline-block;margin-right:7px;vertical-align:middle}
-.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:16px;background:rgba(242,232,218,.16)}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:16px;background:rgba(230,235,226,.16)}
 @media (max-width:760px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.fact{background:var(--ground);padding:13px 15px}
-.fact .k{font:400 10px var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--on-ground-2)}
-.fact .v{font-family:var(--display);font-variation-settings:"wdth" 100,"wght" 800;font-size:19px;margin-top:5px}
-.forms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:16px;background:rgba(242,232,218,.16)}
+.fact{background:var(--carbon);padding:12px 14px}
+.fact .k{font:400 9.5px var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--on-carbon-2)}
+.fact .v{font-family:var(--display);font-variation-settings:"wdth" 100,"wght" 800;font-size:18px;margin-top:5px}
+.forms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:16px;background:rgba(230,235,226,.16)}
 @media (max-width:860px){.forms{grid-template-columns:1fr}}
-.form{background:var(--ground);padding:16px}
-.form .k{font:400 10px var(--mono);text-transform:uppercase;letter-spacing:.1em}
-.form.full .k{color:#86B899}
-.form.part .k{color:#E2704C}
-.form.lib .k{color:var(--gold-lit)}
-.form h3{font-family:var(--display);font-variation-settings:"wdth" 96,"wght" 800;font-size:16px;text-transform:uppercase;margin:6px 0}
-.form p{font-size:13.5px;color:var(--on-ground-2)}
-code{font:11.5px var(--mono);background:rgba(58,27,34,.08);padding:1px 5px}
-.dark code{background:rgba(242,232,218,.12)}
+.form{background:var(--carbon);padding:15px}
+.form .k{font:400 9.5px var(--mono);text-transform:uppercase;letter-spacing:.1em}
+.form.full .k{color:#6FC3A8}
+.form.part .k{color:#F07A55}
+.form.lib .k{color:var(--amber-lit)}
+.form h4{margin:6px 0;font-family:var(--display);font-variation-settings:"wdth" 98,"wght" 800;font-size:15px;text-transform:uppercase;font-weight:400}
+.form p{font-size:13px;color:var(--on-carbon-2)}
 
-/* --------------------------------------------------------------- table */
-.sheetwrap{border:1px solid var(--line);background:var(--sheet);box-shadow:2px 2px 0 rgba(58,27,34,.07);overflow-x:auto}
-table{border-collapse:collapse;width:100%;min-width:560px}
-th,td{padding:10px 16px;text-align:left;border-bottom:1px solid var(--line-2);font-size:13.5px}
-th{font:400 10px var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-2);background:var(--sheet-2)}
-td.n{font:400 12px var(--mono);text-align:right;white-space:nowrap}
-th.n{text-align:right}
-td.bad{color:var(--ember)}
-td.good{color:var(--sage)}
-tbody tr:hover{background:var(--sheet-2)}
-tr:last-child td{border-bottom:0}
+/* --------------------------------------------------------------- receipts table */
+.receipts{border:1px solid var(--edge);background:var(--sheet);overflow-x:auto}
+.receipts table{min-width:560px}
+.receipts th{font:400 9.5px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--sheet);background:var(--edge);padding:8px 14px;text-align:left}
+.receipts th.n{text-align:right}
+.receipts td{padding:9px 14px;font-size:13px;border-bottom:1px solid var(--line-2)}
+.receipts tbody tr:nth-child(even){background:var(--band)}
+.receipts td.n{font:400 11.5px var(--mono);text-align:right;white-space:nowrap}
+.receipts td.bad{color:var(--signal)}
+.receipts td.good{color:var(--teal)}
+.receipts tr:last-child td{border-bottom:0}
 
 /* --------------------------------------------------------------- footer */
-footer{border-top:2px solid var(--edge);margin-top:26px;padding:22px 0 40px}
-.fwrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
-.fine{display:grid;gap:6px;font:400 11.5px/1.6 var(--mono);color:var(--ink-3);max-width:70ch}
-.wax{width:74px;height:74px}
+footer{padding:22px clamp(16px,2.6vw,34px) 44px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:flex-end}
+.fine{display:grid;gap:5px;font:400 11px/1.6 var(--mono);color:var(--ink-3);max-width:68ch}
+.stampbox{border:1px solid var(--signal);color:var(--signal);padding:10px 14px;font:400 10px var(--mono);
+  text-transform:uppercase;letter-spacing:.16em;transform:rotate(-2deg)}
 
-.cursor{position:fixed;left:0;top:0;width:15px;height:15px;margin:-7.5px 0 0 -7.5px;border-radius:50%;
-  transform:translate3d(-100px,-100px,0);background:radial-gradient(circle at 34% 30%,#F8E3B4,#C79A33 62%,#7A5716);
-  pointer-events:none;z-index:80;opacity:0;transition:width .2s,height .2s,margin .2s,opacity .2s}
-.cursor.big{width:34px;height:34px;margin:-17px 0 0 -17px;opacity:.9}
+.cursor{position:fixed;left:0;top:0;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;
+  transform:translate3d(-100px,-100px,0);background:radial-gradient(circle at 34% 30%,#F3DCA0,#B9861F 62%,#6E4F10);
+  pointer-events:none;z-index:90;opacity:0;transition:width .2s,height .2s,margin .2s,opacity .2s}
+.cursor.big{width:30px;height:30px;margin:-15px 0 0 -15px;opacity:.9}
 html.has-coin,html.has-coin *{cursor:none !important}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none !important;transition:none !important}.cursor{display:none}}
 </style>
 
+<div class="splash" id="splash">
+  <div class="sp">
+    <div class="sp-top">
+      <svg viewBox="0 0 44 44" aria-hidden="true"><path d="M4 38h10V28h10V18h10V8h6" fill="none" stroke="#E6B74A" stroke-width="4" stroke-linecap="square"></path></svg>
+      <span class="sp-name">Zolt</span>
+    </div>
+    <ul class="sp-log">
+      <li>chain 4663 &middot; robinhood <b>linked</b></li>
+      <li>31 multiplier steps <b>read</b></li>
+      <li>block 68,685,412 <b>current</b></li>
+    </ul>
+    <div class="sp-bar"><i></i></div>
+    <div class="sp-skip">click to skip</div>
+  </div>
+</div>
+
 <div class="cursor" aria-hidden="true"></div>
 
-<header class="topbar">
-  <a class="brand" href="#top" aria-label="Zolt, top of page">
-    <svg viewBox="0 0 22 22" aria-hidden="true"><path d="M2 19h5v-5h5V9h5V4h3" fill="none" stroke="#B8862B" stroke-width="2.4" stroke-linecap="square"></path><rect x="15" y="1.5" width="5" height="5" fill="#C4390F"></rect></svg>
-    <b>ZOLT</b>
-  </a>
-  <nav class="topnav" aria-label="Sections">
-    <a href="#model">Model</a>
-    <a href="#steps">Steps</a>
-    <a href="#exposure">Exposure</a>
-    <a href="#pools">Pools</a>
-    <a href="#receipts">Receipts</a>
-    <a href="#limits">Limits</a>
-  </nav>
-  <span class="state">unaudited &middot; not deployed</span>
-</header>
+<div class="shell">
+  <aside class="spine">
+    <a class="mark" href="#top" aria-label="Zolt, top of page">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><path d="M2 22h6v-6h6v-6h6V4h4" fill="none" stroke="#B9861F" stroke-width="3" stroke-linecap="square"></path><rect x="18" y="1" width="6" height="6" fill="#D2401F"></rect></svg>
+      <span class="wm">ZOLT</span>
+    </a>
+    <nav aria-label="Sections">
+      <a href="#model"><i>01</i>Model</a>
+      <a href="#ledger"><i>02</i>Ledger</a>
+      <a href="#exposure"><i>03</i>Exposure</a>
+      <a href="#pools"><i>04</i>Pools</a>
+      <a href="#guard"><i>05</i>Guard</a>
+      <a href="#receipts"><i>06</i>Receipts</a>
+    </nav>
+    <div class="spine-foot">
+      <b>unaudited<br>not deployed</b>
+      <span>blk 68,685,412</span>
+    </div>
+  </aside>
 
-<main class="wrap" id="top">
-  <div class="phead">
-    <span class="lab">Uniswap v4 hook / stock-token splits &middot; chain 4663</span>
-    <h1>The share count changes. <em>Your pool doesn&rsquo;t know.</em></h1>
-    <p>A stock token on Robinhood Chain can change what one token stands for. It posts the new multiplier and the second it takes effect, then every balance means more shares. Nothing moves in the pool: no transfer, no event, no new price.</p>
-    <p>So the pool keeps quoting the old share count, and the first trader takes the difference from the LPs. Zolt is a hook that reads the same notice and charges the gap to whoever trades into it.</p>
-  </div>
+  <div class="page" id="top">
+    <header class="masthead row">
+      <span class="lab">Uniswap v4 hook / stock-token splits &middot; chain 4663</span>
+      <h1>The share count changes<em>Your pool doesn&rsquo;t know.</em></h1>
+      <div class="mast-body">
+        <div>
+          <p>A stock token on Robinhood Chain can change what one token stands for. It posts the new multiplier and the second it takes effect; at that second every balance means more shares. Nothing moves in the pool: no transfer, no event, no new price.</p>
+          <p>So the pool keeps quoting the old share count, and the first trader takes the difference from the LPs. Zolt is a hook that reads the same notice and charges the gap to whoever trades into it.</p>
+        </div>
+        <div class="filecard">
+          <div class="hd"><span>entry &middot; last notice</span><span>NVDA</span></div>
+          <dl>
+            <dt>posted at block</dt><dd>58,952,659</dd>
+            <dt>posted</dt><dd>2026-09-09 23:50 UTC</dd>
+            <dt>effective</dt><dd>2026-09-10 00:00 UTC</dd>
+            <dt>notice</dt><dd>588 s</dd>
+            <dt>multiplier</dt><dd>1.000000 &rarr; 1.000775</dd>
+            <dt>pools holding it</dt><dd>13,089</dd>
+          </dl>
+        </div>
+      </div>
+    </header>
 
-  <div class="strip">
-    <div class="stat"><span class="lab">Steps announced</span><div class="n">31</div><div class="s">524&ndash;588 s of notice each</div></div>
-    <div class="stat"><span class="lab">Taken by those steps</span><div class="n em">$72</div><div class="s">all 31 together, plus 0.00021011 ETH</div></div>
-    <div class="stat"><span class="lab">Sitting in pools now</span><div class="n">$50.3M</div><div class="s">31,814 pools &middot; block 68,685,412</div></div>
-    <div class="stat"><span class="lab">Tests green</span><div class="n go">26 + 5</div><div class="s">v4-core PoolManager &middot; keeper</div></div>
-  </div>
+    <div class="band-row">
+      <div class="stat"><span class="lab">Steps announced</span><div class="n">31</div><div class="s">524&ndash;588 s of notice each</div></div>
+      <div class="stat"><span class="lab">Taken by those steps</span><div class="n sg">$72</div><div class="s">all 31 together &middot; 0.00021011 ETH</div></div>
+      <div class="stat"><span class="lab">Sitting in pools now</span><div class="n">$50.3M</div><div class="s">31,814 pools &middot; block 68,685,412</div></div>
+      <div class="stat"><span class="lab">Tests green</span><div class="n tl">26 + 5</div><div class="s">v4-core PoolManager &middot; keeper</div></div>
+    </div>
 
-  <div class="srule" id="model"><span class="t">Position model / live chain data</span><span class="l"></span><span class="o"><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
-
-  <div class="cols">
-    <div>
-      <section class="panel">
-        <div class="head-row"><h2>Model a split</h2><span class="lab">constant product &middot; illustration</span></div>
-        <p class="sub">Two identical pools, 1,000 tokens against 100,000 quote, token at 100. The token splits, someone buys right after. Same fee rule as the contract.</p>
-        <div class="field">
-          <span class="lab" id="sl">Split</span>
-          <div class="chips" role="group" aria-labelledby="sl">
-            <button type="button" data-r="1.05" aria-pressed="false">+5%</button>
-            <button type="button" data-r="1.5" aria-pressed="false">3:2</button>
-            <button type="button" data-r="2" aria-pressed="false">2:1</button>
-            <button type="button" data-r="4" aria-pressed="true">4:1</button>
-            <button type="button" data-r="10" aria-pressed="false">10:1</button>
+    <section class="sec row" id="model">
+      <div class="sec-head"><span class="ix">&sect; 01</span><h2>Model a split</h2>
+        <p>Two identical pools, 1,000 tokens against 100,000 quote, token at 100. The token splits, someone buys right after. Same fee rule as the contract: 1 &minus; P/T, rounded up.</p></div>
+      <div class="sec-body"><span class="gutter">illustration</span>
+        <div class="model">
+          <div class="controls">
+            <div class="field">
+              <span class="lab" id="sl">Split</span>
+              <div class="chips" role="group" aria-labelledby="sl">
+                <button type="button" data-r="1.05" aria-pressed="false">+5%</button>
+                <button type="button" data-r="1.5" aria-pressed="false">3:2</button>
+                <button type="button" data-r="2" aria-pressed="false">2:1</button>
+                <button type="button" data-r="4" aria-pressed="true">4:1</button>
+                <button type="button" data-r="10" aria-pressed="false">10:1</button>
+              </div>
+            </div>
+            <div class="field">
+              <label class="lab" for="spend">Trade size &middot; quote token</label>
+              <div class="range"><input id="spend" type="range" min="100" max="20000" step="100" value="1000"><output id="spend-out" for="spend">1,000</output></div>
+            </div>
+            <div class="readout-2">
+              <div><span>price before</span><b>100.00</b></div>
+              <div><span>price the split implies</span><b id="target">400.00</b></div>
+              <div><span>step fee charged</span><b id="fee-label">75%</b></div>
+              <div><span>pool rule</span><b>x &middot; y = k</b></div>
+            </div>
+          </div>
+          <div class="duel" aria-live="polite">
+            <div class="side-by bare">
+              <div class="k"><span>Bare pool</span><span>0.30%</span></div>
+              <div class="big" id="bare-taken">+2,949</div>
+              <p class="cap">taken from the LPs by one trade</p>
+              <svg class="gauge" viewBox="0 0 220 74" aria-hidden="true">
+                <path d="M20 64a90 90 0 0 1 180 0" fill="none" stroke="#DBE4D5" stroke-width="8"></path>
+                <path d="M20 64a90 90 0 0 1 180 0" fill="none" stroke="#D2401F" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="283" id="arc-b"></path>
+                <g class="needle" id="ndl-b"><path d="M110 64V22" stroke="#11171A" stroke-width="3"></path></g>
+                <circle cx="110" cy="64" r="5" fill="#11171A"></circle>
+              </svg>
+              <dl><dt>trader pays</dt><dd id="bare-pay">1,000</dd><dt>worth after split</dt><dd id="bare-get">3,949</dd></dl>
+            </div>
+            <div class="side-by guard">
+              <div class="k"><span>Zolt pool</span><span>step fee</span></div>
+              <div class="big" id="guard-taken">0</div>
+              <p class="cap">taken from the LPs by the same trade</p>
+              <svg class="gauge" viewBox="0 0 220 74" aria-hidden="true">
+                <path d="M20 64a90 90 0 0 1 180 0" fill="none" stroke="#DBE4D5" stroke-width="8"></path>
+                <path d="M20 64a90 90 0 0 1 180 0" fill="none" stroke="#0E5A50" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="283" id="arc-g"></path>
+                <g class="needle" id="ndl-g"><path d="M110 64V22" stroke="#11171A" stroke-width="3"></path></g>
+                <circle cx="110" cy="64" r="5" fill="#11171A"></circle>
+              </svg>
+              <dl><dt>trader pays</dt><dd id="guard-pay">1,000</dd><dt>step fee to the LPs</dt><dd id="guard-kept">750</dd></dl>
+            </div>
           </div>
         </div>
-        <div class="field">
-          <label class="lab" for="spend">Trade size &middot; quote token</label>
-          <div class="range"><input id="spend" type="range" min="100" max="20000" step="100" value="1000"><output id="spend-out" for="spend">1,000</output></div>
-        </div>
-        <div class="duel" aria-live="polite">
-          <div class="side-by bare">
-            <div class="k"><span>Bare pool</span><span>0.30%</span></div>
-            <div class="big" id="bare-taken">+2,949</div>
-            <p class="cap">taken from the LPs by one trade</p>
-            <svg class="scale" viewBox="0 0 300 56" aria-hidden="true">
-              <path d="M150 50V20" stroke="#6B5044" stroke-width="2"></path><path d="M124 52h52" stroke="#6B5044" stroke-width="3"></path>
-              <g class="beam" id="beam-b"><path d="M56 20h188" stroke="#C4390F" stroke-width="3"></path>
-                <path d="M56 20v10M244 20v10" stroke="#6B5044" stroke-width="1.5"></path>
-                <path d="M42 30h28M230 30h28" stroke="#C4390F" stroke-width="2.5"></path></g>
-              <text x="56" y="46" text-anchor="middle" font-family="Fragment Mono, monospace" font-size="8" fill="#8F7466">LPs</text>
-              <text x="244" y="46" text-anchor="middle" font-family="Fragment Mono, monospace" font-size="8" fill="#8F7466">trader</text>
-            </svg>
-            <dl><dt>trader pays</dt><dd id="bare-pay">1,000</dd><dt>worth after split</dt><dd id="bare-get">3,949</dd></dl>
-          </div>
-          <div class="side-by guard">
-            <div class="k"><span>Zolt pool</span><span id="fee-label">step fee 75%</span></div>
-            <div class="big" id="guard-taken">0</div>
-            <p class="cap">taken from the LPs by the same trade</p>
-            <svg class="scale" viewBox="0 0 300 56" aria-hidden="true">
-              <path d="M150 50V20" stroke="#6B5044" stroke-width="2"></path><path d="M124 52h52" stroke="#6B5044" stroke-width="3"></path>
-              <g class="beam" id="beam-g"><path d="M56 20h188" stroke="#3F6B4F" stroke-width="3"></path>
-                <path d="M56 20v10M244 20v10" stroke="#6B5044" stroke-width="1.5"></path>
-                <path d="M42 30h28M230 30h28" stroke="#3F6B4F" stroke-width="2.5"></path></g>
-              <text x="56" y="46" text-anchor="middle" font-family="Fragment Mono, monospace" font-size="8" fill="#8F7466">LPs</text>
-              <text x="244" y="46" text-anchor="middle" font-family="Fragment Mono, monospace" font-size="8" fill="#8F7466">trader</text>
-            </svg>
-            <dl><dt>trader pays</dt><dd id="guard-pay">1,000</dd><dt>step fee to the LPs</dt><dd id="guard-kept">750</dd></dl>
-          </div>
-        </div>
-        <p class="foot">Fee rule 1 &minus; P/T rounded up, the same one the contract charges. Not a quote, and not a promise about any real pool.</p>
-      </section>
+        <p class="foot" style="grid-column:2">Not a quote, and not a promise about any real pool. The needle is the share of the trade that leaves the LPs.</p>
+      </div>
+    </section>
 
-      <section class="panel" id="steps">
-        <div class="head-row"><h2>Every step since launch</h2><span class="lab">31 steps &middot; newest first</span></div>
-        <p class="sub">Read straight from chain 4663. The notice always went up first: 524 to 588 seconds. The red one is CRWD going &times;4 the day after launch, when a single pool held it and that pool has seen 1 swap in its life.</p>
-        <div class="steps" style="margin-top:16px">
-<article class="step" title="SPY +0.172% · effective 2026-09-18 · 584 s notice · 3,837 pools · $48 attributable"><div class="r1"><span class="sym">SPY</span><span class="val">+0.172%</span></div><div class="r2">2026-09-18 · 584 s notice</div><div class="r2 dim">3,837 pools · $48 attributable</div></article>
-<article class="step" title="CRM +0.115% · effective 2026-09-17 · 580 s notice · 76 pools · $0.00 attributable"><div class="r1"><span class="sym">CRM</span><span class="val">+0.115%</span></div><div class="r2">2026-09-17 · 580 s notice</div><div class="r2 dim">76 pools · $0.00 attributable</div></article>
-<article class="step" title="HPE +0.172% · effective 2026-09-17 · 580 s notice · 85 pools · $0.00 attributable"><div class="r1"><span class="sym">HPE</span><span class="val">+0.172%</span></div><div class="r2">2026-09-17 · 580 s notice</div><div class="r2 dim">85 pools · $0.00 attributable</div></article>
-<article class="step" title="PR +0.448% · effective 2026-09-16 · 572 s notice · 38 pools · $0.00 attributable"><div class="r1"><span class="sym">PR</span><span class="val">+0.448%</span></div><div class="r2">2026-09-16 · 572 s notice</div><div class="r2 dim">38 pools · $0.00 attributable</div></article>
-<article class="step" title="TSM +0.146% · effective 2026-09-16 · 577 s notice · 351 pools · $0.00 attributable"><div class="r1"><span class="sym">TSM</span><span class="val">+0.146%</span></div><div class="r2">2026-09-16 · 577 s notice</div><div class="r2 dim">351 pools · $0.00 attributable</div></article>
-<article class="step" title="SOXX +0.045% · effective 2026-09-16 · 581 s notice · 80 pools · $0.00 attributable"><div class="r1"><span class="sym">SOXX</span><span class="val">+0.045%</span></div><div class="r2">2026-09-16 · 581 s notice</div><div class="r2 dim">80 pools · $0.00 attributable</div></article>
-<article class="step" title="GOOGL +0.019% · effective 2026-09-15 · 585 s notice · 1,924 pools · $16 attributable"><div class="r1"><span class="sym">GOOGL</span><span class="val">+0.019%</span></div><div class="r2">2026-09-15 · 585 s notice</div><div class="r2 dim">1,924 pools · $16 attributable</div></article>
-<article class="step" title="UNH +0.424% · effective 2026-09-14 · 571 s notice · 49 pools · $0.00 attributable"><div class="r1"><span class="sym">UNH</span><span class="val">+0.424%</span></div><div class="r2">2026-09-14 · 571 s notice</div><div class="r2 dim">49 pools · $0.00 attributable</div></article>
-<article class="step" title="VRT +0.016% · effective 2026-09-14 · 574 s notice · 30 pools · $0.00 attributable"><div class="r1"><span class="sym">VRT</span><span class="val">+0.016%</span></div><div class="r2">2026-09-14 · 574 s notice</div><div class="r2 dim">30 pools · $0.00 attributable</div></article>
-<article class="step" title="MSFT +0.041% · effective 2026-09-11 · 524 s notice · 1,234 pools · $0.02 attributable"><div class="r1"><span class="sym">MSFT</span><span class="val">+0.041%</span></div><div class="r2">2026-09-11 · 524 s notice</div><div class="r2 dim">1,234 pools · $0.02 attributable</div></article>
-<article class="step" title="XOM +0.104% · effective 2026-09-11 · 529 s notice · 97 pools · $0.00 attributable"><div class="r1"><span class="sym">XOM</span><span class="val">+0.104%</span></div><div class="r2">2026-09-11 · 529 s notice</div><div class="r2 dim">97 pools · $0.00 attributable</div></article>
-<article class="step" title="AMAT +0.00447% · effective 2026-09-11 · 534 s notice · 54 pools · $0.00 attributable"><div class="r1"><span class="sym">AMAT</span><span class="val">+0.00447%</span></div><div class="r2">2026-09-11 · 534 s notice</div><div class="r2 dim">54 pools · $0.00 attributable</div></article>
-<article class="step" title="LLY +0.00023% · effective 2026-09-11 · 540 s notice · 447 pools · $0.02 attributable"><div class="r1"><span class="sym">LLY</span><span class="val">+0.00023%</span></div><div class="r2">2026-09-11 · 540 s notice</div><div class="r2 dim">447 pools · $0.02 attributable</div></article>
-<article class="step" title="NVDA +0.078% · effective 2026-09-10 · 588 s notice · 13,089 pools · $7 attributable"><div class="r1"><span class="sym">NVDA</span><span class="val">+0.078%</span></div><div class="r2">2026-09-10 · 588 s notice</div><div class="r2 dim">13,089 pools · $7 attributable</div></article>
-<article class="step" title="JNJ +0.00215% · effective 2026-09-09 · 585 s notice · 184 pools · $0.00 attributable"><div class="r1"><span class="sym">JNJ</span><span class="val">+0.00215%</span></div><div class="r2">2026-09-09 · 585 s notice</div><div class="r2 dim">184 pools · $0.00 attributable</div></article>
-<article class="step" title="KSS +0.461% · effective 2026-09-09 · 574 s notice · 47 pools · $0.00 attributable"><div class="r1"><span class="sym">KSS</span><span class="val">+0.461%</span></div><div class="r2">2026-09-09 · 574 s notice</div><div class="r2 dim">47 pools · $0.00 attributable</div></article>
-<article class="step" title="WDC +0.022% · effective 2026-09-08 · 580 s notice · 36 pools · $0.00 attributable"><div class="r1"><span class="sym">WDC</span><span class="val">+0.022%</span></div><div class="r2">2026-09-08 · 580 s notice</div><div class="r2 dim">36 pools · $0.00 attributable</div></article>
-<article class="step" title="UPS +0.221% · effective 2026-09-04 · 585 s notice · 272 pools · $0.22 attributable"><div class="r1"><span class="sym">UPS</span><span class="val">+0.221%</span></div><div class="r2">2026-09-04 · 585 s notice</div><div class="r2 dim">272 pools · $0.22 attributable</div></article>
-<article class="step" title="F +0.015% · effective 2026-09-02 · 585 s notice · 78 pools · $0.00 attributable"><div class="r1"><span class="sym">F</span><span class="val">+0.015%</span></div><div class="r2">2026-09-02 · 585 s notice</div><div class="r2 dim">78 pools · $0.00 attributable</div></article>
-<article class="step" title="SGOV +0.211% · effective 2026-09-01 · 575 s notice · 135 pools · $0.00 attributable"><div class="r1"><span class="sym">SGOV</span><span class="val">+0.211%</span></div><div class="r2">2026-09-01 · 575 s notice</div><div class="r2 dim">135 pools · $0.00 attributable</div></article>
-<article class="step" title="CCL +2.149% · effective 2026-08-31 · 544 s notice · 34 pools · $0.00 attributable"><div class="r1"><span class="sym">CCL</span><span class="val">+2.149%</span></div><div class="r2">2026-08-31 · 544 s notice</div><div class="r2 dim">34 pools · $0.00 attributable</div></article>
-<article class="step" title="AAPL +0.057% · effective 2026-08-14 · 580 s notice · 1,131 pools · $0.63 attributable"><div class="r1"><span class="sym">AAPL</span><span class="val">+0.057%</span></div><div class="r2">2026-08-14 · 580 s notice</div><div class="r2 dim">1,131 pools · $0.63 attributable</div></article>
-<article class="step" title="COST +0.061% · effective 2026-08-10 · 558 s notice · 171 pools · $0.00 attributable"><div class="r1"><span class="sym">COST</span><span class="val">+0.061%</span></div><div class="r2">2026-08-10 · 558 s notice</div><div class="r2 dim">171 pools · $0.00 attributable</div></article>
-<article class="step" title="SGOV +0.202% · effective 2026-08-07 · 588 s notice · 22 pools · $0.00 attributable"><div class="r1"><span class="sym">SGOV</span><span class="val">+0.202%</span></div><div class="r2">2026-08-07 · 588 s notice</div><div class="r2 dim">22 pools · $0.00 attributable</div></article>
-<article class="step" title="ASML +0.010% · effective 2026-08-06 · 564 s notice · 31 pools · $0.00 attributable"><div class="r1"><span class="sym">ASML</span><span class="val">+0.010%</span></div><div class="r2">2026-08-06 · 564 s notice</div><div class="r2 dim">31 pools · $0.00 attributable</div></article>
-<article class="step" title="DELL +0.00637% · effective 2026-08-03 · 575 s notice · 57 pools · $0.00 attributable"><div class="r1"><span class="sym">DELL</span><span class="val">+0.00637%</span></div><div class="r2">2026-08-03 · 575 s notice</div><div class="r2 dim">57 pools · $0.00 attributable</div></article>
-<article class="step" title="ORCL +0.221% · effective 2026-07-27 · 578 s notice · 70 pools · $0.00 attributable"><div class="r1"><span class="sym">ORCL</span><span class="val">+0.221%</span></div><div class="r2">2026-07-27 · 578 s notice</div><div class="r2 dim">70 pools · $0.00 attributable</div></article>
-<article class="step" title="MU +0.00748% · effective 2026-07-24 · 584 s notice · 97 pools · $0.00 attributable"><div class="r1"><span class="sym">MU</span><span class="val">+0.00748%</span></div><div class="r2">2026-07-24 · 584 s notice</div><div class="r2 dim">97 pools · $0.00 attributable</div></article>
-<article class="step" title="SGOV +0.096% · effective 2026-07-08 · 562 s notice · 2 pools · $0.00 attributable"><div class="r1"><span class="sym">SGOV</span><span class="val">+0.096%</span></div><div class="r2">2026-07-08 · 562 s notice</div><div class="r2 dim">2 pools · $0.00 attributable</div></article>
-<article class="step big" title="CRWD ×4 · effective 2026-07-02 · 4,456 s notice · 1 pools · $0.00 attributable"><div class="r1"><span class="sym">CRWD</span><span class="val">×4</span></div><div class="r2">2026-07-02 · 4,456 s notice</div><div class="r2 dim">1 pool · $0.00 attributable</div></article>
-<article class="step big" title="CRWD ×4 · effective 2026-07-02 · 44,918 s notice · 1 pools · $0.00 attributable"><div class="r1"><span class="sym">CRWD</span><span class="val">×4</span></div><div class="r2">2026-07-02 · 44,918 s notice</div><div class="r2 dim">1 pool · $0.00 attributable</div></article>
+    <section class="sec row" id="ledger">
+      <div class="sec-head"><span class="ix">&sect; 02</span><h2>The ledger of steps</h2>
+        <p>Every multiplier change on chain 4663 since launch, oldest first. The notice always went up first: 524 to 588 seconds. Entry 01 and 02 are CRWD going &times;4 the day after launch, when a single pool held it &mdash; a pool that has seen 1 swap in its whole life.</p></div>
+      <div class="sec-body"><span class="gutter">read from chain</span>
+        <div class="ledger">
+          <table>
+            <thead><tr><th>#</th><th>Token</th><th>Effective</th><th class="n">Step</th><th class="n">Notice</th><th class="n">Pools</th><th class="n">Attributable</th></tr></thead>
+            <tbody>
+          <tr class="big"><td class="ix">01</td><td class="sym">CRWD</td><td class="dt">2026-07-02</td><td class="n mult">×4.000</td><td class="n">44,918 s</td><td class="n">1</td><td class="n">$0.00</td></tr>
+          <tr class="big"><td class="ix">02</td><td class="sym">CRWD</td><td class="dt">2026-07-02</td><td class="n mult">×4.000</td><td class="n">4,456 s</td><td class="n">1</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">03</td><td class="sym">SGOV</td><td class="dt">2026-07-08</td><td class="n mult">+0.096%</td><td class="n">562 s</td><td class="n">2</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">04</td><td class="sym">MU</td><td class="dt">2026-07-24</td><td class="n mult">+0.00748%</td><td class="n">584 s</td><td class="n">97</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">05</td><td class="sym">ORCL</td><td class="dt">2026-07-27</td><td class="n mult">+0.221%</td><td class="n">578 s</td><td class="n">70</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">06</td><td class="sym">DELL</td><td class="dt">2026-08-03</td><td class="n mult">+0.00637%</td><td class="n">575 s</td><td class="n">57</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">07</td><td class="sym">ASML</td><td class="dt">2026-08-06</td><td class="n mult">+0.010%</td><td class="n">564 s</td><td class="n">31</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">08</td><td class="sym">SGOV</td><td class="dt">2026-08-07</td><td class="n mult">+0.202%</td><td class="n">588 s</td><td class="n">22</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">09</td><td class="sym">COST</td><td class="dt">2026-08-10</td><td class="n mult">+0.061%</td><td class="n">558 s</td><td class="n">171</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">10</td><td class="sym">AAPL</td><td class="dt">2026-08-14</td><td class="n mult">+0.057%</td><td class="n">580 s</td><td class="n">1,131</td><td class="n">$0.63</td></tr>
+          <tr><td class="ix">11</td><td class="sym">CCL</td><td class="dt">2026-08-31</td><td class="n mult">+2.149%</td><td class="n">544 s</td><td class="n">34</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">12</td><td class="sym">SGOV</td><td class="dt">2026-09-01</td><td class="n mult">+0.211%</td><td class="n">575 s</td><td class="n">135</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">13</td><td class="sym">F</td><td class="dt">2026-09-02</td><td class="n mult">+0.015%</td><td class="n">585 s</td><td class="n">78</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">14</td><td class="sym">UPS</td><td class="dt">2026-09-04</td><td class="n mult">+0.221%</td><td class="n">585 s</td><td class="n">272</td><td class="n">$0.22</td></tr>
+          <tr><td class="ix">15</td><td class="sym">WDC</td><td class="dt">2026-09-08</td><td class="n mult">+0.022%</td><td class="n">580 s</td><td class="n">36</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">16</td><td class="sym">KSS</td><td class="dt">2026-09-09</td><td class="n mult">+0.461%</td><td class="n">574 s</td><td class="n">47</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">17</td><td class="sym">JNJ</td><td class="dt">2026-09-09</td><td class="n mult">+0.00215%</td><td class="n">585 s</td><td class="n">184</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">18</td><td class="sym">NVDA</td><td class="dt">2026-09-10</td><td class="n mult">+0.078%</td><td class="n">588 s</td><td class="n">13,089</td><td class="n">$7</td></tr>
+          <tr><td class="ix">19</td><td class="sym">LLY</td><td class="dt">2026-09-11</td><td class="n mult">+0.00023%</td><td class="n">540 s</td><td class="n">447</td><td class="n">$0.02</td></tr>
+          <tr><td class="ix">20</td><td class="sym">AMAT</td><td class="dt">2026-09-11</td><td class="n mult">+0.00447%</td><td class="n">534 s</td><td class="n">54</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">21</td><td class="sym">XOM</td><td class="dt">2026-09-11</td><td class="n mult">+0.104%</td><td class="n">529 s</td><td class="n">97</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">22</td><td class="sym">MSFT</td><td class="dt">2026-09-11</td><td class="n mult">+0.041%</td><td class="n">524 s</td><td class="n">1,234</td><td class="n">$0.02</td></tr>
+          <tr><td class="ix">23</td><td class="sym">VRT</td><td class="dt">2026-09-14</td><td class="n mult">+0.016%</td><td class="n">574 s</td><td class="n">30</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">24</td><td class="sym">UNH</td><td class="dt">2026-09-14</td><td class="n mult">+0.424%</td><td class="n">571 s</td><td class="n">49</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">25</td><td class="sym">GOOGL</td><td class="dt">2026-09-15</td><td class="n mult">+0.019%</td><td class="n">585 s</td><td class="n">1,924</td><td class="n">$16</td></tr>
+          <tr><td class="ix">26</td><td class="sym">SOXX</td><td class="dt">2026-09-16</td><td class="n mult">+0.045%</td><td class="n">581 s</td><td class="n">80</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">27</td><td class="sym">TSM</td><td class="dt">2026-09-16</td><td class="n mult">+0.146%</td><td class="n">577 s</td><td class="n">351</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">28</td><td class="sym">PR</td><td class="dt">2026-09-16</td><td class="n mult">+0.448%</td><td class="n">572 s</td><td class="n">38</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">29</td><td class="sym">HPE</td><td class="dt">2026-09-17</td><td class="n mult">+0.172%</td><td class="n">580 s</td><td class="n">85</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">30</td><td class="sym">CRM</td><td class="dt">2026-09-17</td><td class="n mult">+0.115%</td><td class="n">580 s</td><td class="n">76</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">31</td><td class="sym">SPY</td><td class="dt">2026-09-18</td><td class="n mult">+0.172%</td><td class="n">584 s</td><td class="n">3,837</td><td class="n">$48</td></tr>
+            </tbody>
+            <tfoot><tr><td colspan="7">31 entries &middot; attributable = min(actual gain, quantity &times; pre-step price &times; (ratio &minus; 1)), per quote currency</td></tr></tfoot>
+          </table>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="panel" id="exposure">
-        <div class="head-row"><h2>What is sitting in pools</h2><span class="lab">top 8 by value</span></div>
-        <div role="list" style="margin-top:4px">
+    <section class="sec row" id="exposure">
+      <div class="sec-head"><span class="ix">&sect; 03</span><h2>What is sitting in pools</h2>
+        <p>Top eight stock tokens by value held in pools today. Every one of them has already stepped at least once.</p></div>
+      <div class="sec-body"><span class="gutter">valued</span>
+        <div>
+          <div class="xwrap" role="list">
         <div class="xrow" role="listitem"><span class="t">SPY</span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="v">$15.0M</span><span class="v dim">61.38% of supply</span></div>
         <div class="xrow" role="listitem"><span class="t">NVDA</span><span class="track"><span class="fill" style="width:68.9%"></span></span><span class="v">$10.3M</span><span class="v dim">50.51% of supply</span></div>
         <div class="xrow" role="listitem"><span class="t">SPCX</span><span class="track"><span class="fill" style="width:22.2%"></span></span><span class="v">$3.3M</span><span class="v dim">30.7% of supply</span></div>
@@ -341,115 +456,108 @@ html.has-coin,html.has-coin *{cursor:none !important}
         <div class="xrow" role="listitem"><span class="t">META</span><span class="track"><span class="fill" style="width:15.1%"></span></span><span class="v">$2.3M</span><span class="v dim">43.21% of supply</span></div>
         <div class="xrow" role="listitem"><span class="t">MU</span><span class="track"><span class="fill" style="width:14.9%"></span></span><span class="v">$2.2M</span><span class="v dim">47.79% of supply</span></div>
         <div class="xrow" role="listitem"><span class="t">TSLA</span><span class="track"><span class="fill" style="width:10.0%"></span></span><span class="v">$1.5M</span><span class="v dim">30.18% of supply</span></div>
+          </div>
+          <p class="foot">Value at the last Chainlink print; raw tokens in the v4 PoolManager plus the stepped tokens&rsquo; v3 pools. 32 tokens with a feed, 160 more with pool balances and no feed. Block 68,685,412.</p>
         </div>
-        <p class="foot">Value at the last Chainlink print; raw tokens in the v4 PoolManager plus the stepped tokens&rsquo; v3 pools. 32 tokens with a feed, 160 more with pool balances and no feed. Block 68,685,412.</p>
-      </section>
-    </div>
+      </div>
+    </section>
 
-    <div class="side">
-      <section class="panel">
-        <div class="head-row"><h2>How it works</h2><span class="lab">four steps</span></div>
-        <ol class="notes">
-          <li><b>Register</b><span>A new pool notes which side is a stock token, and the share count its opening price reflects.</span></li>
-          <li><b>Arm</b><span>Every swap reads <code>uiMultiplier</code>, <code>newUIMultiplier</code> and <code>effectiveAt</code>, and records the price the split implies.</span></li>
-          <li><b>Charge</b><span>A swap that would take value pays a fee equal to the gap. The other direction pays the normal fee.</span></li>
-          <li><b>Clear</b><span>Once the pool catches up, crosses the target, or the window ends, it goes back to normal. A cancelled schedule clears it too.</span></li>
-        </ol>
-      </section>
-
-      <section class="panel">
-        <div class="head-row"><h2>The last notice</h2><span class="lab">NVDA</span></div>
-        <dl class="readout">
-          <dt>posted at block</dt><dd>58,952,659</dd>
-          <dt>posted</dt><dd>2026-09-09 23:50 UTC</dd>
-          <dt>effective</dt><dd>2026-09-10 00:00 UTC</dd>
-          <dt>notice</dt><dd>588 s</dd>
-          <dt>multiplier</dt><dd>1.000000 &rarr; 1.000775</dd>
-          <dt>pools holding it</dt><dd>13,089</dd>
-        </dl>
-      </section>
-
-      <section class="panel" id="limits">
-        <div class="head-row"><h2>What it can&rsquo;t do</h2><span class="lab">read this part</span></div>
-        <div class="limits">
-          <div><b>No pool that exists today</b><p>Hooks are fixed at creation and Doppler&rsquo;s module slots are frozen. The $50.3M already in pools stays exposed.</p></div>
-          <div><b>The module only softens</b><p>Capped at 10%, and it hears about a swap after it happens. Without a keeper, the first trade after a split gets through.</p></div>
-          <div><b>It can&rsquo;t move the price</b><p>It charges the gap; the pool catches up as trades arrive. A pool nobody trades is exposed again once the window ends.</p></div>
-          <div><b>The target is fixed when armed</b><p>If the market moves while a split is guarded, the fee can be larger or smaller than the true gap.</p></div>
-          <div><b>It fails open</b><p>If a token stops answering the ERC-8056 reads, the pool trades at the normal fee.</p></div>
-          <div><b>Unaudited, not deployed, not advice</b><p>Do not put liquidity behind it until an independent audit. Stock tokens here are tokenised debt securities issued by Robinhood Assets (Jersey) Ltd.</p></div>
+    <section class="sec row" id="pools">
+      <div class="sec-head"><span class="ix">&sect; 04</span><h2>Which pools a hook can reach</h2>
+        <p>A pool&rsquo;s hook is fixed the day it opens: 27,646 of 30,862 v4 pools holding a stepped token already carry one.</p></div>
+      <div class="sec-body"><span class="gutter">census</span>
+        <div class="carbon">
+          <h3>Today&rsquo;s pools are sealed. Tomorrow&rsquo;s aren&rsquo;t.</h3>
+          <p>Doppler runs 20,300 of those pools and takes plug-ins, but only a token&rsquo;s timelock can swap one, and almost every timelock is <code>0x0</code> or <code>0x&hellip;dEaD</code>.</p>
+          <div class="dots"><canvas id="dots" role="img" aria-label="20,300 Doppler pools, 20,279 of them sealed for good"></canvas></div>
+          <div class="legend"><span><i style="background:#B9861F"></i>20,279 sealed &middot; timelock burned</span><span><i style="background:#6FC3A8"></i>21 still changeable</span></div>
+          <div class="facts">
+            <div class="fact"><span class="k">module slots filled</span><div class="v">20,136</div></div>
+            <div class="fact"><span class="k">who can change them</span><div class="v" style="color:#F07A55">nobody</div></div>
+            <div class="fact"><span class="k">module governance</span><div class="v" style="font-size:14px">Safe 1.4.1 · 3-of-6</div></div>
+            <div class="fact"><span class="k">fee a module may set</span><div class="v">&le; 10%</div></div>
+          </div>
+          <div class="forms">
+            <div class="form full"><span class="k">full protection</span><h4>The hook</h4><p>For any new pool holding a stock token. Runs before each swap and prices the split into the one direction that would take value.</p></div>
+            <div class="form part"><span class="k">partial protection</span><h4>The Doppler module</h4><p>For new Doppler launches that choose it. Runs after the swap, woken by a keeper, capped at 10%: it softens a split, it doesn&rsquo;t stop one.</p></div>
+            <div class="form lib"><span class="k">the only road to today&rsquo;s pools</span><h4>The formula</h4><p>A small library the authors of the modules already sitting in those slots can add to their next version.</p></div>
+          </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section class="panel">
-        <div class="head-row"><h2>Deployment</h2><span class="lab">unsigned</span></div>
-        <dl class="readout">
-          <dt>hook address</dt><dd>0xed3D93c9dD52A7e52Ff038d4311Be9AF4eDd7080</dd>
-          <dt>permission bits</dt><dd>0x3080</dd>
-          <dt>salts mined</dt><dd>2,268</dd>
-          <dt>simulation</dt><dd>1,454,483 gas &middot; 6,357 bytes</dd>
-        </dl>
-        <div class="chipline"><span>same address on 4663 and 46630</span><span>not sent</span><span>waiting on an audit</span></div>
-      </section>
-    </div>
+    <section class="sec row" id="guard">
+      <div class="sec-head"><span class="ix">&sect; 05</span><h2>How the guard works, and what it can&rsquo;t do</h2></div>
+      <div class="sec-body"><span class="gutter">mechanism</span>
+        <div class="two">
+          <div class="note-box">
+            <span class="lab">Four steps</span>
+            <ol class="notes">
+              <li><b>Register</b><span>A new pool notes which side is a stock token, and the share count its opening price reflects.</span></li>
+              <li><b>Arm</b><span>Every swap reads <code>uiMultiplier</code>, <code>newUIMultiplier</code> and <code>effectiveAt</code>, and records the price the split implies.</span></li>
+              <li><b>Charge</b><span>A swap that would take value pays a fee equal to the gap. The other direction pays the normal fee.</span></li>
+              <li><b>Clear</b><span>Once the pool catches up, crosses the target, or the window ends, it goes back to normal. A cancelled schedule clears it too.</span></li>
+            </ol>
+          </div>
+          <div class="note-box limits">
+            <span class="lab">Read this part</span>
+            <div><b>No pool that exists today</b><p>Hooks are fixed at creation and Doppler&rsquo;s module slots are frozen. The $50.3M already in pools stays exposed.</p></div>
+            <div><b>The module only softens</b><p>Capped at 10%, and it hears about a swap after it happens. Without a keeper, the first trade after a split gets through.</p></div>
+            <div><b>It can&rsquo;t move the price</b><p>It charges the gap; the pool catches up as trades arrive. A pool nobody trades is exposed again once the window ends.</p></div>
+            <div><b>The target is fixed when armed</b><p>If the market moves while a split is guarded, the fee can be larger or smaller than the true gap.</p></div>
+            <div><b>It fails open</b><p>If a token stops answering the ERC-8056 reads, the pool trades at the normal fee.</p></div>
+            <div><b>Unaudited, not deployed, not advice</b><p>Do not put liquidity behind it until an independent audit. Stock tokens here are tokenised debt securities issued by Robinhood Assets (Jersey) Ltd.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec row" id="receipts">
+      <div class="sec-head"><span class="ix">&sect; 06</span><h2>Receipts</h2>
+        <p>26 Solidity tests against Uniswap&rsquo;s own v4-core PoolManager and 5 keeper tests. The rows where the guard still gives something away are tests too.</p></div>
+      <div class="sec-body"><span class="gutter">tested</span>
+        <div>
+          <div class="receipts">
+            <table>
+              <thead><tr><th>Scenario</th><th class="n">Bare pool</th><th class="n">Zolt</th></tr></thead>
+              <tbody>
+                <tr><td>1,000 buy right after a &times;4 split</td><td class="n bad">&gt; 2,500 taken</td><td class="n good">&le; 0</td></tr>
+                <tr><td>Same buy ten minutes before it takes effect</td><td class="n bad">&gt; 2,500 taken</td><td class="n good">&le; 0</td></tr>
+                <tr><td>Selling into a stale price after a &times;0.5 reverse split</td><td class="n bad">&gt; 400 taken</td><td class="n good">&le; 0</td></tr>
+                <tr><td>Two &times;2 splits before anyone reprices</td><td class="n bad">&gt; 2,500 taken</td><td class="n good">&le; 0</td></tr>
+                <tr><td>The issuer cancels the schedule</td><td class="n">&mdash;</td><td class="n good">back to normal</td></tr>
+                <tr><td>256 random runs, &times;1.005 to &times;5</td><td class="n bad">always more</td><td class="n good">never above 0</td></tr>
+                <tr><td>Doppler module, woken, +5%</td><td class="n bad">&gt; 3 taken</td><td class="n good">&le; 0</td></tr>
+                <tr><td>Doppler module, not woken: the first trade</td><td class="n">&mdash;</td><td class="n bad">still takes</td></tr>
+                <tr><td>Doppler module, &times;4 under the 10% cap</td><td class="n bad">more</td><td class="n bad">&gt; 2,000 taken</td></tr>
+                <tr><td>Real deployment path, &times;4 split</td><td class="n">&mdash;</td><td class="n good">&le; 0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="filecard" style="margin-top:18px">
+            <div class="hd"><span>deployment &middot; unsigned</span><span>chain 4663</span></div>
+            <dl>
+              <dt>hook address</dt><dd>0xed3D93c9dD52A7e52Ff038d4311Be9AF4eDd7080</dd>
+              <dt>permission bits</dt><dd>0x3080</dd>
+              <dt>salts mined</dt><dd>2,268</dd>
+              <dt>simulation</dt><dd>1,454,483 gas &middot; 6,357 bytes</dd>
+              <dt>status</dt><dd>not sent &middot; waiting on an audit</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="fine">
+        <div>A prototype. Not affiliated with Robinhood Markets, Uniswap Labs or Whetstone Research.</div>
+        <div>Every figure on this page comes from read-only calls to chain 4663. Last read at block 68,685,412.</div>
+        <div>Unaudited and unsigned. Nothing here is investment advice.</div>
+      </div>
+      <div class="stampbox">Unsigned &middot; simulated &middot; not sent</div>
+    </footer>
   </div>
-
-  <div class="srule" id="pools"><span class="t">Where the pools are / what a hook can reach</span><span class="l"></span><span class="o"><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
-
-  <section class="dark">
-    <h2>Today&rsquo;s pools are sealed. Tomorrow&rsquo;s aren&rsquo;t.</h2>
-    <p class="sub">A pool&rsquo;s hook is fixed the day it opens: 27,646 of 30,862 v4 pools holding a stepped token already carry one. Doppler&rsquo;s runs 20,300 of them and takes plug-ins, but only a token&rsquo;s timelock can swap those, and almost every one of them is <code>0x0</code> or <code>0x&hellip;dEaD</code>.</p>
-    <div class="dots"><canvas id="dots" role="img" aria-label="20,300 Doppler pools, 20,279 of them sealed for good"></canvas></div>
-    <div class="legend"><span><i style="background:#B8862B"></i>20,279 sealed &middot; timelock burned</span><span><i style="background:#86B899"></i>21 still changeable</span></div>
-    <div class="facts">
-      <div class="fact"><span class="k">module slots filled</span><div class="v">20,136</div></div>
-      <div class="fact"><span class="k">who can change them</span><div class="v" style="color:#E2704C">nobody</div></div>
-      <div class="fact"><span class="k">module governance</span><div class="v" style="font-size:15px">Safe 1.4.1 · 3-of-6</div></div>
-      <div class="fact"><span class="k">fee a module may set</span><div class="v">&le; 10%</div></div>
-    </div>
-    <div class="forms">
-      <div class="form full"><span class="k">full protection</span><h3>The hook</h3><p>For any new pool holding a stock token. Runs before each swap and prices the split into the one direction that would take value.</p></div>
-      <div class="form part"><span class="k">partial protection</span><h3>The Doppler module</h3><p>For new Doppler launches that choose it. Runs after the swap, woken by a keeper, capped at 10%: it softens a split, it doesn&rsquo;t stop one.</p></div>
-      <div class="form lib"><span class="k">the only road to today&rsquo;s pools</span><h3>The formula</h3><p>A small library the authors of the modules already sitting in those slots can add to their next version.</p></div>
-    </div>
-  </section>
-
-  <div class="srule" id="receipts"><span class="t">Receipts / 26 solidity tests &middot; 5 keeper tests</span><span class="l"></span><span class="o"><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
-
-  <div class="sheetwrap">
-    <table>
-      <thead><tr><th>Scenario</th><th class="n">Bare pool</th><th class="n">Zolt</th></tr></thead>
-      <tbody>
-        <tr><td>1,000 buy right after a &times;4 split</td><td class="n bad">&gt; 2,500 taken</td><td class="n good">&le; 0</td></tr>
-        <tr><td>Same buy ten minutes before it takes effect</td><td class="n bad">&gt; 2,500 taken</td><td class="n good">&le; 0</td></tr>
-        <tr><td>Selling into a stale price after a &times;0.5 reverse split</td><td class="n bad">&gt; 400 taken</td><td class="n good">&le; 0</td></tr>
-        <tr><td>Two &times;2 splits before anyone reprices</td><td class="n bad">&gt; 2,500 taken</td><td class="n good">&le; 0</td></tr>
-        <tr><td>The issuer cancels the schedule</td><td class="n">&mdash;</td><td class="n good">back to normal</td></tr>
-        <tr><td>256 random runs, &times;1.005 to &times;5</td><td class="n bad">always more</td><td class="n good">never above 0</td></tr>
-        <tr><td>Doppler module, woken, +5%</td><td class="n bad">&gt; 3 taken</td><td class="n good">&le; 0</td></tr>
-        <tr><td>Doppler module, not woken: the first trade</td><td class="n">&mdash;</td><td class="n bad">still takes</td></tr>
-        <tr><td>Doppler module, &times;4 under the 10% cap</td><td class="n bad">more</td><td class="n bad">&gt; 2,000 taken</td></tr>
-        <tr><td>Real deployment path, &times;4 split</td><td class="n">&mdash;</td><td class="n good">&le; 0</td></tr>
-      </tbody>
-    </table>
-  </div>
-</main>
-
-<footer>
-  <div class="wrap fwrap">
-    <div class="fine">
-      <div>A prototype. Not affiliated with Robinhood Markets, Uniswap Labs or Whetstone Research.</div>
-      <div>Every figure on this page comes from read-only calls to chain 4663. Last read at block 68,685,412.</div>
-      <div>Unaudited and unsigned. Nothing here is investment advice.</div>
-    </div>
-    <svg class="wax" viewBox="0 0 120 120" aria-hidden="true">
-      <defs><path id="ring" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0"></path></defs>
-      <rect x="4" y="4" width="112" height="112" fill="none" stroke="#3A1B22" stroke-width="2"></rect>
-      <text font-family="Fragment Mono, monospace" font-size="7.5" letter-spacing="2.2" fill="#6B5044"><textPath href="#ring">UNSIGNED &middot; SIMULATED &middot; NOT SENT &middot; </textPath></text>
-      <path d="M42 76h10V66h10V54h10V44h8" fill="none" stroke="#B8862B" stroke-width="2.6" stroke-linecap="square"></path>
-    </svg>
-  </div>
-</footer>
+</div>
 
 <script id="data" type="application/json">{"lead":"588","doppler":{"pools":20300,"burned":20279}}</script>
 <script>
@@ -461,8 +569,27 @@ html.has-coin,html.has-coin *{cursor:none !important}
   var $$ = function(s){ return [].slice.call(document.querySelectorAll(s)); };
   var fmt = function(n){ return Math.round(n).toLocaleString('en-US'); };
 
+  /* ------------------------------------------------ splash: once per tab, skippable, never a wall */
+  (function(){
+    var sp = $('#splash'); if (!sp) return;
+    var seen = false; try { seen = sessionStorage.getItem('zolt.splash') === '1'; } catch (e) {}
+    var close = function(){
+      sp.classList.add('gone');
+      document.documentElement.classList.remove('splash-on');
+      setTimeout(function(){ if (sp.parentNode) sp.parentNode.removeChild(sp); }, 700);
+      try { sessionStorage.setItem('zolt.splash', '1'); } catch (e) {}
+    };
+    if (seen || reduce) { sp.parentNode.removeChild(sp); return; }
+    document.documentElement.classList.add('splash-on');
+    var t = setTimeout(close, 1500);
+    var skip = function(){ clearTimeout(t); close(); };
+    sp.addEventListener('click', skip);
+    addEventListener('keydown', skip, { once: true });
+    addEventListener('wheel', skip, { once: true, passive: true });
+  })();
+
   /* ------------------------------------------------ the split model */
-  var X = 1000, Y = 100000, P0 = Y / X, BASE = 0.003, ratio = 4;
+  var X = 1000, Y = 100000, P0 = Y / X, BASE = 0.003, ratio = 4, ARC = 283;
   var spend = $('#spend'), out = $('#spend-out'), shown = {};
   function roll(id, to, prefix){
     var el = document.getElementById(id); if (!el) return;
@@ -485,10 +612,16 @@ html.has-coin,html.has-coin *{cursor:none !important}
     var worthG = buy(q, fee) * P0 * ratio, takenG = Math.max(0, worthG - q);
     roll('bare-taken', takenBare, '+'); roll('bare-pay', q); roll('bare-get', worthBare);
     roll('guard-taken', takenG); roll('guard-pay', q); roll('guard-kept', q * fee);
-    $('#fee-label').textContent = 'step fee ' + (fee * 100).toFixed(fee < 0.1 ? 2 : 0) + '%';
-    var tilt = function(v){ return 'rotate(' + Math.max(-11, Math.min(11, v / q * 11)).toFixed(2) + 'deg)'; };
-    $('#beam-b').style.transform = tilt(takenBare);
-    $('#beam-g').style.transform = tilt(takenG);
+    $('#fee-label').textContent = (fee * 100).toFixed(fee < 0.1 ? 2 : 0) + '%';
+    $('#target').textContent = (P0 * ratio).toFixed(2);
+    // needle and arc read the share of the trade that leaves the LPs, capped at the dial
+    var set = function(ndl, arc, share){
+      var k = Math.max(0, Math.min(1, share));
+      document.getElementById(ndl).style.transform = 'rotate(' + (-90 + k * 180).toFixed(1) + 'deg)';
+      document.getElementById(arc).style.strokeDashoffset = (ARC * (1 - k)).toFixed(1);
+    };
+    set('ndl-b', 'arc-b', takenBare / q);
+    set('ndl-g', 'arc-g', takenG / q);
   }
   if (spend) {
     spend.addEventListener('input', render);
@@ -514,12 +647,12 @@ html.has-coin,html.has-coin *{cursor:none !important}
       cv.width = r.width * d; cv.height = r.height * d; ctx.setTransform(d, 0, 0, d, 0, 0);
       var cols = Math.max(1, Math.round(Math.sqrt(total * r.width / r.height)));
       var rows = Math.ceil(total / cols), st = Math.min(r.width / cols, r.height / rows);
-      ctx.fillStyle = 'rgba(184,134,43,.5)';
+      ctx.fillStyle = 'rgba(185,134,31,.55)';
       for (var i = 0; i < total; i++) {
         if (isOpen[i]) continue;
-        ctx.fillRect((i % cols) * st + st * 0.2, Math.floor(i / cols) * st + st * 0.2, st * 0.6, st * 0.6);
+        ctx.fillRect((i % cols) * st + st * 0.22, Math.floor(i / cols) * st + st * 0.22, st * 0.56, st * 0.56);
       }
-      ctx.fillStyle = '#86B899';
+      ctx.fillStyle = '#6FC3A8';
       for (var j in isOpen) {
         var n = +j;
         ctx.fillRect((n % cols) * st, Math.floor(n / cols) * st, Math.max(3, st), Math.max(3, st));
@@ -547,7 +680,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
       if (!moving) { moving = true; requestAnimationFrame(follow); }
     }, { passive: true });
     document.addEventListener('mouseleave', function(){ cur.style.opacity = '0'; });
-    $$('a,button,input,.step,.form,.fact,.stat,tbody tr').forEach(function(el){
+    $$('a,button,input,.stat,.fact,.form,tbody tr').forEach(function(el){
       el.addEventListener('mouseenter', function(){ cur.classList.add('big'); });
       el.addEventListener('mouseleave', function(){ cur.classList.remove('big'); });
     });
