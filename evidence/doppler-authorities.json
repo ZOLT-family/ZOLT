@@ -1,0 +1,134 @@
+{
+ "measuredAt": "2026-09-22T12:55:23.380Z",
+ "airlockOwner": "0x21E2ce70511e4FE542a97708e89520471DAa7A66",
+ "safe": {
+  "owners": [
+   "0xf5b75474d006495C82dBbf010e230d5D2F86226f",
+   "0x2C6C52B00d7360a8F82F3e8D27369F75c47306F9",
+   "0xB8aA608671A639873c63cCd02548706AA8be2Ff7",
+   "0xdF95Cc445469816234Ad95f702c79d25BCE401a7",
+   "0xd39475C553Cc86f0a569001F22b79F693EA92F0e",
+   "0x5F512dFeAcc95e8c47135A1EbBdf5A9E70a0Eeff"
+  ],
+  "threshold": 3,
+  "version": "1.4.1"
+ },
+ "distinctTimelocks": 21,
+ "timelocks": [
+  {
+   "timelock": "0x000000000000000000000000000000000000dead",
+   "pools": 11540,
+   "codeBytes": 0,
+   "delegatedAuthority": "0x0000000000000000000000000000000000000000"
+  },
+  {
+   "timelock": "0x0000000000000000000000000000000000000000",
+   "pools": 8739,
+   "codeBytes": 0,
+   "delegatedAuthority": "0x0000000000000000000000000000000000000000"
+  },
+  {
+   "timelock": "0x60c34075dd1bdd6ab177fea0e3dec65781b7caab",
+   "pools": 3,
+   "codeBytes": 5450,
+   "delegatedAuthority": "0x0000000000000000000000000000000000000000"
+  },
+  {
+   "timelock": "0x161b7508b6a58212ca0178b451e6fc4c36e01c15",
+   "pools": 1,
+   "codeBytes": 45,
+   "delegatedAuthority": "0x0000000000000000000000000000000000000000"
+  },
+  {
+   "timelock": "0x5009001f4bb797ea9bfdf82511dd7029fb882cdf",
+   "pools": 1,
+   "codeBytes": 45,
+   "delegatedAuthority": "0x0000000000000000000000000000000000000000"
+  },
+  {
+   "timelock": "0x7428cea4f97175873f4d18cac6b08e8a59755c47",
+   "pools": 1,
+   "codeBytes": 5450,
+   "delegatedAuthority": "0x0000000000000000000000000000000000000000"
+  },
+  {
+   "timelock": "0xc4288154218d68dbcf73aec6cda542236daae7ef",
+   "pools": 1,
+   "codeBytes": 45,
+   "delegatedAuthority": "0x0000000000000000000000000000000000000000"
+  },
+  {
+   "timelock": "0x84754ffe2f0650a1faaf639e769c9611319d9c37",
+   "pools": 1,
+   "codeBytes": 45,
+   "delegatedAuthority": "0x0000000000000000000000000000000000000000"
+  },
+  {
+   "timelock": "0x87d87e9419065d0aff67818caf04973c60b24f05",
+   "pools": 1,
+   "codeBytes": 45,
+   "delegatedAuthority": "0x0000000000000000000000000000000000000000"
+  },
+  {
+   "timelock": "0xbaa3eb981f5b830b3cf5f8bd280652a22bfb1056",
+   "pools": 1,
+   "codeBytes": 45,
+   "delegatedAuthority": "0x0000000000000000000000000000000000000000"
+  },
+  {
+   "timelock": "0xe20aa2633719285c11fce8b6814e84106f50d4b8",
+   "pools": 1
+  },
+  {
+   "timelock": "0x9f37c03980a78d3e1b50bdaa18df5f3a4a50c9df",
+   "pools": 1
+  },
+  {
+   "timelock": "0xe4b6be7e6a69fa8af27d49b4deed962689c69921",
+   "pools": 1
+  },
+  {
+   "timelock": "0x219135806d8d921239da961f482b6b11b0099319",
+   "pools": 1
+  },
+  {
+   "timelock": "0xd19793e1e0b3afeaa868c95f2daea1a8e1b99760",
+   "pools": 1
+  },
+  {
+   "timelock": "0x3f0c9b7ea99cc5280691154e0c88f24beba00816",
+   "pools": 1
+  },
+  {
+   "timelock": "0x5e3f52e8bff91cc21133d0a37696f9043231cdb2",
+   "pools": 1
+  },
+  {
+   "timelock": "0xa6e52559f0cef379ea5aea34d30615d4cd9b0b3d",
+   "pools": 1
+  },
+  {
+   "timelock": "0xd47f76272b045eb1ffb99321868038c55ddda8c1",
+   "pools": 1
+  },
+  {
+   "timelock": "0x6502ad015d13614912fd0e7702fc346848b6d3ba",
+   "pools": 1
+  }
+ ],
+ "rehype": {
+  "module": "0x9982538f41f2ae29ddb9d3d9307010052984fdbb",
+  "file": "src/dopplerHooks/RehypeDopplerHookInitializer.sol",
+  "callsUpdateDynamicLPFee": false,
+  "notice": [
+   "@notice Doppler Hook that implements fee collection, distribution, buybacks, LP fee reinvestment and decaying LP fee",
+   "@notice Address of the Uniswap V4 Pool Manager",
+   "@notice Quoter contract for simulating swaps",
+   "@notice Position data for each pool",
+   "@notice Fee distribution configuration for each pool",
+   "@notice Hook fees tracking for each pool"
+  ],
+  "onSwapDefined": true,
+  "lines": 863
+ }
+}

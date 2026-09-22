@@ -1,0 +1,20 @@
+{
+  "name": "stepguard-contracts",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Stepguard: a Uniswap v4 hook that keeps stock-token pools from being drained at multiplier steps. Prototype, unaudited, undeployed.",
+  "type": "module",
+  "scripts": {
+    "build": "hardhat build",
+    "test": "hardhat test solidity",
+    "mine": "node scripts/mine-salt.cjs",
+    "test:keeper": "node --test ../keeper/logic.test.cjs",
+    "keeper:replay": "node ../keeper/keeper.cjs --replay"
+  },
+  "devDependencies": {
+    "@uniswap/v4-core": "^1.0.2",
+    "forge-std": "github:foundry-rs/forge-std#v1.16.2",
+    "hardhat": "^3.16.0",
+    "viem": "^2.56.3"
+  }
+}

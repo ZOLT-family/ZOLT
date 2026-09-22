@@ -1,0 +1,10 @@
+# dependencies and build output (reproducible: npm install && npm run build)
+node_modules/
+contracts/artifacts/
+contracts/cache/
+contracts/types/
+# keeper runtime cursor
+keeper/state.json
+# local env, never commit keys
+.env
+.env.*
