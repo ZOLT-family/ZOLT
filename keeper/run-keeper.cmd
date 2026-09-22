@@ -13,9 +13,14 @@ if not exist "keeper\keeper.key" (
   exit /b 1
 )
 for /f "usebackq delims=" %%k in ("keeper\keeper.key") do set "KEEPER_PRIVATE_KEY=%%k"
+rem extra flags live in keeper\keeper.flags (one line), so the running loop can be changed without editing this file:
+rem   --send                                   witness only (default)
+rem   --send --auto-open --max-open 3          also keep three markets alive (costs gas: about 0.0005 ETH per open)
+set "FLAGS=--send"
+if exist "keeper\keeper.flags" for /f "usebackq delims=" %%f in ("keeper\keeper.flags") do set "FLAGS=%%f"
 :loop
-echo %date% %time% starting keeper >> keeper\keeper.log
-"%NODE%" keeper\odds-keeper.cjs --odds 0xac86b04d48033b2454b132eded596e0c61a5b097 --send --auto-open --interval 5 >> keeper\keeper.log 2>&1
+echo %date% %time% starting keeper with %FLAGS% >> keeper\keeper.log
+"%NODE%" keeper\odds-keeper.cjs --odds 0xac86b04d48033b2454b132eded596e0c61a5b097 %FLAGS% --interval 5 >> keeper\keeper.log 2>&1
 echo %date% %time% keeper exited, restarting in 15 s >> keeper\keeper.log
 timeout /t 15 /nobreak > nul
 goto loop

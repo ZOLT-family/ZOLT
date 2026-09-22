@@ -28,15 +28,20 @@ function planActions(markets, phaseOf, now) {
 }
 
 /// Which launches deserve a market right now. `candidates` carry token, launchedAt, phase, fill (0..1) and
-/// whether a market is already open for the window. Returns at most `cfg.maxPerPass` opens, liveliest first.
-function planOpens(candidates, now, cfg) {
-  const c = Object.assign({ window: 0, minFill: 0.2, maxAgeSeconds: 900, minAgeSeconds: 30, maxPerPass: 5 }, cfg || {});
+/// whether a market is already open for the window. Returns the opens to make, liveliest first, and never more
+/// than would bring the number of open markets to `cfg.maxOpen`: the keeper keeps a few markets alive, it does not
+/// open one for every launch (new launches arrive every few seconds and each open costs gas).
+function planOpens(candidates, now, cfg, openCount = 0) {
+  // maxFill: a curve already past 85% usually crosses within seconds, before anyone could stake; opening a market
+  // there only spends the keeper's gas on a void
+  const c = Object.assign({ window: 0, minFill: 0.2, maxFill: 0.85, maxAgeSeconds: 900, minAgeSeconds: 30, maxPerPass: 1, maxOpen: 3 }, cfg || {});
+  const room = Math.max(0, c.maxOpen - openCount);
   return candidates
     .filter((x) => x.phase === 0 && !x.hasOpen)
     .filter((x) => now - x.launchedAt >= c.minAgeSeconds && now - x.launchedAt <= c.maxAgeSeconds)
-    .filter((x) => x.fill >= c.minFill && x.fill < 1)
+    .filter((x) => x.fill >= c.minFill && x.fill <= c.maxFill)
     .sort((a, b) => b.fill - a.fill)
-    .slice(0, c.maxPerPass)
+    .slice(0, Math.min(c.maxPerPass, room))
     .map((x) => ({ token: x.token, window: c.window, why: `${(x.fill * 100).toFixed(0)}% full ${now - x.launchedAt}s after launch` }));
 }
 

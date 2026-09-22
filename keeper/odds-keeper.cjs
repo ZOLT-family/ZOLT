@@ -8,7 +8,9 @@
 //   options: --from-block N  --interval 5
 //   --auto-open            also open a market on every young launch whose curve is showing life (default off)
 //   --min-fill 0.2         curve fill that counts as life      --window 0     which window to open (0/1/2)
-//   --max-age 900          seconds since launch, at most        --max-opens 5  per pass
+//   --max-fill 0.85        above this the curve crosses before anyone can stake; opening would only spend gas
+//   --max-age 900          seconds since launch, at most        --max-opens 1  per pass
+//   --max-open 3           keep at most this many markets open at once; the keeper refills, it does not flood
 //   another endpoint: RH_RPC=<url> (default: the public chain 4663 RPC, reached through DNS-over-HTTPS)
 const fs = require('fs');
 const path = require('path');
@@ -24,7 +26,7 @@ const ODDS = arg('odds', null);
 const SEND = flag('send');
 const INTERVAL = Number(arg('interval', '5'));
 const AUTO_OPEN = flag('auto-open');
-const OPEN_CFG = { minFill: Number(arg('min-fill', '0.2')), window: Number(arg('window', '0')), maxAgeSeconds: Number(arg('max-age', '900')), maxPerPass: Number(arg('max-opens', '5')) };
+const OPEN_CFG = { minFill: Number(arg('min-fill', '0.2')), maxFill: Number(arg('max-fill', '0.85')), window: Number(arg('window', '0')), maxAgeSeconds: Number(arg('max-age', '900')), maxPerPass: Number(arg('max-opens', '1')), maxOpen: Number(arg('max-open', '3')) };
 const STATE_FILE = path.join(__dirname, 'odds-state.json');
 const T_OPENED = '0x13d3642a6d52374b58ee776c95940fcf6486c6f740891e6d11070c1411e1d3a8';
 const T_LAUNCHED = '0x8d4aad4953d0ca700d468f3753aa14432d1b35b43ec6409f051fb6aa43a89607';
@@ -139,7 +141,7 @@ async function pass() {
       const launchedAt = now - (head - l.block) / 10;
       candidates.push({ token: l.token, launchedAt, phase: Number(lt.phase), fill: l.threshold > 0n ? Number(reserve * 10000n / l.threshold) / 10000 : 0, hasOpen: Number(slot) !== 0 });
     });
-    opens = planOpens(candidates, now, OPEN_CFG);
+    opens = planOpens(candidates, now, OPEN_CFG, Object.keys(open).length);
     for (const o of opens) {
       if (SEND) {
         try { log(`open(${o.token}, ${o.window}): ${o.why} -> sent ${await send('open', [o.token, o.window])}`); } catch (e) { log(`open(${o.token}) failed: ${e.message.slice(0, 160)}`); }

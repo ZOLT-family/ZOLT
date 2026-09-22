@@ -72,7 +72,8 @@ const deployed = maybe(path.join(ROOT, 'contracts', 'deploy', 'odds-4663.deploye
 const plan = maybe(path.join(ROOT, 'contracts', 'deploy', 'odds-4663.json'));
 const live = deployed && deployed.status === 'DEPLOYED' ? deployed : null;
 const gasPlan = live || plan;
-const gasEth = gasPlan && gasPlan.estimatedGas ? (gasPlan.estimatedGas * 0.05e-9).toFixed(5) : '–'; // at a 0.05 gwei gas price, roughly what the chain has charged
+// priced at 2 gwei: the chain sat near 0.05 gwei when quiet and 1.7-3.5 gwei during the memecoin rush of 23 Sep
+const gasEth = gasPlan && gasPlan.estimatedGas ? (gasPlan.estimatedGas * 2e-9).toFixed(4) + ' at 2 gwei' : '–';
 
 const values = {
   launches24h: int(pons.launches),

@@ -71,9 +71,23 @@ test('auto-open picks lively, young launches still on their curve, liveliest fir
     cand('0x7', 300, 1.0), // full: the answer is seconds away
     cand('0x8', 240, 0.3),
     cand('0x9', 240, 0.7),
+    cand('0xA', 240, 0.93), // past maxFill: it will cross before anyone can stake
   ], T, { maxPerPass: 2 });
   assert.deepEqual(opens.map((o) => o.token), ['0x9', '0x1']);
   assert.equal(opens[0].window, 0);
+});
+
+test('auto-open lets the ceiling be raised', () => {
+  assert.equal(planOpens([cand('0xA', 240, 0.93)], T).length, 0);
+  assert.equal(planOpens([cand('0xA', 240, 0.93)], T, { maxFill: 0.99 }).length, 1);
+});
+
+test('auto-open keeps a few markets alive, not one per launch', () => {
+  const many = [cand('0x1', 120, 0.5), cand('0x2', 120, 0.4), cand('0x3', 120, 0.3), cand('0x4', 120, 0.25)];
+  assert.equal(planOpens(many, T).length, 1, 'one per pass by default');
+  assert.equal(planOpens(many, T, { maxPerPass: 4 }).length, 3, 'never beyond maxOpen');
+  assert.equal(planOpens(many, T, { maxPerPass: 4 }, 3).length, 0, 'nothing when enough are already open');
+  assert.equal(planOpens(many, T, { maxPerPass: 4, maxOpen: 10 }, 3).length, 4);
 });
 
 test('auto-open thresholds are configurable', () => {
