@@ -112,15 +112,42 @@ fs.writeFileSync(path.join(__dirname, 'index.html'), html);
 console.log('wrote site/index.html', html.length, 'chars');
 
 // A standalone copy for opening straight from disk or hosting anywhere: the artifact platform adds the doctype,
-// charset and viewport itself; a plain browser needs them in the file.
-const standalone = '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
-  + '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
-  + '<meta name="description" content="Zolt: stock-token splits on Robinhood Chain, and a Uniswap v4 hook that charges them to the trader instead of the LPs.">\n'
-  + '</head>\n<body>\n' + html + '\n</body>\n</html>\n';
+// charset and viewport itself; a plain browser needs them in the file, and a shared link needs the cards.
+const SITE = 'https://zolt-smoky.vercel.app/';
+const DESC = 'A stock token can change what one token stands for. Pools keep quoting the old share count. '
+  + 'Zolt is a Uniswap v4 hook that reads the notice first and charges the gap to whoever trades into it. '
+  + 'Unaudited and not deployed.';
+// the staircase mark, inline so the tab icon costs no request
+const ICON = '<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 26 26\'>'
+  + '<rect width=\'26\' height=\'26\' fill=\'%23E6EBE2\'/>'
+  + '<path d=\'M2 22h6v-6h6v-6h6V4h4\' fill=\'none\' stroke=\'%23B9861F\' stroke-width=\'3\'/>'
+  + '<rect x=\'18\' y=\'1\' width=\'6\' height=\'6\' fill=\'%23D2401F\'/></svg>';
+const head = [
+  '<meta charset="utf-8">',
+  '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">',
+  '<meta name="description" content="' + DESC + '">',
+  '<meta name="theme-color" content="#E6EBE2">',
+  '<link rel="canonical" href="' + SITE + '">',
+  '<link rel="icon" href="data:image/svg+xml,' + ICON + '">',
+  '<meta property="og:type" content="website">',
+  '<meta property="og:site_name" content="Zolt">',
+  '<meta property="og:title" content="Zolt — the share count changes, your pool doesn’t know">',
+  '<meta property="og:description" content="' + DESC + '">',
+  '<meta property="og:url" content="' + SITE + '">',
+  '<meta name="twitter:card" content="summary">',
+  '<meta name="twitter:title" content="Zolt — the share count changes, your pool doesn’t know">',
+  '<meta name="twitter:description" content="' + DESC + '">',
+].join('\n');
+const standalone = '<!doctype html>\n<html lang="en">\n<head>\n' + head + '\n</head>\n<body>\n' + html + '\n</body>\n</html>\n';
 fs.writeFileSync(path.join(__dirname, 'zolt.html'), standalone);
 console.log('wrote site/zolt.html (standalone)', standalone.length, 'chars');
 
-// The folder Vercel serves: only the page, nothing else from the repo.
-fs.mkdirSync(path.join(__dirname, 'public'), { recursive: true });
-fs.writeFileSync(path.join(__dirname, 'public', 'index.html'), standalone);
-console.log('wrote site/public/index.html (deploy folder)');
+// The folder Vercel serves: the page, and the two files a crawler asks for.
+const PUB = path.join(__dirname, 'public');
+fs.mkdirSync(PUB, { recursive: true });
+fs.writeFileSync(path.join(PUB, 'index.html'), standalone);
+fs.writeFileSync(path.join(PUB, 'robots.txt'), 'User-agent: *\nAllow: /\nSitemap: ' + SITE + 'sitemap.xml\n');
+fs.writeFileSync(path.join(PUB, 'sitemap.xml'),
+  '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+  + '  <url><loc>' + SITE + '</loc><lastmod>' + new Date().toISOString().slice(0, 10) + '</lastmod></url>\n</urlset>\n');
+console.log('wrote site/public/{index.html,robots.txt,sitemap.xml} (deploy folder)');
