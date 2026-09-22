@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Zolt — palette specimens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:ital,wdth,wght@0,50..150,100..900;1,50..150,100..900&family=Gloock&family=Onest:wght@400;500;600&family=Fragment+Mono&display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101012;color:#EDEAE2;font:16px/1.6 "Onest",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.page{max-width:1120px;margin:0 auto;padding:40px clamp(16px,4vw,40px) 80px}
+.intro{display:grid;gap:10px;margin-bottom:40px}
+.intro h1{margin:0;font-family:"Anybody",sans-serif;font-size:clamp(28px,4vw,46px);font-variation-settings:"wdth" 80,"wght" 900;text-transform:uppercase;line-height:1}
+.intro p{margin:0;max-width:62ch;color:#98968E;font-size:15px}
+
+/* ---- one specimen ---------------------------------------------------- */
+.sw{margin-bottom:56px;border-radius:26px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}
+.swhead{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px;background:#17171A}
+.swhead .id{font-family:"Anybody",sans-serif;font-variation-settings:"wdth" 120,"wght" 900;font-size:22px}
+.swhead .nm{font:400 13px "Fragment Mono",monospace;color:#98968E}
+.swhead .chips{display:flex;gap:7px;margin-left:auto}
+.swhead .chips i{width:22px;height:22px;border-radius:7px;display:block;border:1px solid rgba(255,255,255,.14)}
+
+.dark{background:var(--bg);color:var(--text);padding:clamp(22px,3.4vw,40px);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:center;position:relative;overflow:hidden}
+@media (max-width:760px){.dark{grid-template-columns:1fr}}
+.tag{display:inline-flex;align-items:center;gap:9px;font:400 11px/1 "Fragment Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);border:1px solid var(--rule);border-radius:999px;padding:9px 14px}
+.tag i{width:7px;height:7px;border-radius:50%;background:var(--accent2)}
+.kine{container-type:inline-size;line-height:.84;margin:16px 0 16px}
+.kine .a{display:block;font-family:"Gloock",serif;font-size:7cqi;color:var(--accent)}
+.kine .b{display:block;font-family:"Anybody",sans-serif;text-transform:uppercase;font-size:14cqi;font-variation-settings:"wdth" 140,"wght" 900;letter-spacing:-.02em}
+.kine .c{display:block;font-family:"Anybody",sans-serif;text-transform:uppercase;font-size:10cqi;font-variation-settings:"wdth" 118,"wght" 300;color:var(--text)}
+.note{display:inline-flex;align-items:center;gap:8px;font:400 13px/1 "Fragment Mono",monospace;color:var(--onNote);background:var(--note);padding:12px 16px;border-radius:999px;transform:rotate(-3deg);box-shadow:0 5px 0 var(--noteShade)}
+.note b{font-family:"Gloock",serif;font-weight:400;font-size:16px}
+.lede{margin:18px 0 0;max-width:44ch;color:var(--muted);font-size:15px}
+.ctas{display:flex;gap:11px;margin-top:20px;flex-wrap:wrap}
+.btn{display:inline-flex;padding:13px 21px;border-radius:999px;font:600 14px/1 "Onest",sans-serif;text-decoration:none}
+.btn.a{background:var(--accent);color:var(--onAccent);box-shadow:0 6px 0 var(--accentShade)}
+.btn.g{color:var(--text);border:1px solid var(--rule2);box-shadow:0 6px 0 rgba(0,0,0,.35)}
+.coin{width:min(200px,38vw);height:auto;justify-self:center}
+
+.railrow{display:flex;gap:14px;padding:22px clamp(18px,3vw,34px);background:var(--panel);overflow:hidden}
+.scard{flex:0 0 190px;background:var(--bg);border:1px solid var(--rule);border-radius:20px;padding:17px;display:grid;gap:9px;align-content:start;box-shadow:0 6px 0 var(--deep)}
+.scard.big{background:var(--accent2);color:var(--onAccent2);border-color:transparent;box-shadow:0 6px 0 var(--accent2Shade)}
+.scard .top{display:flex;justify-content:space-between;font:400 10.5px "Fragment Mono",monospace;color:var(--muted)}
+.scard.big .top{color:var(--onAccent2);opacity:.72}
+.scard .tk{font-family:"Anybody",sans-serif;font-variation-settings:"wdth" 120,"wght" 800;font-size:18px;color:var(--text)}
+.scard.big .tk{color:var(--onAccent2)}
+.scard .st{font-family:"Anybody",sans-serif;font-variation-settings:"wdth" 70,"wght" 900;font-size:30px;line-height:1;color:var(--accent)}
+.scard.big .st{color:var(--onAccent2)}
+.scard .meter{height:46px;display:flex;align-items:flex-end;border-bottom:1px solid var(--rule)}
+.scard .meter span{display:block;width:100%;border-radius:5px 5px 0 0;background:linear-gradient(180deg,var(--accent),transparent)}
+.scard.big .meter{border-bottom-color:rgba(0,0,0,.25)}
+.scard.big .meter span{background:linear-gradient(180deg,var(--onAccent2),transparent)}
+.scard dl{display:grid;grid-template-columns:1fr auto;gap:4px 10px;margin:0;font:400 10.5px "Fragment Mono",monospace;color:var(--muted)}
+.scard.big dl{color:var(--onAccent2);opacity:.8}
+.scard dd{margin:0;color:var(--text)}
+.scard.big dd{color:var(--onAccent2)}
+
+.light{background:var(--light);color:var(--onLight);padding:clamp(22px,3.4vw,40px)}
+.light h2{margin:0;font-family:"Anybody",sans-serif;font-size:clamp(26px,3.6vw,44px);line-height:.95;text-transform:uppercase;font-variation-settings:"wdth" 74,"wght" 800}
+.light h2 em{font-family:"Gloock",serif;font-style:normal;text-transform:none;color:var(--accent2Ink);font-size:.86em}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
+@media (max-width:760px){.cards{grid-template-columns:1fr}}
+.card{border-radius:22px;padding:20px;display:grid;gap:8px;align-content:start}
+.card .n{font-family:"Anybody",sans-serif;font-size:clamp(34px,4.4vw,58px);line-height:.85;font-variation-settings:"wdth" 60,"wght" 900}
+.card p{margin:0;font-size:13.5px}
+.card.c1{background:var(--accent2);color:var(--onAccent2);box-shadow:0 7px 0 var(--accent2Shade)}
+.card.c2{background:var(--bg);color:var(--text);box-shadow:0 7px 0 var(--deep)}
+.card.c3{background:var(--accent);color:var(--onAccent);box-shadow:0 7px 0 var(--accentShade)}
+.bar{display:grid;grid-template-columns:54px 1fr 92px;gap:12px;align-items:center;font:400 12px "Fragment Mono",monospace;margin-top:20px}
+.bar .t{font-family:"Anybody",sans-serif;font-variation-settings:"wdth" 120,"wght" 800;font-size:15px}
+.bar .tr{height:18px;border-radius:999px;background:var(--lightBar);overflow:hidden}
+.bar .fl{display:block;height:100%;width:72%;border-radius:999px;background:var(--bg)}
+.bar .v{text-align:right;opacity:.7}
+
+/* ---- the four palettes ------------------------------------------------ */
+.sw[data-t="now"]{--bg:#0B1322;--panel:#16243F;--deep:#050A14;--text:#F6F1E6;--muted:#8E94A3;--rule:rgba(231,182,94,.22);--rule2:rgba(246,241,230,.28);
+  --light:#DEE8F4;--onLight:#0B1322;--lightBar:#C7D6EA;
+  --accent:#E7B65E;--onAccent:#0B1322;--accentShade:#8F6A26;--accent2:#FF6A5C;--onAccent2:#0B1322;--accent2Shade:#9E3226;--accent2Ink:#C7412F;
+  --note:#5FE0BB;--onNote:#0B1322;--noteShade:#2E9B7F;--metal1:#F8E0AC;--metal2:#E7B65E;--metal3:#7B5A1E;--metalInk:#3A2808}
+.sw[data-t="a"]{--bg:#0A0A0B;--panel:#141417;--deep:#000;--text:#EFEDE6;--muted:#84837C;--rule:rgba(239,237,230,.14);--rule2:rgba(239,237,230,.26);
+  --light:#EFEDE6;--onLight:#0A0A0B;--lightBar:#D6D3C9;
+  --accent:#CBF14E;--onAccent:#0A0A0B;--accentShade:#7C9425;--accent2:#E8E4D8;--onAccent2:#0A0A0B;--accent2Shade:#9C998E;--accent2Ink:#5A5A52;
+  --note:#CBF14E;--onNote:#0A0A0B;--noteShade:#7C9425;--metal1:#F2F1EC;--metal2:#BFC3C7;--metal3:#6E7378;--metalInk:#26292C}
+.sw[data-t="b"]{--bg:#1C0B0F;--panel:#2A1218;--deep:#0E0507;--text:#F2E8DA;--muted:#A08C82;--rule:rgba(242,232,218,.16);--rule2:rgba(242,232,218,.26);
+  --light:#F0E7D8;--onLight:#1C0B0F;--lightBar:#DDCFBA;
+  --accent:#E9B949;--onAccent:#1C0B0F;--accentShade:#9A7420;--accent2:#E24E24;--onAccent2:#FFF3E6;--accent2Shade:#8E2A10;--accent2Ink:#C0401C;
+  --note:#E9B949;--onNote:#1C0B0F;--noteShade:#9A7420;--metal1:#FBE8BD;--metal2:#E9B949;--metal3:#7B5A1E;--metalInk:#3A2808}
+.sw[data-t="c"]{--bg:#0E1013;--panel:#171A1F;--deep:#050608;--text:#F1F3F5;--muted:#858C96;--rule:rgba(241,243,245,.14);--rule2:rgba(241,243,245,.26);
+  --light:#F1F3F5;--onLight:#0E1013;--lightBar:#D5DAE1;
+  --accent:#3D6CFF;--onAccent:#F1F3F5;--accentShade:#22409E;--accent2:#FF8A3D;--onAccent2:#0E1013;--accent2Shade:#A0501E;--accent2Ink:#C25E19;
+  --note:#FF8A3D;--onNote:#0E1013;--noteShade:#A0501E;--metal1:#FFE0BE;--metal2:#E0A05A;--metal3:#7A5326;--metalInk:#2E1E0C}
+.sw[data-t="d"]{--bg:#0C1A15;--panel:#12251E;--deep:#050D0A;--text:#EFEADC;--muted:#8AA093;--rule:rgba(239,234,220,.15);--rule2:rgba(239,234,220,.26);
+  --light:#EFEADC;--onLight:#0C1A15;--lightBar:#D3D6C4;
+  --accent:#D7A13F;--onAccent:#0C1A15;--accentShade:#8A6420;--accent2:#D4623A;--onAccent2:#FFF1E6;--accent2Shade:#8A371A;--accent2Ink:#B04C27;
+  --note:#8FCFA8;--onNote:#0C1A15;--noteShade:#4F8C64;--metal1:#F6DFB2;--metal2:#D7A13F;--metal3:#7A5520;--metalInk:#33260C}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="intro">
+    <h1>Four ways the page could look</h1>
+    <p>Sama persis potongannya tiap warna: hero, kartu step, blok terang. Yang pertama itu warna yang sekarang, buat pembanding. Tinggal bilang huruf mana yang enak di mata lu.</p>
+  </div>
+  <div id="out"></div>
+</div>
+
+<template id="tpl">
+  <section class="sw">
+    <div class="swhead"><span class="id"></span><span class="nm"></span><span class="chips"></span></div>
+    <div class="dark">
+      <div>
+        <span class="tag"><i></i>Uniswap v4 hook &middot; Robinhood Chain</span>
+        <div class="kine"><span class="a">The share</span><span class="b">count</span><span class="c">changes.</span></div>
+        <span class="note">Your pool <b>doesn&rsquo;t know.</b></span>
+        <p class="lede">A stock token can split. The pool keeps quoting the old share count, and the first trader takes the difference from the LPs.</p>
+        <div class="ctas"><a class="btn a" href="#">Break a token</a><a class="btn g" href="#">See all 31 splits</a></div>
+      </div>
+      <svg class="coin" viewBox="0 0 260 260" aria-hidden="true">
+        <defs><radialGradient class="grad" cx="34%" cy="28%" r="78%"><stop offset="0"></stop><stop offset=".5"></stop><stop offset="1"></stop></radialGradient></defs>
+        <circle cx="130" cy="130" r="120"></circle>
+        <circle cx="130" cy="130" r="100" fill="none" stroke-width="2"></circle>
+        <text x="130" y="166" text-anchor="middle" font-family="Anybody, sans-serif" font-size="108" font-weight="900" style="font-variation-settings:'wdth' 140,'wght' 900">4&times;</text>
+      </svg>
+    </div>
+    <div class="railrow">
+      <article class="scard"><div class="top"><span class="tk">NVDA</span><span>2026-09-10</span></div><div class="st">+0.078%</div><div class="meter"><span style="height:6%"></span></div><dl><dt>notice</dt><dd>588 s</dd><dt>pools</dt><dd>13,089</dd></dl></article>
+      <article class="scard big"><div class="top"><span class="tk">CRWD</span><span>2026-07-02</span></div><div class="st">&times;4</div><div class="meter"><span style="height:100%"></span></div><dl><dt>notice</dt><dd>44,918 s</dd><dt>pools</dt><dd>1</dd></dl></article>
+      <article class="scard"><div class="top"><span class="tk">SPY</span><span>2026-09-18</span></div><div class="st">+0.172%</div><div class="meter"><span style="height:11%"></span></div><dl><dt>notice</dt><dd>584 s</dd><dt>pools</dt><dd>3,837</dd></dl></article>
+      <article class="scard"><div class="top"><span class="tk">CCL</span><span>2026-08-31</span></div><div class="st">+2.149%</div><div class="meter"><span style="height:15%"></span></div><dl><dt>notice</dt><dd>544 s</dd><dt>pools</dt><dd>34</dd></dl></article>
+    </div>
+    <div class="light">
+      <h2>Almost nothing taken. <em>That isn&rsquo;t safe.</em></h2>
+      <div class="cards">
+        <div class="card c1"><div class="n">$72</div><p>taken by the steps themselves, all 31 together.</p></div>
+        <div class="card c2"><div class="n">1 pool</div><p>held CRWD when it went &times;4. Nobody was there.</p></div>
+        <div class="card c3"><div class="n">$50.3M</div><p>sits in 31,814 pools today.</p></div>
+      </div>
+      <div class="bar"><span class="t">SPY</span><span class="tr"><span class="fl"></span></span><span class="v">$15.0M</span></div>
+    </div>
+  </section>
+</template>
+
+<script>
+var PALETTES = [
+  { t:'now', id:'0', nm:'yang sekarang — navy / emas / coral / mint' },
+  { t:'a',   id:'A', nm:'ink & acid — hitam pekat, hijau listrik, koin nikel' },
+  { t:'b',   id:'B', nm:'oxblood & bone — merah tua, emas tua, jingga bakar' },
+  { t:'c',   id:'C', nm:'graphite & signal — abu dingin, biru sinyal, aksen jingga' },
+  { t:'d',   id:'D', nm:'pine & clay — hijau pinus, kuningan, tanah liat' }
+];
+var out = document.getElementById('out'), tpl = document.getElementById('tpl');
+PALETTES.forEach(function (p) {
+  var node = tpl.content.cloneNode(true), sw = node.querySelector('.sw');
+  sw.setAttribute('data-t', p.t);
+  sw.querySelector('.id').textContent = p.id;
+  sw.querySelector('.nm').textContent = p.nm;
+  out.appendChild(node);
+  // the swatch dots and the coin metal both read the palette's own variables
+  var cs = getComputedStyle(sw);
+  var keys = ['--bg', '--light', '--accent', '--accent2', '--note'];
+  var chips = sw.querySelector('.chips');
+  keys.forEach(function (k) { var i = document.createElement('i'); i.style.background = cs.getPropertyValue(k); chips.appendChild(i); });
+  var grad = sw.querySelector('.grad'), stops = grad.querySelectorAll('stop');
+  stops[0].setAttribute('stop-color', cs.getPropertyValue('--metal1').trim());
+  stops[1].setAttribute('stop-color', cs.getPropertyValue('--metal2').trim());
+  stops[2].setAttribute('stop-color', cs.getPropertyValue('--metal3').trim());
+  var id = 'grad-' + p.t;
+  grad.setAttribute('id', id);
+  var circles = sw.querySelectorAll('.coin circle');
+  circles[0].setAttribute('fill', 'url(#' + id + ')');
+  circles[1].setAttribute('stroke', cs.getPropertyValue('--metal3').trim());
+  sw.querySelector('.coin text').setAttribute('fill', cs.getPropertyValue('--metalInk').trim());
+});
+</script>
+</body>
+</html>
