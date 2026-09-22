@@ -19,6 +19,8 @@ rem   --send --auto-open --max-open 3          also keep three markets alive (co
 set "FLAGS=--send"
 if exist "keeper\keeper.flags" for /f "usebackq delims=" %%f in ("keeper\keeper.flags") do set "FLAGS=%%f"
 :loop
+rem keep the log from growing without bound: past 5 MB it rolls over to keeper.log.1
+for %%A in ("keeper\keeper.log") do if exist "keeper\keeper.log" if %%~zA GTR 5000000 move /y "keeper\keeper.log" "keeper\keeper.log.1" > nul
 echo %date% %time% starting keeper with %FLAGS% >> keeper\keeper.log
 "%NODE%" keeper\odds-keeper.cjs --odds 0xac86b04d48033b2454b132eded596e0c61a5b097 %FLAGS% --interval 5 >> keeper\keeper.log 2>&1
 echo %date% %time% keeper exited, restarting in 15 s >> keeper\keeper.log

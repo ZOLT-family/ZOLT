@@ -17,10 +17,27 @@ function logsAreBounded(c) {
   return Number.isFinite(from) && Number.isFinite(to) && to >= from && to - from <= MAX_LOG_RANGE;
 }
 
+// Best-effort abuse brake, per warm instance: a caller gets 120 requests a minute, then 429s until the minute
+// rolls over. Serverless instances do not share memory, so this bounds one instance, not the world; the upstream
+// RPC's own limits stand behind it.
+const RATE_LIMIT = 120;
+const buckets = new Map();
+function overLimit(ip) {
+  const now = Date.now();
+  const b = buckets.get(ip) || { start: now, n: 0 };
+  if (now - b.start > 60_000) { b.start = now; b.n = 0; }
+  b.n++;
+  buckets.set(ip, b);
+  if (buckets.size > 5000) buckets.clear();
+  return b.n > RATE_LIMIT;
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('cache-control', 'no-store');
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'post a json-rpc body' });
+  const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '').split(',')[0].trim();
+  if (overLimit(ip)) return res.status(429).json({ error: 'too many requests from this address; try again in a minute' });
 
   let body = req.body;
   if (typeof body === 'string') {

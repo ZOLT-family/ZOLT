@@ -17,6 +17,8 @@ if (fs.existsSync(FILE)) {
 }
 const key = '0x' + crypto.randomBytes(32).toString('hex');
 fs.writeFileSync(FILE, key + '\n', { mode: 0o600 });
-console.log('wrote keeper/keeper.key (git-ignored, never print it)');
+// the address is public and useful (the page shows when this keeper last acted); the key is not
+fs.writeFileSync(path.join(__dirname, 'keeper.address'), privateKeyToAccount(key).address + '\n');
+console.log('wrote keeper/keeper.key (git-ignored, never print it) and keeper/keeper.address (public)');
 console.log('keeper address:', privateKeyToAccount(key).address);
 console.log('send it a little ETH on chain 4663 for gas, then run the keeper with --send.');

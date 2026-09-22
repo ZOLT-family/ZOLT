@@ -107,6 +107,8 @@ const values = {
     chainId: 4663,
     factory: FACTORY,
     odds: live ? live.address : null,
+    // the public address of the keeper this repo runs, if one was made here: the board shows when it last acted
+    keeper: fs.existsSync(path.join(ROOT, 'keeper', 'keeper.address')) ? fs.readFileSync(path.join(ROOT, 'keeper', 'keeper.address'), 'utf8').trim() : null,
     sel: {
       symbol: '0x95d89b41', launched: '0x3cf28b5a', reserve: '0x4f1f58fd', market: '0x28861d22',
       openAndStake: '0x34feb02b', claim: '0x379607f5', payout: '0xbe95e01a',
@@ -116,6 +118,7 @@ const values = {
       launched: '0x8d4aad4953d0ca700d468f3753aa14432d1b35b43ec6409f051fb6aa43a89607',
       graduated: '0x0a44ef75df69c534f43cd6c1aa3ef8983065fe5fe79ef9e79f6494e6f258c259',
       opened: '0x13d3642a6d52374b58ee776c95940fcf6486c6f740891e6d11070c1411e1d3a8',
+      resolved: '0xb759306cc71252cdc2f6244717195a7cc712a5551de7fa6dd2bf1819cd7dfadd',
     },
     // what a launch can be paired with, and how to print that unit: ETH and the stock tokens use 18 decimals, USDG 6
     pairs: Object.assign({ [ETH]: ['ETH', 18], '0x5fc5360d0400a0fd4f2af552add042d716f1d168': ['USDG', 6] },
