@@ -75,6 +75,7 @@ const FACTORY = getAddress(view(oddsAbi, ODDS, 'factory'));
 const state = fs.existsSync(STATE_FILE) ? JSON.parse(fs.readFileSync(STATE_FILE, 'utf8')) : { cursor: 0, open: {} };
 let cursor = Number(arg('from-block', state.cursor || 0)) || parseInt(rpc('eth_blockNumber', []), 16) - 50000;
 const open = state.open || {};
+for (const m of Object.values(open)) { m.yesPool = BigInt(m.yesPool || 0); m.noPool = BigInt(m.noPool || 0); }
 log(`odds keeper ${SEND ? 'SEND' : 'dry run'} | contract ${ODDS} | factory ${FACTORY} | from block ${cursor} | ${Object.keys(open).length} open markets on file`);
 
 async function send(fn, args) {
@@ -154,7 +155,8 @@ async function pass() {
       }
     }
   }
-  fs.writeFileSync(STATE_FILE, JSON.stringify({ cursor, open }, null, 1));
+  // pools are BigInts; the state file keeps them as strings and they are restored on load
+  fs.writeFileSync(STATE_FILE, JSON.stringify({ cursor, open }, (k, v) => (typeof v === 'bigint' ? v.toString() : v), 1));
   return { head, open: Object.keys(open).length, actions: actions.length + opens.length };
 }
 
