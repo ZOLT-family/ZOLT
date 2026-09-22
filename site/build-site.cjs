@@ -36,6 +36,17 @@ const marquee = '<ul>' + steps.map((s) => {
   return `<li${r >= 1.5 ? ' class="big"' : ''}><b>${esc(s.sym)}</b><span class="s">${label}</span>${esc(s.effectiveAt.slice(0, 10))} · ${int(s.leadSeconds)} s notice · ${int(s.poolsExposed)} pool${s.poolsExposed === 1 ? '' : 's'}</li>`;
 }).join('') + '</ul>';
 
+// the horizontal gallery: one card per step, oldest first
+const stepCards = steps.map((s) => {
+  const r = s.newMultiplier / s.oldMultiplier;
+  const big = r >= 1.5;
+  const label = big ? '×' + r.toFixed(0) : '+' + ((r - 1) * 100).toFixed(r - 1 < 0.0001 ? 5 : 3) + '%';
+  const att = (attributed.summary.find((x) => x.sym === s.sym && x.effectiveAt === s.effectiveAt) || {}).stepAttributable;
+  // the meter is log-scaled against the largest step on the page, so a +0.05% step is still visible next to a ×4
+  const meter = Math.max(6, Math.round(100 * Math.log(r) / Math.log(4)));
+  return `<article class="scard${big ? ' big' : ''}"><div class="top"><span class="tk">${esc(s.sym)}</span><time>${esc(s.effectiveAt.slice(0, 10))}</time></div><div class="st">${label}</div><div class="meter"><span style="height:${meter}%"></span></div><dl><dt>notice</dt><dd>${int(s.leadSeconds)} s</dd><dt>pools</dt><dd>${int(s.poolsExposed)}</dd><dt>taken</dt><dd>${att === undefined ? '–' : '$' + (att < 1 ? att.toFixed(2) : int(att))}</dd></dl></article>`;
+}).join('\n');
+
 // exposure bars: top 6 by value, one scale
 const top = exposure.rows.filter((r) => r.usdInPools).slice(0, 6);
 const max = top[0].usdInPools;
@@ -88,6 +99,7 @@ const values = {
   simKept: int(Q * stepFee),
   simFeePct: (stepFee * 100).toFixed(0) + '%',
   marquee,
+  stepCards,
   exposureBars,
   json: JSON.stringify({ lead: int(nvda.leadSeconds), doppler: { pools: doppler ? doppler.dopplerPools : 0, burned } }).replace(/</g, '\\u003c'),
 };
