@@ -6,6 +6,8 @@
 //   node keeper/odds-keeper.cjs --odds 0x... --once          # one pass over new blocks, print the plan
 //   node keeper/odds-keeper.cjs --odds 0x... --send          # loop, sign and send (needs KEEPER_PRIVATE_KEY)
 //   options: --from-block N  --interval 5
+//   --grace 120            seconds after a deadline before the keeper records NO (a winner may do it first, on their gas)
+//   --all-markets          also witness empty and one-sided markets (default: only markets with money on both sides)
 //   --auto-open            also open a market on every young launch whose curve is showing life (default off)
 //   --min-fill 0.2         curve fill that counts as life      --window 0     which window to open (0/1/2)
 //   --max-fill 0.85        above this the curve crosses before anyone can stake; opening would only spend gas
@@ -105,6 +107,8 @@ async function pass() {
     ids.forEach((id, k) => {
       if (!outcomes[k]) return;
       open[id].outcome = Number(outcomes[k].outcome);
+      open[id].yesPool = BigInt(outcomes[k].yesPool);
+      open[id].noPool = BigInt(outcomes[k].noPool);
       if (open[id].outcome !== 0) { log(`market ${id} resolved: ${['open', 'YES', 'NO', 'void'][open[id].outcome]}`); delete open[id]; }
     });
     const tokens = [...new Set(Object.values(open).map((m) => m.token.toLowerCase()))];
@@ -112,7 +116,7 @@ async function pass() {
     tokens.forEach((t, k) => { if (phases[k]) phaseOf[t] = Number(phases[k].phase); });
   }
   const now = parseInt(rpc('eth_getBlockByNumber', ['latest', false]).timestamp, 16);
-  const actions = planActions(Object.values(open), phaseOf, now);
+  const actions = planActions(Object.values(open), phaseOf, now, { graceSeconds: Number(arg('grace', '120')), onlyTwoSided: !flag('all-markets') });
   for (const a of actions) {
     if (SEND) {
       try { log(`${a.fn}(${a.id}): ${a.why} -> sent ${await send(a.fn, [BigInt(a.id)])}`); } catch (e) { log(`${a.fn}(${a.id}) failed: ${e.message.slice(0, 160)}`); }

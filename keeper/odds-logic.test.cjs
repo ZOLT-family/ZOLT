@@ -4,16 +4,25 @@ const assert = require('node:assert');
 const { planActions, planOpens, decodeMarketOpened, decodeTokenLaunched, VOID_AFTER } = require('./odds-logic.cjs');
 
 const T = 1_800_000_000;
-const mk = (id, token, deadline, outcome = 0) => ({ id, token, window: 0, closesAt: deadline - 300, deadline, outcome });
+// a two-sided market by default: the keeper only spends gas where both sides have money
+const mk = (id, token, deadline, outcome = 0, pools = [1n, 1n]) => ({ id, token, window: 0, closesAt: deadline - 300, deadline, outcome, yesPool: pools[0], noPool: pools[1] });
 
 test('a launch that left its curve before the deadline is witnessed YES', () => {
   const a = planActions([mk(1, '0xAAA', T + 100)], { '0xaaa': 1 }, T);
   assert.deepEqual(a.map((x) => [x.id, x.fn]), [[1, 'witnessYes']]);
 });
 
-test('a launch still on its curve after the deadline is witnessed NO', () => {
-  const a = planActions([mk(2, '0xBBB', T - 1)], { '0xbbb': 0 }, T);
-  assert.deepEqual(a.map((x) => [x.id, x.fn]), [[2, 'witnessNo']]);
+test('a launch still on its curve is witnessed NO only after the grace period, so a winner can do it first', () => {
+  assert.deepEqual(planActions([mk(2, '0xBBB', T - 1)], { '0xbbb': 0 }, T), []);
+  assert.deepEqual(planActions([mk(2, '0xBBB', T - 121)], { '0xbbb': 0 }, T).map((x) => [x.id, x.fn]), [[2, 'witnessNo']]);
+  assert.deepEqual(planActions([mk(2, '0xBBB', T - 1)], { '0xbbb': 0 }, T, { graceSeconds: 0 }).map((x) => x.fn), ['witnessNo']);
+});
+
+test('empty and one-sided markets cost the keeper nothing', () => {
+  const empty = mk(9, '0xEEE', T - 500, 0, [0n, 0n]);
+  const oneSided = mk(8, '0xDDD', T - 500, 0, [5n, 0n]);
+  assert.deepEqual(planActions([empty, oneSided], { '0xeee': 0, '0xddd': 2 }, T), []);
+  assert.equal(planActions([oneSided], { '0xddd': 0 }, T, { onlyTwoSided: false }).length, 1);
 });
 
 test('nothing is done while the deadline has not passed and the launch is still on its curve', () => {
@@ -27,7 +36,7 @@ test('a graduation after the deadline is not YES and is not NO; a day later it i
 });
 
 test('resolved markets and unread tokens are skipped', () => {
-  assert.deepEqual(planActions([mk(5, '0xEEE', T - 1, 2), mk(6, '0xFFF', T - 1)], { '0xeee': 0 }, T), []);
+  assert.deepEqual(planActions([mk(5, '0xEEE', T - 500, 2), mk(6, '0xFFF', T - 500)], { '0xeee': 0 }, T), []);
 });
 
 test('MarketOpened decodes to what the planner reads', () => {

@@ -14,14 +14,21 @@ const VOID_AFTER = 86_400;
 const WINDOWS = [600, 3600, 21_600];
 
 /// Given the open markets and each token's current phase, return the calls to make now.
-function planActions(markets, phaseOf, now) {
+///
+/// The keeper is a backstop, not a servant: it spends gas only on markets with money on both sides (a one-sided
+/// market refunds by construction and its lone staker can trigger that themselves), and it waits `graceSeconds`
+/// after the deadline before recording NO, so a winner who wants to record it themselves can. YES is recorded at
+/// once, because it has to land before the deadline.
+function planActions(markets, phaseOf, now, cfg) {
+  const c = Object.assign({ graceSeconds: 120, onlyTwoSided: true }, cfg || {});
   const actions = [];
   for (const m of markets) {
     if (m.outcome !== 0) continue;
     const phase = phaseOf[m.token.toLowerCase()];
     if (phase === undefined) continue; // not read this pass; try again next time
+    if (c.onlyTwoSided && !(m.yesPool > 0n && m.noPool > 0n)) continue;
     if (phase !== 0 && now <= m.deadline) actions.push({ id: m.id, fn: 'witnessYes', why: `phase ${phase} with ${m.deadline - now}s left` });
-    else if (phase === 0 && now > m.deadline) actions.push({ id: m.id, fn: 'witnessNo', why: `still on curve ${now - m.deadline}s past the deadline` });
+    else if (phase === 0 && now > m.deadline + c.graceSeconds) actions.push({ id: m.id, fn: 'witnessNo', why: `still on curve ${now - m.deadline}s past the deadline, nobody recorded it` });
     else if (phase !== 0 && now > m.deadline + VOID_AFTER) actions.push({ id: m.id, fn: 'voidUnobserved', why: 'graduated after the deadline and nobody recorded NO in time' });
   }
   return actions;
