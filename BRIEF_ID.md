@@ -1,6 +1,6 @@
 # Zolt — brief
 
-> **Status (22 Sep 2026):** prototype lengkap. Hook + modul Doppler + keeper + tooling deploy. **26 test kontrak + 5 test keeper lolos** di PoolManager Uniswap v4 asli. Transaksi deploy buat mainnet 4663 dan testnet 46630 udah disiapin dan disimulasi ke chain live, **tapi belum dikirim**. Repo git lokal (`main`), belum di-push ke mana pun. **Belum diaudit, belum ada dana siapa pun di belakangnya.** Semua angka on-chain di dokumen ini keluar dari script di `research/` dan tersimpan di `evidence/`.
+> **Status (23 Sep 2026):** prototype lengkap. Hook + modul Doppler + keeper + tooling deploy. **26 test kontrak + 5 test keeper lolos** di PoolManager Uniswap v4 asli. Transaksi deploy buat mainnet 4663 dan testnet 46630 udah disiapin dan disimulasi ke chain live, **tapi belum dikirim**. Repo git lokal (`main`), belum di-push ke mana pun. **Belum diaudit, belum ada dana siapa pun di belakangnya.** Semua angka on-chain di dokumen ini keluar dari script di `research/` dan tersimpan di `evidence/`.
 
 ---
 
@@ -16,26 +16,26 @@ Zolt baca jadwal yang sama, lalu nagih selisih itu ke orang yang dagang ke arah 
 
 **Kalimat satu baris (buat orang non-teknis):** *Kalau satu token tiba-tiba mewakili 4 share, pool lo masih jual dia seharga 1 share. Zolt nutup celah itu.*
 
-**Posisi yang jujur setelah semua pengukuran:** Zolt ngelindungin **pool yang dibuka berikutnya**, bukan ~$50 juta yang udah ada di pool sekarang. Pool yang udah ada gak bisa diubah oleh siapa pun (lihat §5). Jadi pembelinya **launchpad dan pembuat modul**, bukan LP satu-satu.
+**Posisi yang jujur setelah semua pengukuran:** Zolt ngelindungin **pool yang dibuka berikutnya**, bukan ~$47 juta yang udah ada di pool sekarang. Pool yang udah ada gak bisa diubah oleh siapa pun (lihat §5). Jadi pembelinya **launchpad dan pembuat modul**, bukan LP satu-satu.
 
 ## 2. Kenapa sekarang
 
-Semua angka di bawah diukur read-only dari chain 4663 (21–22 Sep 2026).
+Semua angka di bawah diukur read-only dari chain 4663 (21–23 Sep 2026).
 
 | Yang diukur | Hasil | File |
 |---|---|---|
-| Step multiplier sejak launch | **31 event di 28 ticker**. Umumnya diumumkan **524–588 detik** sebelum berlaku; CRWD 12,5 jam dan 1,2 jam | `mult_logs.json`, `steps.json` |
-| Pool yang megang token yang pernah step | **30.862 pool v4 + 952 pool v3**. NVDA sendiri ada di 13.089 pool waktu step terakhirnya | `pools.json` |
-| Nilai stock token yang duduk di pool | **$50,3 juta** (32 token yang punya feed Chainlink; 160 token lain juga punya saldo pool tapi gak ada feed). SPY: 61% supply ada di pool. NVDA: 50,5% | `exposure.json` |
-| Yang beneran diambil karena step | **$72,44 + 0,00021 ETH**, total dari 31 step. Metrik mentah nyatet $649,77, tapi sebagian besar itu pergerakan pasar biasa | `steps-attributed.json` |
+| Step multiplier sejak launch | **37 event di 34 ticker**. Umumnya diumumkan **524–588 detik** sebelum berlaku; CRWD 12,5 jam dan 1,2 jam | `mult_logs.json`, `steps.json` |
+| Pool yang megang token yang pernah step | **35.145 pool v4 + 1.009 pool v3**. NVDA sendiri ada di 13.089 pool waktu step terakhirnya | `pools.json` |
+| Nilai stock token yang duduk di pool | **$46,6 juta** (32 token yang punya feed Chainlink; 160 token lain juga punya saldo pool tapi gak ada feed). SPY: 61% supply ada di pool. NVDA: 50,5% | `exposure.json` |
+| Yang beneran diambil karena step | **$80,39 + 0,00022 ETH**, total dari 37 step. Metrik mentah nyatet $658,10, tapi sebagian besar itu pergerakan pasar biasa | `steps-attributed.json` |
 | Step gede satu-satunya (CRWD ×4, 2 Jul) | Cuma **1 pool** yang ada, dan pool itu cuma pernah punya **1 swap** seumur hidup (debu, 6 Sep). Gak ada yang ngambil | `crwd-history.json` |
-| Siapa yang megang pool-pool itu | **27.646** pool v4 udah punya hook (930 hook berbeda). Terbesar: **Doppler `DopplerHookInitializer` = 20.300 pool** | `steps-attributed.json` |
-| Bisa gak Doppler pasang modul baru di pool lama? | **Gak.** Di **20.279 dari 20.300** pool Doppler, timelock-nya `0x…dEaD` (11.540) atau `0x0` (8.739) tanpa delegasi. Slot modulnya beku selamanya. 20.136 slot udah keisi: modul `0x6f02…0f77` (11.632, gak terverifikasi) dan `RehypeDopplerHookInitializer` (8.293) | `doppler.json`, `doppler-authorities.json` |
+| Siapa yang megang pool-pool itu | **31.454** pool v4 udah punya hook (970 hook berbeda). Terbesar: **Doppler `DopplerHookInitializer` = 22.916 pool** | `steps-attributed.json` |
+| Bisa gak Doppler pasang modul baru di pool lama? | **Gak.** Di **22.892 dari 22.916** pool Doppler, timelock-nya `0x…dEaD` (13.419) atau `0x0` (9.473) tanpa delegasi. Slot modulnya beku selamanya. 22.733 slot udah keisi: modul `0x6f02…0f77` (13.519, gak terverifikasi) dan `RehypeDopplerHookInitializer` (8.952) | `doppler.json`, `doppler-authorities.json` |
 | Governance Doppler | Airlock owner = **Safe 1.4.1, 3-dari-6** (`0x21E2…7A66`) | `doppler-authorities.json` |
 
 **Artinya, dan ini harus dibaca jujur:**
 - Hipotesis awal "pool dikuras tiap step" **gak terbukti**. Step kecil masih di bawah fee pool, dan satu-satunya step gede kejadian waktu pasarnya belum ada.
-- Pasarnya sekarang jauh lebih gede: waktu CRWD split cuma ada 1 pool; sekarang ~31.800 pool dan ~$50 juta. Split berikutnya bakal kena semuanya di detik yang sama.
+- Pasarnya sekarang jauh lebih gede: waktu CRWD split cuma ada 1 pool; sekarang ~36.150 pool dan ~$47 juta. Split berikutnya bakal kena semuanya di detik yang sama.
 - **Tapi pool-pool itu gak bisa dilindungin di level pool oleh siapa pun**, termasuk Zolt: hook-nya dikunci pas pool dibuat, dan slot modul Doppler-nya udah dibekukan.
 
 Kata yang boleh dipakai: *exposed, gives away, quotes the old share count*. Kata yang **gak boleh** dipakai sampai ada tx hash-nya: *drained, robbed, exploited*. Klaim yang **gak boleh** dipakai: "protects today's pools".
@@ -82,11 +82,11 @@ Tiga baris "masih ngambil" itu sengaja dijadiin test, supaya gak ada yang ngira 
 
 **Deploy yang udah disiapin (belum dikirim):** `contracts/deploy/zolt-4663.json` (mainnet) dan `contracts/deploy/zolt-46630.json` (testnet; PoolManager di testnet ada di alamat yang sama dan bytecode-nya identik, dicek hash-nya; simulasi testnet ~1,63 juta gas). Alamat hook-nya sama di dua chain. Alamat hook `0xed3D93c9dD52A7e52Ff038d4311Be9AF4eDd7080`, lewat proxy CREATE2 Arachnid `0x4e59…956C` (ada di 4663). Simulasi `eth_call` ke chain live balikin alamat itu persis; ~1,45 juta gas (≈0,00007 ETH di harga gas sekarang); kode 6.357 byte.
 
-**Keeper:** `keeper/keeper.cjs`, dry-run default. Replay ke 31 step historis jalan; satu pass live jalan. Ngirim cuma kalau dikasih `--send`, `--module`, dan `KEEPER_PRIVATE_KEY`.
+**Keeper:** `keeper/keeper.cjs`, dry-run default. Replay ke 37 step historis jalan; satu pass live jalan. Ngirim cuma kalau dikasih `--send`, `--module`, dan `KEEPER_PRIVATE_KEY`.
 
 ## 5. Batas jujur
 
-- **Gak ada satu pun pool yang sekarang ada yang bisa dilindungin.** Hook v4 dikunci pas pool dibuat. Di Doppler, slot modul 20.279 dari 20.300 pool udah beku (timelock `0x0`/`0x…dEaD`). Zolt **cuma buat pool baru**. Jalurnya: (a) launchpad yang bikin pool baru milih hook atau modul Zolt, atau (b) pembuat modul yang udah ada (Rehype dan `0x6f02…`) masukin `StepMath` ke versi berikutnya.
+- **Gak ada satu pun pool yang sekarang ada yang bisa dilindungin.** Hook v4 dikunci pas pool dibuat. Di Doppler, slot modul 22.892 dari 22.916 pool udah beku (timelock `0x0`/`0x…dEaD`). Zolt **cuma buat pool baru**. Jalurnya: (a) launchpad yang bikin pool baru milih hook atau modul Zolt, atau (b) pembuat modul yang udah ada (Rehype dan `0x6f02…`) masukin `StepMath` ke versi berikutnya.
 - **Modul Doppler cuma ngelindungin sebagian buat split.** Batas fee 10% dari Doppler berarti step di atas ~10% (semua split) cuma kepotong sebagian. Buat split, cuma bentuk hook yang ngelindungin penuh.
 - **Modul Doppler telat satu langkah.** Tanpa keeper, trade pertama setelah step lolos.
 - **Hook gak bisa gerakin harga.** Dia cuma nagih selisih; pool yang gak ada yang dagang akan terbuka lagi setelah `guardWindow`.

@@ -36,7 +36,7 @@ frontends.
 ## The Doppler module
 
 On chain 4663, Doppler's `DopplerHookInitializer` (`0x4e3468951d49f2eea976ed0d6e75ffcb44a9a544`, Sourcify match) is the
-hook on 20,300 of the 30,862 v4 pools that hold a stock token whose multiplier has stepped, and 20,136 of those pools
+hook on 22,916 of the 35,145 v4 pools that hold a stock token whose multiplier has stepped, and 22,733 of those pools
 use a dynamic LP fee. Doppler lets a module (a "Doppler Hook") be attached per asset: it gets `onSwap` after
 every swap and may call `updateDynamicLPFee(asset, fee)`. `ZoltDopplerModule` is that module. It differs from
 the hook in three ways, all forced by the module interface:
@@ -52,10 +52,10 @@ the hook in three ways, all forced by the module interface:
 
 - Enabling a module is up to the Airlock owner, a Safe 1.4.1 with a 3-of-6 threshold
   (`0x21E2ce70511e4FE542a97708e89520471DAa7A66`).
-- Attaching it to a pool is up to that asset's timelock (or its delegate). For 20,279 of the 20,300 Doppler pools
+- Attaching it to a pool is up to that asset's timelock (or its delegate). For 22,892 of the 22,916 Doppler pools
   holding a stepped token, the timelock is `0x…dEaD` (11,540) or `0x0` (8,739) with no delegate, so **their module
-  slot can never change**. 20,136 of those slots already hold a module: an unverified one at
-  `0x6f02…0f77` (11,632 pools) and `RehypeDopplerHookInitializer` (8,293 pools; fees, buybacks, LP reinvestment).
+  slot can never change**. 22,733 of those slots already hold a module: an unverified one at
+  `0x6f02…0f77` (13,519 pools) and `RehypeDopplerHookInitializer` (8,952 pools; fees, buybacks, LP reinvestment).
 
 So the module reaches **new** Doppler launches whose creator selects it, not the existing pools. For existing
 pools the realistic route is the authors of those two modules adding the `StepMath` check to their next version.
@@ -117,14 +117,14 @@ the bytecode or constructor arguments.
 
 `../keeper/keeper.cjs` watches `UIMultiplierUpdated` on the 194 stock tokens and pokes the Doppler module for every
 registered asset while a step is inside the lookahead or the guard window. Dry run by default; it signs only with
-`--send`, `--module` and `KEEPER_PRIVATE_KEY`. `npm run keeper:replay` walks the 31 recorded steps. The hook form
+`--send`, `--module` and `KEEPER_PRIVATE_KEY`. `npm run keeper:replay` walks the 37 recorded steps. The hook form
 needs no keeper.
 
 ## Known limits
 
-- **Existing pools cannot adopt either form.** A v4 pool's hook is fixed when the pool is created, and 27,646 of the
-  30,862 v4 pools holding a stepped token already carry one (930 distinct hooks). In the largest group, Doppler's,
-  the module slot is frozen for 20,279 of 20,300 pools (timelock `0x0` or `0x…dEaD`). Both forms are for new pools.
+- **Existing pools cannot adopt either form.** A v4 pool's hook is fixed when the pool is created, and 31,454 of the
+  35,145 v4 pools holding a stepped token already carry one (970 distinct hooks). In the largest group, Doppler's,
+  the module slot is frozen for 22,892 of 22,916 pools (timelock `0x0` or `0x…dEaD`). Both forms are for new pools.
 - **The hook cannot move the price.** It charges the gap; the pool reprices only as swaps arrive. A pool
   nobody trades stays stale, and after `guardWindow` it is exposed again.
 - **The target is anchored at arming time.** If the underlying moves while a step is armed, the fee can be

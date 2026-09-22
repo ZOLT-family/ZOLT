@@ -3,7 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Zolt: stock-token splits on Robinhood Chain, and a Uniswap v4 hook that charges them to the trader instead of the LPs.">
+<meta name="description" content="A stock token can change what one token stands for. Pools keep quoting the old share count. Zolt is a Uniswap v4 hook that reads the notice first and charges the gap to whoever trades into it. Unaudited and not deployed.">
+<meta name="theme-color" content="#E6EBE2">
+<link rel="canonical" href="https://zolt-smoky.vercel.app/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'><rect width='26' height='26' fill='%23E6EBE2'/><path d='M2 22h6v-6h6v-6h6V4h4' fill='none' stroke='%23B9861F' stroke-width='3'/><rect x='18' y='1' width='6' height='6' fill='%23D2401F'/></svg>">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Zolt">
+<meta property="og:title" content="Zolt — the share count changes, your pool doesn’t know">
+<meta property="og:description" content="A stock token can change what one token stands for. Pools keep quoting the old share count. Zolt is a Uniswap v4 hook that reads the notice first and charges the gap to whoever trades into it. Unaudited and not deployed.">
+<meta property="og:url" content="https://zolt-smoky.vercel.app/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Zolt — the share count changes, your pool doesn’t know">
+<meta name="twitter:description" content="A stock token can change what one token stands for. Pools keep quoting the old share count. Zolt is a Uniswap v4 hook that reads the notice first and charges the gap to whoever trades into it. Unaudited and not deployed.">
 </head>
 <body>
 <title>Zolt</title>
@@ -137,6 +148,42 @@ html.splash-on{overflow:hidden}
   writing-mode:vertical-rl;justify-self:center}
 @media (max-width:760px){.sec-head{grid-template-columns:1fr}.sec-head .ix{margin-bottom:6px}.sec-head p{grid-column:1}
   .sec-body{grid-template-columns:1fr}.sec-body > .gutter{display:none}}
+
+/* --------------------------------------------------------------- live panel */
+.live{border:1px solid var(--edge);background:var(--sheet)}
+.live-hd{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:11px 14px;border-bottom:1px solid var(--edge);background:var(--band)}
+.btn{font:400 11.5px var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--sheet);
+  background:var(--edge);border:1px solid var(--edge);padding:9px 14px;cursor:pointer}
+.btn:hover{background:var(--teal);border-color:var(--teal)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--amber-lit);color:var(--ink);border-color:var(--edge)}
+.btn[disabled]{opacity:.45;cursor:progress}
+.addr{display:flex;gap:8px;flex-wrap:wrap}
+.addr input{font:400 12px var(--mono);padding:9px 11px;border:1px solid var(--edge);background:var(--sheet);
+  color:var(--ink);min-width:min(340px,58vw)}
+.live-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:760px){.live-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cell{padding:13px 14px;border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.cell:last-child{border-right:0}
+.cell .k{display:block;font:400 9.5px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--ink-3)}
+.cell b{display:block;margin-top:5px;font-family:var(--display);font-variation-settings:"wdth" 96,"wght" 800;font-size:19px}
+.cell b.hot{color:var(--signal)}
+.cell b.calm{color:var(--teal)}
+.live table{min-width:520px}
+.live .wrapx{overflow-x:auto}
+.live th{font:400 9.5px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--sheet);
+  background:var(--edge);padding:7px 12px;text-align:left}
+.live th.n{text-align:right}
+.live td{padding:7px 12px;font-size:13px;border-bottom:1px solid var(--line-2)}
+.live tbody tr:nth-child(even){background:var(--band)}
+.live td.sym{font-family:var(--display);font-variation-settings:"wdth" 118,"wght" 800;font-size:15px}
+.live td.n{font:400 11.5px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.live td.hot{color:var(--signal)}
+.addr-out{padding:14px}
+.addr-out .foot{margin:0}
+.msg{font:400 11.5px var(--mono);color:var(--ink-3);padding:12px 14px}
+.msg.bad{color:var(--signal)}
 
 /* --------------------------------------------------------------- the model */
 .model{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:18px;align-items:start}
@@ -286,8 +333,8 @@ html.has-coin,html.has-coin *{cursor:none !important}
     </div>
     <ul class="sp-log">
       <li>chain 4663 &middot; robinhood <b>linked</b></li>
-      <li>31 multiplier steps <b>read</b></li>
-      <li>block 68,685,412 <b>current</b></li>
+      <li>37 multiplier steps <b>read</b></li>
+      <li>block 69,866,661 <b>current</b></li>
     </ul>
     <div class="sp-bar"><i></i></div>
     <div class="sp-skip">click to skip</div>
@@ -303,16 +350,17 @@ html.has-coin,html.has-coin *{cursor:none !important}
       <span class="wm">ZOLT</span>
     </a>
     <nav aria-label="Sections">
-      <a href="#model"><i>01</i>Model</a>
-      <a href="#ledger"><i>02</i>Ledger</a>
-      <a href="#exposure"><i>03</i>Exposure</a>
-      <a href="#pools"><i>04</i>Pools</a>
-      <a href="#guard"><i>05</i>Guard</a>
-      <a href="#receipts"><i>06</i>Receipts</a>
+      <a href="#live"><i>01</i>Live</a>
+      <a href="#model"><i>02</i>Model</a>
+      <a href="#ledger"><i>03</i>Ledger</a>
+      <a href="#exposure"><i>04</i>Exposure</a>
+      <a href="#pools"><i>05</i>Pools</a>
+      <a href="#guard"><i>06</i>Guard</a>
+      <a href="#receipts"><i>07</i>Receipts</a>
     </nav>
     <div class="spine-foot">
       <b>unaudited<br>not deployed</b>
-      <span>blk 68,685,412</span>
+      <span>blk 69,866,661</span>
     </div>
   </aside>
 
@@ -326,28 +374,63 @@ html.has-coin,html.has-coin *{cursor:none !important}
           <p>So the pool keeps quoting the old share count, and the first trader takes the difference from the LPs. Zolt is a hook that reads the same notice and charges the gap to whoever trades into it.</p>
         </div>
         <div class="filecard">
-          <div class="hd"><span>entry &middot; last notice</span><span>NVDA</span></div>
+          <div class="hd"><span>entry &middot; last notice</span><span>QQQ</span></div>
           <dl>
-            <dt>posted at block</dt><dd>58,952,659</dd>
-            <dt>posted</dt><dd>2026-09-09 23:50 UTC</dd>
-            <dt>effective</dt><dd>2026-09-10 00:00 UTC</dd>
-            <dt>notice</dt><dd>588 s</dd>
-            <dt>multiplier</dt><dd>1.000000 &rarr; 1.000775</dd>
-            <dt>pools holding it</dt><dd>13,089</dd>
+            <dt>posted at block</dt><dd>69,210,998</dd>
+            <dt>posted</dt><dd>2026-09-22 00:00 UTC</dd>
+            <dt>effective</dt><dd>2026-09-22 00:10 UTC</dd>
+            <dt>notice</dt><dd>584 s</dd>
+            <dt>multiplier</dt><dd>1.000000 &rarr; 1.000701</dd>
+            <dt>pools holding it</dt><dd>1,365</dd>
           </dl>
         </div>
       </div>
     </header>
 
     <div class="band-row">
-      <div class="stat"><span class="lab">Steps announced</span><div class="n">31</div><div class="s">524&ndash;588 s of notice each</div></div>
-      <div class="stat"><span class="lab">Taken by those steps</span><div class="n sg">$72</div><div class="s">all 31 together &middot; 0.00021011 ETH</div></div>
-      <div class="stat"><span class="lab">Sitting in pools now</span><div class="n">$50.3M</div><div class="s">31,814 pools &middot; block 68,685,412</div></div>
+      <div class="stat"><span class="lab">Steps announced</span><div class="n">37</div><div class="s">524&ndash;588 s of notice each</div></div>
+      <div class="stat"><span class="lab">Taken by those steps</span><div class="n sg">$80</div><div class="s">all 37 together &middot; 0.00021951 ETH</div></div>
+      <div class="stat"><span class="lab">Sitting in pools now</span><div class="n">$46.6M</div><div class="s">36,154 pools &middot; block 69,866,661</div></div>
       <div class="stat"><span class="lab">Tests green</span><div class="n tl">26 + 5</div><div class="s">v4-core PoolManager &middot; keeper</div></div>
     </div>
 
+    <section class="sec row" id="live">
+      <div class="sec-head"><span class="ix">&sect; 01</span><h2>Read the chain yourself</h2>
+        <p>This part is not a picture. It calls chain 4663 from your browser and reads 194 stock tokens: what one token stands for right now, and whether a change is already scheduled. Paste an address and it also reads that address&rsquo;s balances. Read-only — nothing here can sign anything.</p></div>
+      <div class="sec-body"><span class="gutter">live</span>
+        <div>
+          <div class="live">
+            <div class="live-hd">
+              <span class="lab" id="live-state">idle</span>
+              <button type="button" class="btn" id="live-read">Read the chain</button>
+            </div>
+            <div class="live-grid">
+              <div class="cell"><span class="k">Block</span><b id="live-block">&mdash;</b></div>
+              <div class="cell"><span class="k">Tokens read</span><b id="live-tokens">&mdash;</b></div>
+              <div class="cell"><span class="k">Schedules posted now</span><b id="live-armed">&mdash;</b></div>
+              <div class="cell"><span class="k">Next one effective</span><b id="live-next">&mdash;</b></div>
+            </div>
+            <div id="live-armed-list"></div>
+          </div>
+
+          <div class="live" style="margin-top:14px">
+            <div class="live-hd">
+              <span class="lab">Your own exposure</span>
+              <div class="addr">
+                <input id="addr" type="text" inputmode="text" spellcheck="false" placeholder="0x… an address to read" aria-label="Address to read">
+                <button type="button" class="btn" id="addr-go">Check</button>
+                <button type="button" class="btn ghost" id="addr-wallet">Use my wallet</button>
+              </div>
+            </div>
+            <div id="addr-out" class="addr-out"><p class="foot">Nothing is stored and nothing is sent anywhere except the chain&rsquo;s public RPC, which has to see the address to answer. No signature is ever requested.</p></div>
+          </div>
+          <p class="foot">This is the whole of the warning the chain gives an LP: a notice, minutes ahead, that nobody&rsquo;s pool is reading. A pool opened with the hook in &sect; 06 prices that notice into its own swaps instead. No pool that exists today can be given one.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="sec row" id="model">
-      <div class="sec-head"><span class="ix">&sect; 01</span><h2>Model a split</h2>
+      <div class="sec-head"><span class="ix">&sect; 02</span><h2>Model a split</h2>
         <p>Two identical pools, 1,000 tokens against 100,000 quote, token at 100. The token splits, someone buys right after. Same fee rule as the contract: 1 &minus; P/T, rounded up.</p></div>
       <div class="sec-body"><span class="gutter">illustration</span>
         <div class="model">
@@ -405,7 +488,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
     </section>
 
     <section class="sec row" id="ledger">
-      <div class="sec-head"><span class="ix">&sect; 02</span><h2>The ledger of steps</h2>
+      <div class="sec-head"><span class="ix">&sect; 03</span><h2>The ledger of steps</h2>
         <p>Every multiplier change on chain 4663 since launch, oldest first. The notice always went up first: 524 to 588 seconds. Entry 01 and 02 are CRWD going &times;4 the day after launch, when a single pool held it &mdash; a pool that has seen 1 swap in its whole life.</p></div>
       <div class="sec-body"><span class="gutter">read from chain</span>
         <div class="ledger">
@@ -443,44 +526,50 @@ html.has-coin,html.has-coin *{cursor:none !important}
           <tr><td class="ix">29</td><td class="sym">HPE</td><td class="dt">2026-09-17</td><td class="n mult">+0.172%</td><td class="n">580 s</td><td class="n">85</td><td class="n">$0.00</td></tr>
           <tr><td class="ix">30</td><td class="sym">CRM</td><td class="dt">2026-09-17</td><td class="n mult">+0.115%</td><td class="n">580 s</td><td class="n">76</td><td class="n">$0.00</td></tr>
           <tr><td class="ix">31</td><td class="sym">SPY</td><td class="dt">2026-09-18</td><td class="n mult">+0.172%</td><td class="n">584 s</td><td class="n">3,837</td><td class="n">$48</td></tr>
+          <tr><td class="ix">32</td><td class="sym">XLK</td><td class="dt">2026-09-21</td><td class="n mult">+0.080%</td><td class="n">572 s</td><td class="n">58</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">33</td><td class="sym">VST</td><td class="dt">2026-09-21</td><td class="n mult">+0.111%</td><td class="n">568 s</td><td class="n">50</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">34</td><td class="sym">AVGO</td><td class="dt">2026-09-21</td><td class="n mult">+0.126%</td><td class="n">564 s</td><td class="n">77</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">35</td><td class="sym">META</td><td class="dt">2026-09-21</td><td class="n mult">+0.054%</td><td class="n">559 s</td><td class="n">2,007</td><td class="n">$2</td></tr>
+          <tr><td class="ix">36</td><td class="sym">LHX</td><td class="dt">2026-09-21</td><td class="n mult">+0.492%</td><td class="n">552 s</td><td class="n">31</td><td class="n">$0.00</td></tr>
+          <tr><td class="ix">37</td><td class="sym">QQQ</td><td class="dt">2026-09-22</td><td class="n mult">+0.070%</td><td class="n">584 s</td><td class="n">1,365</td><td class="n">$6</td></tr>
             </tbody>
-            <tfoot><tr><td colspan="7">31 entries &middot; attributable = min(actual gain, quantity &times; pre-step price &times; (ratio &minus; 1)), per quote currency</td></tr></tfoot>
+            <tfoot><tr><td colspan="7">37 entries &middot; attributable = min(actual gain, quantity &times; pre-step price &times; (ratio &minus; 1)), per quote currency</td></tr></tfoot>
           </table>
         </div>
       </div>
     </section>
 
     <section class="sec row" id="exposure">
-      <div class="sec-head"><span class="ix">&sect; 03</span><h2>What is sitting in pools</h2>
+      <div class="sec-head"><span class="ix">&sect; 04</span><h2>What is sitting in pools</h2>
         <p>Top eight stock tokens by value held in pools today. Every one of them has already stepped at least once.</p></div>
       <div class="sec-body"><span class="gutter">valued</span>
         <div>
           <div class="xwrap" role="list">
-        <div class="xrow" role="listitem"><span class="t">SPY</span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="v">$15.0M</span><span class="v dim">61.38% of supply</span></div>
-        <div class="xrow" role="listitem"><span class="t">NVDA</span><span class="track"><span class="fill" style="width:68.9%"></span></span><span class="v">$10.3M</span><span class="v dim">50.51% of supply</span></div>
-        <div class="xrow" role="listitem"><span class="t">SPCX</span><span class="track"><span class="fill" style="width:22.2%"></span></span><span class="v">$3.3M</span><span class="v dim">30.7% of supply</span></div>
-        <div class="xrow" role="listitem"><span class="t">AAPL</span><span class="track"><span class="fill" style="width:16.9%"></span></span><span class="v">$2.5M</span><span class="v dim">46.41% of supply</span></div>
-        <div class="xrow" role="listitem"><span class="t">GOOGL</span><span class="track"><span class="fill" style="width:16.8%"></span></span><span class="v">$2.5M</span><span class="v dim">46.44% of supply</span></div>
-        <div class="xrow" role="listitem"><span class="t">META</span><span class="track"><span class="fill" style="width:15.1%"></span></span><span class="v">$2.3M</span><span class="v dim">43.21% of supply</span></div>
-        <div class="xrow" role="listitem"><span class="t">MU</span><span class="track"><span class="fill" style="width:14.9%"></span></span><span class="v">$2.2M</span><span class="v dim">47.79% of supply</span></div>
-        <div class="xrow" role="listitem"><span class="t">TSLA</span><span class="track"><span class="fill" style="width:10.0%"></span></span><span class="v">$1.5M</span><span class="v dim">30.18% of supply</span></div>
+        <div class="xrow" role="listitem"><span class="t">SPY</span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="v">$11.7M</span><span class="v dim">54.41% of supply</span></div>
+        <div class="xrow" role="listitem"><span class="t">NVDA</span><span class="track"><span class="fill" style="width:77.4%"></span></span><span class="v">$9.1M</span><span class="v dim">45.45% of supply</span></div>
+        <div class="xrow" role="listitem"><span class="t">META</span><span class="track"><span class="fill" style="width:29.3%"></span></span><span class="v">$3.4M</span><span class="v dim">60.58% of supply</span></div>
+        <div class="xrow" role="listitem"><span class="t">SPCX</span><span class="track"><span class="fill" style="width:27.9%"></span></span><span class="v">$3.3M</span><span class="v dim">29.3% of supply</span></div>
+        <div class="xrow" role="listitem"><span class="t">GOOGL</span><span class="track"><span class="fill" style="width:23.5%"></span></span><span class="v">$2.8M</span><span class="v dim">48.79% of supply</span></div>
+        <div class="xrow" role="listitem"><span class="t">AAPL</span><span class="track"><span class="fill" style="width:18.5%"></span></span><span class="v">$2.2M</span><span class="v dim">41.72% of supply</span></div>
+        <div class="xrow" role="listitem"><span class="t">MU</span><span class="track"><span class="fill" style="width:16.8%"></span></span><span class="v">$2.0M</span><span class="v dim">43.29% of supply</span></div>
+        <div class="xrow" role="listitem"><span class="t">QQQ</span><span class="track"><span class="fill" style="width:11.9%"></span></span><span class="v">$1.4M</span><span class="v dim">28.73% of supply</span></div>
           </div>
-          <p class="foot">Value at the last Chainlink print; raw tokens in the v4 PoolManager plus the stepped tokens&rsquo; v3 pools. 32 tokens with a feed, 160 more with pool balances and no feed. Block 68,685,412.</p>
+          <p class="foot">Value at the last Chainlink print; raw tokens in the v4 PoolManager plus the stepped tokens&rsquo; v3 pools. 32 tokens with a feed, 160 more with pool balances and no feed. Block 69,866,661.</p>
         </div>
       </div>
     </section>
 
     <section class="sec row" id="pools">
-      <div class="sec-head"><span class="ix">&sect; 04</span><h2>Which pools a hook can reach</h2>
-        <p>A pool&rsquo;s hook is fixed the day it opens: 27,646 of 30,862 v4 pools holding a stepped token already carry one.</p></div>
+      <div class="sec-head"><span class="ix">&sect; 05</span><h2>Which pools a hook can reach</h2>
+        <p>A pool&rsquo;s hook is fixed the day it opens: 31,454 of 35,145 v4 pools holding a stepped token already carry one.</p></div>
       <div class="sec-body"><span class="gutter">census</span>
         <div class="carbon">
           <h3>Today&rsquo;s pools are sealed. Tomorrow&rsquo;s aren&rsquo;t.</h3>
-          <p>Doppler runs 20,300 of those pools and takes plug-ins, but only a token&rsquo;s timelock can swap one, and almost every timelock is <code>0x0</code> or <code>0x&hellip;dEaD</code>.</p>
-          <div class="dots"><canvas id="dots" role="img" aria-label="20,300 Doppler pools, 20,279 of them sealed for good"></canvas></div>
-          <div class="legend"><span><i style="background:#B9861F"></i>20,279 sealed &middot; timelock burned</span><span><i style="background:#6FC3A8"></i>21 still changeable</span></div>
+          <p>Doppler runs 22,916 of those pools and takes plug-ins, but only a token&rsquo;s timelock can swap one, and almost every timelock is <code>0x0</code> or <code>0x&hellip;dEaD</code>.</p>
+          <div class="dots"><canvas id="dots" role="img" aria-label="22,916 Doppler pools, 22,892 of them sealed for good"></canvas></div>
+          <div class="legend"><span><i style="background:#B9861F"></i>22,892 sealed &middot; timelock burned</span><span><i style="background:#6FC3A8"></i>24 still changeable</span></div>
           <div class="facts">
-            <div class="fact"><span class="k">module slots filled</span><div class="v">20,136</div></div>
+            <div class="fact"><span class="k">module slots filled</span><div class="v">22,733</div></div>
             <div class="fact"><span class="k">who can change them</span><div class="v" style="color:#F07A55">nobody</div></div>
             <div class="fact"><span class="k">module governance</span><div class="v" style="font-size:14px">Safe 1.4.1 · 3-of-6</div></div>
             <div class="fact"><span class="k">fee a module may set</span><div class="v">&le; 10%</div></div>
@@ -495,7 +584,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
     </section>
 
     <section class="sec row" id="guard">
-      <div class="sec-head"><span class="ix">&sect; 05</span><h2>How the guard works, and what it can&rsquo;t do</h2></div>
+      <div class="sec-head"><span class="ix">&sect; 06</span><h2>How the guard works, and what it can&rsquo;t do</h2></div>
       <div class="sec-body"><span class="gutter">mechanism</span>
         <div class="two">
           <div class="note-box">
@@ -509,7 +598,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
           </div>
           <div class="note-box limits">
             <span class="lab">Read this part</span>
-            <div><b>No pool that exists today</b><p>Hooks are fixed at creation and Doppler&rsquo;s module slots are frozen. The $50.3M already in pools stays exposed.</p></div>
+            <div><b>No pool that exists today</b><p>Hooks are fixed at creation and Doppler&rsquo;s module slots are frozen. The $46.6M already in pools stays exposed.</p></div>
             <div><b>The module only softens</b><p>Capped at 10%, and it hears about a swap after it happens. Without a keeper, the first trade after a split gets through.</p></div>
             <div><b>It can&rsquo;t move the price</b><p>It charges the gap; the pool catches up as trades arrive. A pool nobody trades is exposed again once the window ends.</p></div>
             <div><b>The target is fixed when armed</b><p>If the market moves while a split is guarded, the fee can be larger or smaller than the true gap.</p></div>
@@ -521,7 +610,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
     </section>
 
     <section class="sec row" id="receipts">
-      <div class="sec-head"><span class="ix">&sect; 06</span><h2>Receipts</h2>
+      <div class="sec-head"><span class="ix">&sect; 07</span><h2>Receipts</h2>
         <p>26 Solidity tests against Uniswap&rsquo;s own v4-core PoolManager and 5 keeper tests. The rows where the guard still gives something away are tests too.</p></div>
       <div class="sec-body"><span class="gutter">tested</span>
         <div>
@@ -559,7 +648,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
     <footer>
       <div class="fine">
         <div>A prototype. Not affiliated with Robinhood Markets, Uniswap Labs or Whetstone Research.</div>
-        <div>Every figure on this page comes from read-only calls to chain 4663. Last read at block 68,685,412.</div>
+        <div>Every figure on this page comes from read-only calls to chain 4663. Last read at block 69,866,661.</div>
         <div>Unaudited and unsigned. Nothing here is investment advice.</div>
       </div>
       <div class="stampbox">Unsigned &middot; simulated &middot; not sent</div>
@@ -567,7 +656,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
   </div>
 </div>
 
-<script id="data" type="application/json">{"lead":"588","doppler":{"pools":20300,"burned":20279}}</script>
+<script id="data" type="application/json">{"lead":"584","doppler":{"pools":22916,"burned":22892},"rpc":"https://rpc.mainnet.chain.robinhood.com","chainId":4663,"tokens":[["NVDA","0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC",15251,1],["SPY","0x117cc2133c37B721F49dE2A7a74833232B3B4C0C",4052,1],["AAPL","0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9",3346,1],["META","0xc0D6457C16Cc70d6790Dd43521C899C87ce02f35",2193,1],["GOOGL","0x2e0847E8910a9732eB3fb1bb4b70a580ADAD4FE3",2186,1],["MSFT","0xe93237C50D904957Cf27E7B1133b510C669c2e74",1615,1],["QQQ","0xD5f3879160bc7c32ebb4dC785F8a4F505888de68",1376,1],["SGOV","0x92FD66527192E3e61d4DDd13322Aa222DE86F9B5",996,1],["COST","0x4EA005168D7F09a7A0Ba9D1DEf21a479950E44C2",732,1],["MU","0xfF080c8ce2E5feadaCa0Da81314Ae59D232d4afD",609,1],["LLY","0x8005d266423c7ea827372c9c864491e5786600ea",500,1],["UPS","0xf23250dac154D05Bb671CB0d0eBEf3c635c79CE2",394,1],["DELL","0x941AE714EC6D8130c7B75d67160Ca08f1e7d11Dd",370,1],["TSM","0x58FfE4a942d3885bAa22D7520691F611EF09e7AA",362,1],["ORCL","0xb0992820E760d836549ba69BC7598b4af75dEE03",351,1],["F","0x25C288E6D899b9BC30160965aD9644c67e73bE0C",326,1],["JNJ","0x03DfbBE0AC4E7bCDaFd08eD41A400326B77D8c80",237,1],["ASML","0x47F93d52cBeC7C6D2CfC080e154002370a60dAEA",201,1],["CCL","0x9651342CeA770aE9a2969Ba2A52611523146aef9",143,1],["XOM","0xf9B46d3D1B22199D4D1025a9cEDB540A33F1a2d5",104,1],["HPE","0x59dd09d4900C2E4B5F75b7c0d4E6796fcc234Cb1",88,1],["SOXX","0x75742c18BC1f1C5c5f448f4C9D9C6F66dafAAa38",83,1],["AVGO","0x156E175DD063a8cE274C50654eF40e0032b3fbcF",78,1],["CRM","0xd95B44124e475743a7589e68F3D74008A5536D44",77,1],["CRWD","0xea72Ecca2d0f6bFA1394DBBCff85b52CD4233931",68,1],["XLK","0x15Cd20759CE7F3285c29A319dE2D1A2e098c6f43",60,1],["AMAT","0x36046893810a7E7fCE501229d57dc3FC8c8716d0",57,1],["KSS","0x12e3c047bf9AeCAF9dDC98c05C31BFD1dd043993",54,1],["UNH","0xcF364ea52787e289De6F32077834056E3E70D6A8",53,1],["VST","0x561e2a49212b7cCF47f2744Ccb83e200722fADBc",50,1],["WDC","0xF52597345A8Edf418bc4071b4a35112472277D3e",39,1],["PR","0x4189F0c66EBBB0bfeF1C31f763131361EF32f77C",38,1],["VRT","0xFA78C12E6488814A0262E4e802749a4a737d5fB7",34,1],["LHX","0x48d60243c66437c6ac3c2495Be94747aEd5Dfe25",31,1],["AAOI","0x521Cf887E6531c6F667b5BC4D896E5d9bfE8EB2E",-1,0],["ABCL","0x3139D77Ace0cbAA5bDfD38bD1F1911a794AF0B0e",-1,0],["ADBE","0x232B8ed6377BE97813853B0Ac104c4Cda8378d1B",-1,0],["AEHR","0x5F604fBA1162193A4388A5DFa56F556f3E133cC2",-1,0],["AEIS","0xfAf9cb261B5FCC1f404Bb10CD39C5c6C1974E612",-1,0],["ALAB","0x748c32c3ca24eDf31ea597Db1F3d330a7a6DA3Dc",-1,0],["AMBA","0x99D9D8663545151603863C5AcbD6FC3218899009",-1,0],["AMC","0x05a3d1Cd21d0C88145E82600E62e7E496e0F222B",-1,0],["AMD","0x86923f96303D656E4aa86D9d42D1e57ad2023fdC",-1,0],["AMKR","0xDd356AA38F40A7b7076755aC854B6FBb1F0D305B",-1,0],["AMZN","0x12f190a9F9d7D37a250758b26824B97CE941bF54",-1,0],["ANET","0x28bABD556b60E53663B8615036479a29c2CDd1Bf",-1,0],["APLD","0xb8DBf92F9741c9ac1c32115E78581f23509916FD",-1,0],["APP","0xA249BAF1063Af884807C1E1400AEf7784836917E",-1,0],["ASTS","0x1AF6446f07eb1d97c546AFC8c9544cBDF3AD5137",-1,0],["AUR","0x373C06c4f7BDe527D7Dae4BA169E42b55E393CeD",-1,0],["AVAV","0xF6290b5e7C26502e2dA514C31509849718EA76A5",-1,0],["AXON","0xC27dBD474aF5181c5A8777903690D8D262D12648",-1,0],["AXTI","0x141eEa040c2250eEc0314e336975e81f85f6585e",-1,0],["BA","0x4D21483a44Bf67a86b77E3dA301411880797D452",-1,0],["BABA","0xad25Ac6C84D497db898fa1E8387bf6Af3532a1c4",-1,0],["BB","0x48E39E56aCdbA37b09020C0b734A613C9a2f100A",-1,0],["BE","0x822CC93fFD030293E9842c30BBD678F530701867",-1,0],["BND","0x2F62fC9fAbb470C690f141c28340eD832bB27020",-1,0],["BULL","0xceF9027c7d6985b85f0BA431125073529A947A68",-1,0],["CBRS","0x5c90450Bbb4273D7b2f17CF6917AEB237A569679",-1,0],["CEG","0xaE517A2903E68bd929Dfd15be875F8369D53e94a",-1,0],["CELH","0x8cF07C5A878945185d327aAa6e33FAa95F95e7bF",-1,0],["CIEN","0x44f6D488021f8233B9416294d1FE9b1fEe28382d",-1,0],["CLOV","0x62200915e7DEab1eC7f79fb246daDbB80eACdDd0",-1,0],["CLS","0xBf449977089c718C004a66C554B26B94ef3Ad4De",-1,0],["CLSK","0xcBB95BBF36099d34dA091dc6Fa6F49EfA257Cee3",-1,0],["COHR","0x92F9F459F1a9a5AD266b182BE7Bffd1C6c666894",-1,0],["COIN","0x6330D8C3178a418788dF01a47479c0ce7CCF450b",-1,0],["CRCL","0xdF0992E440dD0be65BD8439b609d6D4366bf1CB5",-1,0],["CRDO","0x4D67253bc223e6b0e104F1084c1fb2b669dDC41b",-1,0],["CRWV","0x5f10A1C971B69e47e059e1dC91901B59b3fB49C3",-1,0],["CSCO","0xF543967EEBB6f1917992eF0E68De63ab07a5a0dA",-1,0],["CTSH","0x63D5a3b6939a33f1e75d8Bcd85759858239600DB",-1,0],["CVNA","0xa4f319104089FE321dc8093C6E707d4fE190A988",-1,0],["DDOG","0x27c99fBde9D0d2AA4f4Bfb4943f237843DdF6958",-1,0],["DJT","0x1D11f0496982706C5e14A514D4E79F2e6BdE4516",-1,0],["DOCN","0xc02f12B9fe9E707079EC0d546f3050d3F6C1F8bD",-1,0],["ELF","0x39EC44Bee4F6A116c6F9B8De566848a985C53C60",-1,0],["EWT","0x1c690498150252222C275A5CEd69d3A6b1f52D5E",-1,0],["EWY","0x7f0aBeF0C07280F82c6a08ead09dEd6BAE2C13Fc",-1,0],["FICO","0xa48F22A46C0F1C46CA7D111CB6c137c271987180",-1,0],["FIG","0x41F4267525a8AFf329540eF24fD83d9044758B33",-1,0],["FISV","0x9ECe29A4A2397C0a35fb5fA8EE2b9509130a98cc",-1,0],["FIX","0x93Dbb1d2Dc5D63F4abACFF30485273f538Df68Ac",-1,0],["FLNC","0x282e87451E10fA6679BC7D76C69BE44cD3fC777C",-1,0],["FLY","0x03BC731Ffb162cdd7B98D3C6542bFC291126075d",-1,0],["FTNT","0x3FB8976980d486084b2eb4a404BD12e72823958f",-1,0],["FUTU","0xeB30663bDFf0622Ef4e4E5cBb4E975F19f33f51D",-1,0],["GE","0x63b814DDBd6BF339f25Fed8c36158a008D5B373e",-1,0],["GEV","0x94B8AAE43A1cCc08Aa64B7D1F29b4D920aF4a0C9",-1,0],["GLD","0xC9a981FEE1F9DEc688bb123ccDeCc63D0deBFC4e",-1,0],["GLW","0x7c04E6A3368F2A1DE3874f0e80d2e0A1a9915da6",-1,0],["GLXY","0x2D427692E928fa156ec22acfaBaFA0447C5805B7",-1,0],["GME","0x1b0E319c6A659F002271B69dB8A7df2F911c153E",-1,0],["HII","0xEB61c0Ed490A367d4E3631cCf8a74B3bfc7E775D",-1,0],["HIMS","0xCceE82fE024c36fA15E1005edE3E9e4787e23D09",-1,0],["HWM","0xAEa445c5F3DB1a462998ccC422A875A361ee5d99",-1,0],["IBM","0x980dcf6766FA79f5Cf0c4AAdb3ab477ff15a9619",-1,0],["IBRX","0x7c148F74ac7445D1F28366b7FcDC6792a9Fcd0Cf",-1,0],["INDA","0xACEF2e09adb47aD6aBeBAD9fF06689E60615C2B6",-1,0],["INFQ","0xB853bC83a753342a4f8320ea680b4B1E84118D21",-1,0],["INOD","0xf1953DAB6FaD537488d5A022361FfAa8B4c95eC6",-1,0],["INTC","0xc72b96e0E48ecd4DC75E1e45396e26300BC39681",-1,0],["INTU","0x56d23beE5f41A7120170b0c603Dae30128e460e9",-1,0],["IONQ","0x558378E000D634A36593E338eBacdd6207640EfE",-1,0],["IREN","0xF0AB0c93bE6F41369d302e55db1A96b3c430212D",-1,0],["JBL","0xEAf2512dFC1bEAc608F8794B3793CD4E02894Aa6",-1,0],["JOBY","0xb334C5cE741B80B5B671F47F5C269Cb193fe8E24",-1,0],["KLAC","0x96b933C74eCB4A0926b9210cef7b743EF46be2E9",-1,0],["KTOS","0x7FD06a4d81cCfA3F351394E144d5191874C31313",-1,0],["LITE","0x8eF20885F94e3D9bc7eB3080279188Bd5ED7c08C",-1,0],["LMT","0x329fcACEb9AD6F9580DD5F643fed0646900D043c",-1,0],["LRCX","0x57b0030166DB0C31690d1A5aA167e2e26e2C29a4",-1,0],["LULU","0x4e62068525Ab11FE768e29dfD00ef909B9803016",-1,0],["LUNR","0xa5D4968421bA94814Be3B136b15cf422101aC1a3",-1,0],["MDB","0xDdf2266b79abf0B48898959B0ed6E6adf512be74",-1,0],["MOD","0xc6Cbad1016b38B797610c25E1dc7D95988B1f362",-1,0],["MPWR","0x52D50D0280AD1054b43f052bD70a49a212A1b128",-1,0],["MRNA","0x43B07D15cE533bEc5476d70C22a78a1B2B662155",-1,0],["MRVL","0x62fd0668e10D8B72339BE2DCF7643001688ff13B",-1,0],["MSTR","0xec262a75e413fAfD0dF80480274532C79D42da09",-1,0],["MTSI","0xC93f4d80e268AB922e871bd169156C3CC41894e6",-1,0],["MXL","0x48961813349333209994750ffA89b3c5C22eC969",-1,0],["NAVN","0xf7181b63Fdb858558A74ba96BC42732684cd7965",-1,0],["NBIS","0x9D9c6684F596F66a64C030B93A886D51Fd4D7931",-1,0],["NET","0x116F00968269B7bfbaD4109cE591d6E74c0601d4",-1,0],["NFLX","0xE0444EF8BF4eD74f74FD73686e2ddF4C1c5591E8",-1,0],["NNE","0xBEF75684C43c4ea7BD18Dd532a2244674Ee8b926",-1,0],["NOW","0x0C3260aF4B8f13a69c4c2dFb84fD667890CDFa14",-1,0],["NU","0x408c14038a04f7bD235329E26d2bf569ee20e250",-1,0],["NVTS","0xbE6702d7b70315376dC48a3293f24f0982F86386",-1,0],["OKLO","0x8B2f88497f15A18E9D4FFa1a8fFB8538399aE774",-1,0],["ON","0xbBD09F72b025360FeE5C928053Dca6248d35be54",-1,0],["ONTO","0x8ff63eAeEe3fE54Ba450c4F5538064Ec5A893Aef",-1,0],["OUST","0x40E7a279850e443f582059ae5dC1c3b6563E6395",-1,0],["P","0x1Cdad396DB64BDa184d5182A97Dd9B3C62100b7D",-1,0],["PANW","0xB039597eD45CBa7B6E2fb9E8BE51802969CEe5Be",-1,0],["PATH","0xfb2664f07B6Aadd29ea7a59D8859b1AeB8645cDa",-1,0],["PENG","0x9b23573b156B52565012F5cE02CDF60AFBaa70Be",-1,0],["PFE","0x7066A64c24e4206CD62E83bf198c1E7EB361F51e",-1,0],["PL","0xAA4d64474c172010aB57719cb9951E6142a100d3",-1,0],["PLTR","0x894E1EC2D74FFE5AEF8Dc8A9e84686acCB964F2A",-1,0],["POET","0xcf6B2D875361be807EAfa57458c80f28521F9333",-1,0],["POWL","0x237c16D66590F67B886d978ACD362EAeaD8B18c7",-1,0],["PWR","0x9Ab02Ead789b6903c3c44d0ED32F9c707CDF12FD",-1,0],["QBTS","0xC583c60aeF9Dc401Da72cEC1B404743a93cea1Cc",-1,0],["QCOM","0x0f17206447090e464C277571124dD2688E48AEA9",-1,0],["QUBT","0x59818904ab4cE163b3cE4FfB64f2D6Ca02c434B4",-1,0],["RBLX","0xF0C4BF4C582cb3836e98394b1d4e7B7281101bE8",-1,0],["RCAT","0xFDE6b5d9BB419B10C23268c74e369AbFF39C0460",-1,0],["RDDT","0x05b37Fb53A299a1b874A619e1c4C404D52C36F4C",-1,0],["RDW","0x92Ef19E82bD8fF36661DE838D5eaE7e5CEF0EfFE",-1,0],["RGTI","0x284358abc07F9359f19f4b5b4aC91901Be2597Ba",-1,0],["RIVN","0xB1BF26c1D20ff267A4f93550d1E0d06ac40a114B",-1,0],["RKLB","0x3b14C39E89D60D627b42a1A4CA45b5bb45Fc12e2",-1,0],["RUN","0x756Bc80af765C82da966a788858d65aDF14f3793",-1,0],["SATS","0x95052ddcd5DC25641657424A8Cf04834997E1730",-1,0],["SCHD","0xd63ABB2C13d7a8421a8017a712802053568e3C1D",-1,0],["SHOP","0xF53F66751B1Eff985311b693531E3290F600c410",-1,0],["SHY","0xBE274710Bf3d9567e1B290eF6a5F9f90ca016FD8",-1,0],["SIMO","0x77E655E37F4d913fB9540e0d541D824171a60e81",-1,0],["SKHY","0x84CAb63bc87912E71ad199ff14A0bA45de68FeF8",-1,0],["SLS","0x285b231728c7E4333799183DF1094d775246a535",-1,0],["SLV","0x411eFb0E7f985935DAec3D4C3ebaEa0d0AD7D89f",-1,0],["SMCI","0xc01aA1fECeC0605b13bc84874ff7256C0f5F562a",-1,0],["SMH","0x072f979c2CAc8e1391B0162a87Fee094bF8744a0",-1,0],["SMR","0x1Eebee7F74517e0279dFb09d25B0407bEEc3FDd6",-1,0],["SNAP","0xF6589F11Bc40b669e584073F428B05562F568733",-1,0],["SNDK","0xB90A19fF0Af67f7779afF50A882A9CfF42446400",-1,0],["SNOW","0xBa0CAB75495255d0cB58E22B648bFED4ECD1F47E",-1,0],["SOFI","0x98E75885157C80992A8D41b696D8c9C6Fb30A926",-1,0],["SOUN","0x6E3Dfd9f7e1649BaA14D25cac18C94d62dB10A54",-1,0],["SPCX","0x4a0E65A3EcceC6dBe60AE065F2e7bb85Fae35eEa",-1,0],["SPMO","0xAd622320e520de39e72d41EF07438C3Fd3354875",-1,0],["TE","0xb1969f6604CA1AE7a2cD3F1827876e914594CA2D",-1,0],["TEAM","0x5B97476b922F3305131B8f0B9D333172E87f4aaE",-1,0],["TEM","0xB1CC0EC7Db69Cf43539119814df40071b9d61793",-1,0],["TER","0x2778C5024D5cA2CdB0f8eAD671ffc69963AdCD9C",-1,0],["TSEM","0x89776d4Cd68193597A2fC132cfaC1fDe36CCeA8a",-1,0],["TSLA","0x322F0929c4625eD5bAd873c95208D54E1c003b2d",-1,0],["TTD","0x0b5fb4031cae9163db10B169Ee72685F0EdC8545",-1,0],["TTWO","0x5e81213613b6B86EaB4c6c50d718d34359459786",-1,0],["UMC","0x0E6e67Ba88e7b5d9B67636A215c76779B948dE79",-1,0],["USAR","0xd917B029C761D264c6A312BBbcDA868658eF86a6",-1,0],["USO","0xa30FA36Db767ad9eD3f7a60fC79526fB4d56D344",-1,0],["VICR","0x6006ed4B2F94110851ff7509D97D034f0EeD9226",-1,0],["VSAT","0x26dCbfb34FC83CAbD6990f449674efDc6097fF85",-1,0],["VTI","0x0594134DF3f171a354D9C85eBD65b7A6148F6D09",-1,0],["WDAY","0x82DA4646242e1D962e96e932269Dc644c94a9CaA",-1,0],["WULF","0x348Be1A8663f15edDe5CDf8A96BB69078f7aB6Fd",-1,0],["WYFI","0x9e7ABD3C9139D14E4c86DcE0e455AAB7A0C2FB3E",-1,0],["XNDU","0xA8eB3BCcbf2017eE7CBfb652eB51CF2E1B153289",-1,0],["ZM","0x44c4F142009036cF477eD2d09932051843137CF1",-1,0],["ZS","0x7dc013eB55e436f30d7ED1AFE4E36d6e45e3c3f7",-1,0]]}</script>
 <script>
 (function(){
   var DATA = {}; try { DATA = JSON.parse(document.getElementById('data').textContent); } catch (e) {}
@@ -594,6 +683,173 @@ html.has-coin,html.has-coin *{cursor:none !important}
     sp.addEventListener('click', skip);
     addEventListener('keydown', skip, { once: true });
     addEventListener('wheel', skip, { once: true, passive: true });
+  })();
+
+  /* ------------------------------------------------ live: the page reads chain 4663 itself
+     Plain JSON-RPC batches over fetch, no library and no server of ours in the middle. Read-only calls
+     only: eth_blockNumber and eth_call. Nothing here can build, sign or send a transaction. */
+  (function(){
+    // the chain first; if this reader's network cannot reach it (some ISPs hijack DNS for the RPC host)
+    // the page falls back once to the site's own read-only relay and stays there
+    var RPC = DATA.rpc, RELAY = '/api/rpc', endpoint = DATA.rpc, TOKENS = DATA.tokens || [];
+    var SEL = { mult: '0xa60bf13d', next: '0xdc767007', eff: '0x97a4064f', bal: '0x70a08231' };
+    var state = { block: 0, rows: [], read: false };
+    var el = function(id){ return document.getElementById(id); };
+    var txt = function(id, s, cls){ var n = el(id); if (!n) return; n.textContent = s; n.className = cls || ''; };
+    var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); };
+    var pad = function(a){ return '000000000000000000000000' + a.replace(/^0x/, '').toLowerCase(); };
+    var big = function(hex){ try { return BigInt(hex || '0x0'); } catch (e) { return 0n; } };
+    var dec18 = function(v){ return Number(v) / 1e18; };
+
+    // one HTTP request per chunk of calls; the node is happier with batches under a hundred
+    function batch(calls){
+      var out = [], chunks = [];
+      for (var i = 0; i < calls.length; i += 80) chunks.push(calls.slice(i, i + 80));
+      return chunks.reduce(function(p, chunk, ci){
+        return p.then(function(){
+          var body = chunk.map(function(c, i){
+            return { jsonrpc: '2.0', id: ci * 80 + i, method: c.method || 'eth_call',
+              params: c.method === 'eth_blockNumber' ? [] : [{ to: c.to, data: c.data }, 'latest'] };
+          });
+          var post = function (url) {
+            return fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+              .then(function(r){ if (!r.ok) throw new Error('rpc ' + r.status); return r.json(); });
+          };
+          return post(endpoint)
+            .catch(function(err){
+              if (endpoint === RELAY) throw err;
+              endpoint = RELAY;
+              return post(RELAY);
+            })
+            .then(function(j){
+              var byId = {};
+              (Array.isArray(j) ? j : [j]).forEach(function(x){ byId[x.id] = x.result; });
+              chunk.forEach(function(c, i){ out.push(byId[ci * 80 + i]); });
+            });
+        });
+      }, Promise.resolve()).then(function(){ return out; });
+    }
+
+    function ago(sec){
+      var d = Math.abs(sec), s;
+      if (d < 90) s = Math.round(d) + ' s';
+      else if (d < 5400) s = Math.round(d / 60) + ' min';
+      else if (d < 172800) s = Math.round(d / 3600) + ' h';
+      else s = Math.round(d / 86400) + ' d';
+      return sec >= 0 ? 'in ' + s : s + ' ago';
+    }
+
+    function readChain(){
+      var btn = el('live-read');
+      btn.disabled = true;
+      txt('live-state', 'calling ' + RPC.replace('https://', '') + ' …', 'lab');
+      var calls = [{ method: 'eth_blockNumber' }];
+      TOKENS.forEach(function(t){
+        calls.push({ to: t[1], data: SEL.mult }, { to: t[1], data: SEL.next }, { to: t[1], data: SEL.eff });
+      });
+      return batch(calls).then(function(res){
+        state.block = parseInt(res[0] || '0x0', 16);
+        var now = Math.floor(Date.now() / 1000), armed = [];
+        state.rows = TOKENS.map(function(t, i){
+          var m = big(res[1 + i * 3]), n = big(res[2 + i * 3]), e = Number(big(res[3 + i * 3]));
+          var row = { sym: t[0], addr: t[1], pools: t[2], stepped: !!t[3], mult: dec18(m), next: dec18(n), eff: e,
+            armed: m !== n && n > 0n, ratio: m > 0n ? dec18(n) / dec18(m) : 1 };
+          if (row.armed) armed.push(row);
+          return row;
+        });
+        state.read = true;
+        txt('live-block', state.block.toLocaleString('en-US'));
+        txt('live-tokens', String(state.rows.filter(function(r){ return r.mult > 0; }).length) + ' / ' + TOKENS.length);
+        txt('live-armed', String(armed.length), armed.length ? 'hot' : 'calm');
+        armed.sort(function(a, b){ return a.eff - b.eff; });
+        txt('live-next', armed.length ? ago(armed[0].eff - now) : 'nothing scheduled');
+        el('live-armed-list').innerHTML = armed.length ? armedTable(armed, now)
+          : '<p class="msg">No stock token has a different multiplier queued at this block. Every step so far was posted '
+            + '524–588 seconds ahead, so this line is how much warning a pool would have.</p>';
+        txt('live-state', 'read at block ' + state.block.toLocaleString('en-US') + (endpoint === RELAY ? ' · via this site’s relay' : ' · straight from the chain'), 'lab');
+        btn.disabled = false;
+      }).catch(function(err){
+        txt('live-state', 'could not reach the chain: ' + err.message, 'lab');
+        el('live-armed-list').innerHTML = '<p class="msg bad">The RPC did not answer. Nothing on this page changed; '
+          + 'the measured figures elsewhere come from files, not from this call.</p>';
+        btn.disabled = false;
+      });
+    }
+
+    function armedTable(rows, now){
+      return '<div class="wrapx"><table><thead><tr><th>Token</th><th class="n">Now</th><th class="n">Queued</th>'
+        + '<th class="n">Step</th><th class="n">Effective</th><th class="n">Pools</th></tr></thead><tbody>'
+        + rows.map(function(r){
+          return '<tr><td class="sym">' + esc(r.sym) + '</td><td class="n">' + r.mult.toFixed(6) + '</td><td class="n">'
+            + r.next.toFixed(6) + '</td><td class="n hot">' + (r.ratio >= 1.5 ? '×' + r.ratio.toFixed(3)
+            : (r.ratio >= 1 ? '+' : '') + ((r.ratio - 1) * 100).toFixed(3) + '%') + '</td><td class="n">'
+            + ago(r.eff - now) + '</td><td class="n">' + (r.pools < 0 ? 'not counted' : r.pools.toLocaleString('en-US')) + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+    }
+
+    function checkAddress(addr){
+      var out = el('addr-out');
+      if (!/^0x[0-9a-fA-F]{40}$/.test(addr)) {
+        out.innerHTML = '<p class="msg bad">That is not a 20-byte address.</p>';
+        return;
+      }
+      out.innerHTML = '<p class="msg">reading ' + TOKENS.length + ' balances…</p>';
+      var start = state.read ? Promise.resolve() : readChain();
+      start.then(function(){
+        return batch(TOKENS.map(function(t){ return { to: t[1], data: SEL.bal + pad(addr) }; }));
+      }).then(function(res){
+        var held = [];
+        res.forEach(function(r, i){
+          var b = big(r);
+          if (b > 0n) held.push({ row: state.rows[i], bal: dec18(b) });
+        });
+        if (!held.length) {
+          out.innerHTML = '<p class="msg">That address holds none of the ' + TOKENS.length + ' stock tokens at block '
+            + state.block.toLocaleString('en-US') + '. Holding one is not the exposure that matters anyway — '
+            + 'liquidity in a pool that holds one is.</p>';
+          return;
+        }
+        held.sort(function(a, b){ return b.bal - a.bal; });
+        var now = Math.floor(Date.now() / 1000);
+        out.innerHTML = '<div class="wrapx"><table><thead><tr><th>Token</th><th class="n">Balance</th>'
+          + '<th class="n">Shares per token</th><th class="n">Scheduled</th><th class="n">Pools holding it</th>'
+          + '</tr></thead><tbody>'
+          + held.map(function(h){
+            var r = h.row;
+            return '<tr><td class="sym">' + esc(r.sym) + '</td><td class="n">' + h.bal.toLocaleString('en-US', { maximumFractionDigits: 6 })
+              + '</td><td class="n">' + r.mult.toFixed(6) + '</td><td class="n' + (r.armed ? ' hot' : '') + '">'
+              + (r.armed ? '×' + r.ratio.toFixed(3) + ' ' + ago(r.eff - now) : 'none') + '</td><td class="n">'
+              + (r.pools < 0 ? 'not counted' : r.pools.toLocaleString('en-US')) + '</td></tr>';
+          }).join('')
+          + '</tbody></table></div><p class="msg">Read at block ' + state.block.toLocaleString('en-US')
+          + '. Balances do not move when a multiplier changes — the number of shares each token stands for does.</p>';
+      }).catch(function(err){
+        out.innerHTML = '<p class="msg bad">Could not read balances: ' + esc(err.message) + '</p>';
+      });
+    }
+
+    if (el('live-read')) {
+      el('live-read').addEventListener('click', readChain);
+      el('addr-go').addEventListener('click', function(){ checkAddress(el('addr').value.trim()); });
+      el('addr').addEventListener('keydown', function(e){ if (e.key === 'Enter') checkAddress(el('addr').value.trim()); });
+      // the wallet is only ever asked who it is; this page has no transaction to offer it
+      el('addr-wallet').addEventListener('click', function(){
+        var eth = window.ethereum;
+        if (!eth) { el('addr-out').innerHTML = '<p class="msg">No wallet in this browser. Paste an address instead.</p>'; return; }
+        eth.request({ method: 'eth_requestAccounts' }).then(function(acc){
+          if (acc && acc[0]) { el('addr').value = acc[0]; checkAddress(acc[0]); }
+        }).catch(function(err){
+          el('addr-out').innerHTML = '<p class="msg">' + esc(err.message || 'the wallet said no') + '</p>';
+        });
+      });
+      // read once when the section first comes into view, so the page opens without a network call
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function(es){
+          es.forEach(function(e){ if (e.isIntersecting && !state.read) { io.disconnect(); readChain(); } });
+        }, { rootMargin: '200px' });
+        io.observe(el('live-read'));
+      }
+    }
   })();
 
   /* ------------------------------------------------ the split model */

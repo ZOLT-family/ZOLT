@@ -7,7 +7,7 @@ Who, and why them (from `evidence/doppler.json`, `evidence/doppler-authorities.j
 
 | Recipient | Why | Public contact seen on chain |
 |---|---|---|
-| Whetstone Research (Doppler) | Their `DopplerHookInitializer` is the hook on 20,300 of the 30,862 v4 pools holding a stepped stock token on chain 4663. New launches can select a Zolt module; enabling it is their Safe's call (3-of-6). | `@custom:security-contact security@whetstone.cc` in the verified source |
+| Whetstone Research (Doppler) | Their `DopplerHookInitializer` is the hook on 22,916 of the 35,145 v4 pools holding a stepped stock token on chain 4663. New launches can select a Zolt module; enabling it is their Safe's call (3-of-6). | `@custom:security-contact security@whetstone.cc` in the verified source |
 | Author of `RehypeDopplerHookInitializer` | Their module sits in 8,293 of those pools' slots, which can no longer change. A next version could include the check. | none found yet |
 | Author of module `0x6f02…0f77` | 11,632 slots; source not verified on Sourcify. | none found |
 | Launchpads on other hooks (PairV4Hook 1,437 pools, PonsV2MemeHook 1,240, LaunchHook 817 + 656) | Their next pools could use the Zolt hook, or the same check in their own hook. | none collected |
@@ -24,10 +24,10 @@ On Robinhood Chain (4663), stock tokens implement ERC-8056: the issuer changes h
 for (`uiMultiplier`), on a schedule posted on chain about 10 minutes ahead (`newUIMultiplier`, `effectiveAt`).
 Pools price the raw token and never read it, so after a step the pool quotes the old share count.
 
-Your `DopplerHookInitializer` is the hook on 20,300 of the 30,862 v4 pools on 4663 that hold a stock token whose
-multiplier has already stepped. We measured the 31 steps since launch: so far about $72 has actually been taken,
+Your `DopplerHookInitializer` is the hook on 22,916 of the 35,145 v4 pools on 4663 that hold a stock token whose
+multiplier has already stepped. We measured the 37 steps since launch: so far about $80 has actually been taken,
 because the steps were small (0.002% to 0.46%) and the one ×4 split (CRWD, 2 July) hit a single empty pool. The
-pools are much larger now (about $50M of stock tokens sit in v4 pools), and a split would reach all of them at
+pools are much larger now (about $47M of stock tokens sit in v4 pools), and a split would reach all of them at
 once.
 
 We wrote a Doppler Hook module that reads the schedule and sets the pool's dynamic fee to the step's gap until

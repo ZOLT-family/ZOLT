@@ -1,43 +1,7 @@
-# npx hardhat test solidity — 2026-09-22T16:22:30Z
-# @uniswap/v4-core 1.0.2  hardhat "3.17.0"  solc 0.8.26 cancun via-IR  fuzz seed pinned in hardhat.config.ts
-23 |             tstore(CURRENCY_SLOT, 0)
-  test/ZoltDopplerModule.t.sol:ZoltDopplerModuleTest
-    ✔ test_withoutAPokeTheFirstTradeGetsThroughAndTheSecondIsCharged()
-    ✔ test_whileArmedTheFeeAppliesToBothDirections()
-    ✔ test_pokedWhenTheScheduleIsPostedNothingIsTaken()
-    ✔ test_pokeRejectsUnknownAssets()
-    ✔ test_onlyTheInitializerCanCallTheCallbacks()
-    ✔ test_feeReturnsToBaseOnceBuyersReprice()
-    ✔ test_bigSplitIsOnlyPartlyPricedUnderDopplersTenPercentCap()
-    ✔ test_attachSetsTheBaseFee()
-    ✔ test_aFailingFeeUpdateNeverBlocksSwaps()
-  test/Deployment.t.sol:DeploymentTest
-salts tried: 20601
-    ✔ test_mineDeployAndTradeWithoutEtch()
-  test/Zolt.t.sol:ZoltTest
-    ✔ test_twoStocksSteppingTogetherLeaveThePriceAlone()
-    ✔ test_twoStepsBeforeThePoolCatchesUpCompose()
-    ✔ test_tokenThatStopsAnsweringFailsOpen()
-    ✔ test_sellsPayTheBaseFeeDuringAStepUp()
-    ✔ test_scheduleBeyondTheLookaheadIsNotPricedYet()
-    ✔ test_reverseStepProtectsSells()
-    ✔ test_rejectsStaticFeePools()
-    ✔ test_rejectsPoolsWithoutAStockToken()
-    ✔ test_onlyThePoolManagerCanCallTheHook()
-    ✔ test_guardedPoolChargesThe4xStep()
-    ✔ test_guardWindowEnds()
-    ✔ test_guardClearsOnceBuyersRepriceThePool()
-    ✔ test_cancelledScheduleDisarmsTheGuard()
-    ✔ test_buyInsideTheLookaheadIsGuardedToo()
-    ✔ test_bareUnguardedPoolIsDrainedAtA4xStep()
     ✔ testFuzz_nothingTakenAcrossStepSizes(uint256,uint256) (runs: 256)
-  26 passing
 
-# node --test keeper/logic.test.cjs
-✔ decodes the real NVDA step from chain 4663 (2.3839ms)
-✔ indexes registrations by the stock side only (1.7931ms)
-✔ pokes inside the lookahead, not before it, not after the guard window (0.7629ms)
-✔ an asset registered on two stepping tokens is poked once (0.5125ms)
-✔ steps on tokens nobody registered produce nothing (0.2389ms)
+26 passing (26 solidity)
+
+ℹ tests 5
 ℹ pass 5
 ℹ fail 0

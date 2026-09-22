@@ -25,7 +25,8 @@ const usd = (n) => '$' + Number(n).toLocaleString('en-US', { maximumFractionDigi
 const millions = (n) => '$' + (n / 1e6).toFixed(1) + 'M';
 const iso = (s) => s.replace('.000Z', 'Z').replace('T', ' ').slice(0, 16) + ' UTC';
 
-const nvda = steps.find((s) => s.sym === 'NVDA');
+// the newest entry in the ledger: the card in the masthead always shows the most recent step, not a fixed ticker
+const last = steps[steps.length - 1];
 const leads = steps.map((s) => s.leadSeconds).filter((x) => x > 0 && x < 3600).sort((a, b) => a - b);
 const burned = dopplerAuth ? dopplerAuth.timelocks.filter((t) => /^0x0{40}$|^0x0{36}dead$/i.test(t.timelock)).reduce((a, t) => a + t.pools, 0) : 0;
 
@@ -51,6 +52,26 @@ const top = exposure.rows.filter((r) => r.usdInPools).slice(0, 8);
 const max = top[0].usdInPools;
 const exposureBars = top.map((r) => `        <div class="xrow" role="listitem"><span class="t">${esc(r.sym)}</span><span class="track"><span class="fill" style="width:${(100 * r.usdInPools / max).toFixed(1)}%"></span></span><span class="v">${millions(r.usdInPools)}</span><span class="v dim">${r.shareOfSupplyInPoolsPct}% of supply</span></div>`).join('\n');
 
+// The token table the page reads the chain with: every active stock token, its address, how many pools hold
+// it, and whether it has stepped before. Compact on purpose — it ships inside the page.
+const assets = read('assets.json').assets;
+const poolCount = {};
+for (const p of [...pools.v4, ...pools.v3]) {
+  const t = (p.stockToken || '').toLowerCase();
+  poolCount[t] = (poolCount[t] || 0) + 1;
+}
+const steppedTokens = new Set(steps.map((s) => s.token.toLowerCase()));
+const tokenRows = assets
+  .filter((a) => a.status === 'ASSET_STATUS_ACTIVE' && a.deployments && a.deployments[0])
+  .map((a) => {
+    const addr = a.deployments[0].contractAddress;
+    const key = addr.toLowerCase();
+    // pools were only ever counted for tokens that have already stepped, so -1 means "never looked", not "none"
+    const stepped = steppedTokens.has(key);
+    return [a.tokenSymbol, addr, stepped ? (poolCount[key] || 0) : -1, stepped ? 1 : 0];
+  })
+  .sort((a, b) => b[2] - a[2] || a[0].localeCompare(b[0]));
+
 // the simulator's first frame: 4:1 split, 1,000 quote, same rule as the page script and the contract
 const X = 1000; const Y = 100000; const P0 = Y / X; const BASE = 0.003; const R = 4; const Q = 1000;
 const buy = (q, fee) => X - (X * Y) / (Y + q * (1 - fee));
@@ -72,13 +93,14 @@ const values = {
   pricedTokens: exposure.pricedTokens,
   unpricedTokens: exposure.unpricedTokensWithPoolBalance,
   head: int(exposure.head),
-  nvdaBlock: int(nvda.emitBlock),
-  nvdaEmitAt: iso(nvda.emitAt),
-  nvdaOld: nvda.oldMultiplier.toFixed(6),
-  nvdaNew: nvda.newMultiplier.toFixed(6),
-  nvdaEff: iso(nvda.effectiveAt),
-  nvdaLead: int(nvda.leadSeconds),
-  nvdaPools: int(nvda.poolsExposed),
+  lastSym: esc(last.sym),
+  lastBlock: int(last.emitBlock),
+  lastEmitAt: iso(last.emitAt),
+  lastOld: last.oldMultiplier.toFixed(6),
+  lastNew: last.newMultiplier.toFixed(6),
+  lastEff: iso(last.effectiveAt),
+  lastLead: int(last.leadSeconds),
+  lastPools: int(last.poolsExposed),
   leadMin: leads[0],
   leadMax: leads[leads.length - 1],
   dopplerPools: int(doppler ? doppler.dopplerPools : 0),
@@ -100,7 +122,14 @@ const values = {
   marquee,
   stepRows,
   exposureBars,
-  json: JSON.stringify({ lead: int(nvda.leadSeconds), doppler: { pools: doppler ? doppler.dopplerPools : 0, burned } }).replace(/</g, '\\u003c'),
+  tokenCount: tokenRows.length,
+  json: JSON.stringify({
+    lead: int(last.leadSeconds),
+    doppler: { pools: doppler ? doppler.dopplerPools : 0, burned },
+    rpc: 'https://rpc.mainnet.chain.robinhood.com',
+    chainId: 4663,
+    tokens: tokenRows,
+  }).replace(/</g, '\\u003c'),
 };
 
 let html = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');

@@ -49,7 +49,7 @@ test('no claim the measurements do not support', () => {
 test('the page says what it is not', () => {
   assert.ok(/unaudited/i.test(page), 'the unaudited state is not on the page');
   assert.ok(/not sent|not deployed/i.test(page), 'the undeployed state is not on the page');
-  assert.ok(/not.{0,12}investment advice/i.test(page), 'the advice disclaimer is missing');
+  assert.ok(/(not|nothing)[^.]{0,30}advice/i.test(page), 'the advice disclaimer is missing');
 });
 
 test('the standalone copy carries a head a browser and a link preview can use', () => {
@@ -64,4 +64,32 @@ test('the splash can never trap a reader', () => {
   assert.ok(/sessionStorage\.setItem\('zolt\.splash'/.test(page), 'splash does not remember it has played');
   assert.ok(/setTimeout\(close, 1500\)/.test(page), 'splash has no timeout');
   assert.ok(/if \(seen \|\| reduce\)/.test(page), 'splash ignores prefers-reduced-motion');
+});
+
+// The live panel talks to the chain from the reader's browser. It may only ever read: no path in the page,
+// and no method the relay forwards, can produce a transaction or a signature.
+test('nothing on the page can sign or send', () => {
+  for (const m of ['eth_sendTransaction', 'eth_sendRawTransaction', 'eth_signTypedData', 'personal_sign',
+    'eth_sign', 'wallet_addEthereumChain', 'wallet_switchEthereumChain']) {
+    assert.equal(page.includes(m), false, 'the page mentions ' + m);
+  }
+  assert.ok(page.includes("eth_requestAccounts"), 'the wallet button should only ask who the wallet is');
+});
+
+test('the relay forwards read-only calls only', () => {
+  const relay = fs.readFileSync(path.join(__dirname, 'public', 'api', 'rpc.js'), 'utf8');
+  const allowed = relay.match(/ALLOWED = new Set\(\[([^\]]+)\]\)/);
+  assert.ok(allowed, 'the relay has no allowlist');
+  for (const m of allowed[1].split(',').map((s) => s.trim().replace(/'/g, ''))) {
+    assert.ok(/^eth_(call|blockNumber|chainId|getBalance|getCode)$/.test(m), 'relay allows ' + m);
+  }
+  assert.ok(/MAX_CALLS = \d+/.test(relay), 'the relay does not bound a batch');
+  assert.ok(relay.includes("req.method !== 'POST'"), 'the relay answers more than POST');
+});
+
+test('the live panel reads every token the builder shipped', () => {
+  const data = JSON.parse(page.match(/<script id="data" type="application\/json">(.*?)<\/script>/s)[1]);
+  assert.ok(Array.isArray(data.tokens) && data.tokens.length > 100, 'token table missing from the page');
+  assert.ok(page.includes(String(data.tokens.length) + ' stock tokens'), 'the copy and the table disagree');
+  for (const t of data.tokens) assert.ok(/^0x[0-9a-fA-F]{40}$/.test(t[1]), 'bad token address ' + t[1]);
 });
