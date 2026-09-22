@@ -36,21 +36,21 @@ const marquee = '<ul>' + steps.map((s) => {
   return `<li${r >= 1.5 ? ' class="big"' : ''}><b>${esc(s.sym)}</b><span class="s">${label}</span>${esc(s.effectiveAt.slice(0, 10))} · ${int(s.leadSeconds)} s notice · ${int(s.poolsExposed)} pool${s.poolsExposed === 1 ? '' : 's'}</li>`;
 }).join('') + '</ul>';
 
-// the horizontal gallery: one card per step, oldest first
-const stepCards = steps.map((s) => {
+// the step grid: one small card per step, newest first, the way a listing reads
+const stepCards = steps.slice().reverse().map((s) => {
   const r = s.newMultiplier / s.oldMultiplier;
   const big = r >= 1.5;
   const label = big ? '×' + r.toFixed(0) : '+' + ((r - 1) * 100).toFixed(r - 1 < 0.0001 ? 5 : 3) + '%';
   const att = (attributed.summary.find((x) => x.sym === s.sym && x.effectiveAt === s.effectiveAt) || {}).stepAttributable;
-  // the meter is log-scaled against the largest step on the page, so a +0.05% step is still visible next to a ×4
-  const meter = Math.max(6, Math.round(100 * Math.log(r) / Math.log(4)));
-  return `<article class="scard${big ? ' big' : ''}"><div class="top"><span class="tk">${esc(s.sym)}</span><time>${esc(s.effectiveAt.slice(0, 10))}</time></div><div class="st">${label}</div><div class="meter"><span style="height:${meter}%"></span></div><dl><dt>notice</dt><dd>${int(s.leadSeconds)} s</dd><dt>pools</dt><dd>${int(s.poolsExposed)}</dd><dt>taken</dt><dd>${att === undefined ? '–' : '$' + (att < 1 ? att.toFixed(2) : int(att))}</dd></dl></article>`;
+  const taken = att === undefined ? 'not measured' : (att < 1 ? '$' + att.toFixed(2) : '$' + int(att)) + ' attributable';
+  const title = `${s.sym} ${label} · effective ${s.effectiveAt.slice(0, 10)} · ${int(s.leadSeconds)} s notice · ${int(s.poolsExposed)} pools · ${taken}`;
+  return `<article class="step${big ? ' big' : ''}" title="${esc(title)}"><div class="r1"><span class="sym">${esc(s.sym)}</span><span class="val">${label}</span></div><div class="r2">${esc(s.effectiveAt.slice(0, 10))} · ${int(s.leadSeconds)} s notice</div><div class="r2 dim">${int(s.poolsExposed)} pool${s.poolsExposed === 1 ? '' : 's'} · ${esc(taken)}</div></article>`;
 }).join('\n');
 
-// exposure bars: top 6 by value, one scale
-const top = exposure.rows.filter((r) => r.usdInPools).slice(0, 6);
+// exposure rows: top 8 by value, one scale
+const top = exposure.rows.filter((r) => r.usdInPools).slice(0, 8);
 const max = top[0].usdInPools;
-const exposureBars = top.map((r) => `      <div class="bar" role="listitem"><span class="t">${esc(r.sym)}</span><span class="track"><span class="fill" style="width:${(100 * r.usdInPools / max).toFixed(1)}%"></span></span><span class="v">${millions(r.usdInPools)} · ${r.shareOfSupplyInPoolsPct}%</span></div>`).join('\n');
+const exposureBars = top.map((r) => `        <div class="xrow" role="listitem"><span class="t">${esc(r.sym)}</span><span class="track"><span class="fill" style="width:${(100 * r.usdInPools / max).toFixed(1)}%"></span></span><span class="v">${millions(r.usdInPools)}</span><span class="v dim">${r.shareOfSupplyInPoolsPct}% of supply</span></div>`).join('\n');
 
 // the simulator's first frame: 4:1 split, 1,000 quote, same rule as the page script and the contract
 const X = 1000; const Y = 100000; const P0 = Y / X; const BASE = 0.003; const R = 4; const Q = 1000;
