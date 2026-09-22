@@ -108,3 +108,8 @@ const standalone = '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="ut
   + '</head>\n<body>\n' + html + '\n</body>\n</html>\n';
 fs.writeFileSync(path.join(__dirname, 'zolt.html'), standalone);
 console.log('wrote site/zolt.html (standalone)', standalone.length, 'chars');
+
+// The folder Vercel serves: only the page, nothing else from the repo.
+fs.mkdirSync(path.join(__dirname, 'public'), { recursive: true });
+fs.writeFileSync(path.join(__dirname, 'public', 'index.html'), standalone);
+console.log('wrote site/public/index.html (deploy folder)');
