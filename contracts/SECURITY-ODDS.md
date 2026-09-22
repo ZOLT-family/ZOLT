@@ -18,6 +18,7 @@ lists what the contract promises, how each promise is tested, and what it does n
 | Every wei is paid out or taken as fee | payout = principal + pot × weight / totalWeight; fee = 1% of the losing pool at resolution | `testFuzz_everyWeiIsAccountedFor` (256 runs) |
 | Claim pays once, cannot be re-entered | `claimed` flag set before the send; `nonReentrant` guard | `test_claimPaysOnceAndOnlyWinners`, `test_claimIsNotReenterable` |
 | Nobody can change the rules | no owner, no pause, no upgrade; `factory` and `treasury` are immutable | by construction |
+| It resolves against Pons's real contracts | on a fork of chain 4663, buying a live launch's curve past 4.2 ETH made Pons's own factory move the phase to `Swept`, after which `witnessYes` resolved and paid exactly; `witnessNo` resolved after a warped deadline | `test/ZoltOddsFork.t.sol` (opt-in, `evidence/fork-run.txt`) |
 
 ## What it does not promise
 

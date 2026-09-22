@@ -40,9 +40,19 @@ placed when the answer is nearly known earns almost nothing from the pot. Once a
 
 ```bash
 cd contracts && npx hardhat test solidity   # 43 Solidity tests (17 market, 26 split guard)
-node --test keeper/odds-logic.test.cjs      # 6 keeper tests
+node --test keeper/odds-logic.test.cjs      # 9 keeper tests
 node --test site/site.test.cjs              # 11 page tests: figures match files, one transaction target, relay is read-only
 ```
+
+Against Pons's real contracts, on a fork of mainnet (opt-in; needs an RPC the test runner can reach and a launch
+that is still on its curve at the fork block — pick one from the board):
+
+```bash
+cd contracts && RH_FORK=1 RH_FORK_RPC=https://rpc.mainnet.chain.robinhood.com RH_FORK_TOKEN=0x… npx hardhat test solidity --grep fork
+```
+
+The YES test buys the launch's curve from many wallets until Pons's factory itself moves the phase to `Swept`, then
+resolves and claims; the NO test warps past the deadline. The last recorded run is in `evidence/fork-run.txt`.
 
 ## Reproducing the base rate
 
