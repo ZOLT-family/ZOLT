@@ -309,6 +309,20 @@ html.has-coin,html.has-coin *{cursor:none !important}
             <p class="preview" id="t-preview" hidden></p>
           </div>
           <p class="foot">Nothing here is a quote. A parimutuel pool pays what the other side put in; the implied odds move with every stake until staking closes, halfway through the window. Read &sect; 02 before you stake.</p>
+
+          <div class="panel" style="margin-top:18px" id="ledger-panel">
+            <div class="panel-hd">
+              <span class="lab" id="l-state">the ledger of markets &middot; last 24 hours</span>
+              <button type="button" class="btn ghost" id="l-read">Load the ledger</button>
+            </div>
+            <div class="grid4">
+              <div class="cell"><span class="k">Markets, all time</span><b id="l-total">&mdash;</b></div>
+              <div class="cell"><span class="k">Staked, 24 h</span><b id="l-staked">&mdash;</b></div>
+              <div class="cell"><span class="k">Outcomes, 24 h</span><b id="l-outcomes">&mdash;</b></div>
+              <div class="cell"><span class="k">Fees to treasury, 24 h</span><b id="l-fees">&mdash;</b></div>
+            </div>
+            <div id="l-out"><p class="msg">Every market the contract has opened in the last day, read from its own events: who opened it, what was staked, how it ended and who recorded that.</p></div>
+          </div>
         </div>
       </div>
     </section>
@@ -423,6 +437,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
               <dt>factory it reads</dt><dd>{{factoryAddr}}</dd>
               <dt>treasury</dt><dd>{{treasuryAddr}}</dd>
               <dt>deploy cost</dt><dd>{{deployGasOdds}} gas &middot; about {{deployEthOdds}} ETH</dd>
+              <dt>source</dt><dd>{{sourceLine}}</dd>
               <dt>fee</dt><dd>1% of the losing pool</dd>
             </dl>
           </div>
@@ -762,8 +777,51 @@ html.has-coin,html.has-coin *{cursor:none !important}
     $$('[data-wvoid]').forEach(function(b){ b.addEventListener('click', function(){ tx(SEL.voidUnobserved + pad(Number(b.getAttribute('data-wvoid')).toString(16))).then(function(){ b.textContent = 'sent'; }).catch(function(e){ b.textContent = (e.message || 'no').slice(0, 40); }); }); });
   }
 
+  /* ------------------------------------------------ the ledger of markets: a day of the contract's own events */
+  function readLedger(){
+    if (!ODDS) { el('l-out').innerHTML = '<p class="msg">No contract deployed yet.</p>'; return; }
+    var btn = el('l-read'); btn.disabled = true;
+    txt('l-state', 'reading a day of events …', 'lab');
+    batch([{ method: 'eth_blockNumber', params: [] }, { to: ODDS, data: '0xec979082' }]).then(function(r){
+      var head = parseInt(r[0] || '0x0', 16), total = Number(big(r[1]));
+      txt('l-total', String(total));
+      var start = Math.max(DATA.deployedBlock || 0, head - 864000), calls = [];
+      // the relay caps a log query at six hours, so a day is four queries, each asking for every event type at once
+      for (var from = start; from <= head; from += 216000) {
+        calls.push({ method: 'eth_getLogs', params: [{ address: ODDS, topics: [[TOPIC.opened, TOPIC.staked, TOPIC.resolved, TOPIC.feeTaken, TOPIC.claimed]], fromBlock: '0x' + from.toString(16), toBlock: '0x' + Math.min(head, from + 215999).toString(16) }] });
+      }
+      return batch(calls).then(function(chunks){
+        var logs = []; chunks.forEach(function(c){ if (Array.isArray(c)) logs = logs.concat(c); });
+        var markets = {}, staked = 0n, fees = 0n, outcomes = 0;
+        logs.forEach(function(l){
+          var t = l.topics[0], id = Number(big(l.topics[1]));
+          if (t === TOPIC.opened) markets[id] = { id: id, token: addrOf(l.topics[2]), window: Number(big(word(l.data, 0))), block: parseInt(l.blockNumber, 16), yes: 0n, no: 0n, stakers: 0, outcome: 0, by: null };
+          var m = markets[id]; if (!m) { if (t === TOPIC.staked) staked += big(word(l.data, 1)); if (t === TOPIC.feeTaken) fees += big(word(l.data, 0)); if (t === TOPIC.resolved) outcomes++; return; }
+          if (t === TOPIC.staked) { var amt = big(word(l.data, 1)); staked += amt; m.stakers++; if (big(word(l.data, 0)) === 1n) m.yes += amt; else m.no += amt; }
+          if (t === TOPIC.resolved) { outcomes++; m.outcome = Number(big(word(l.data, 0))); m.by = addrOf(l.topics[2]); }
+          if (t === TOPIC.feeTaken) { fees += big(word(l.data, 0)); m.fee = big(word(l.data, 0)); }
+        });
+        var list = Object.values(markets).sort(function(a, b){ return b.id - a.id; });
+        txt('l-staked', eth(staked).toFixed(4) + ' ETH'); txt('l-outcomes', String(outcomes)); txt('l-fees', eth(fees).toFixed(5) + ' ETH');
+        var tokens = []; list.forEach(function(m){ if (tokens.indexOf(m.token) < 0) tokens.push(m.token); });
+        return multicall(tokens.map(function(t){ return { to: t, data: SEL.symbol }; })).then(function(syms){
+          var symOf = {}; tokens.forEach(function(t, i){ symOf[t] = decodeString(syms[i]); });
+          var who = function(a){ return !a ? '—' : (DATA.keeper && a.toLowerCase() === DATA.keeper.toLowerCase()) ? 'keeper' : short(a); };
+          el('l-out').innerHTML = list.length
+            ? '<div class="wrapx"><table><thead><tr><th>#</th><th>Launch</th><th>Window</th><th class="n">Opened</th><th class="n">YES</th><th class="n">NO</th><th class="n">Stakers</th><th>Outcome</th><th>Recorded by</th><th class="n">Fee</th></tr></thead><tbody>'
+              + list.map(function(m){ return '<tr><td class="n">' + m.id + '</td><td class="sym">' + esc(symOf[m.token] || '?') + '</td><td class="n">' + WINDOW_NAMES[m.window] + '</td><td class="n">' + ago((m.block - head) / 10) + '</td><td class="n">' + eth(m.yes).toFixed(4) + '</td><td class="n">' + eth(m.no).toFixed(4) + '</td><td class="n">' + m.stakers + '</td><td>' + ['<span class="dim">open</span>', '<span class="hot">YES</span>', '<span class="calm">NO</span>', 'void'][m.outcome] + '</td><td class="n">' + who(m.by) + '</td><td class="n">' + (m.fee ? eth(m.fee).toFixed(5) : '—') + '</td></tr>'; }).join('')
+              + '</tbody></table></div><p class="msg">A void is a market that had one side or none, or that nobody could witness in time: every stake in it is refundable. Fees are 1% of the losing pool, paid to the treasury when a market resolves YES or NO.</p>'
+            : '<p class="msg">No markets opened in the last day.</p>';
+          txt('l-state', 'the ledger of markets · read at block ' + head.toLocaleString('en-US'), 'lab');
+          btn.disabled = false;
+        });
+      });
+    }).catch(function(err){ txt('l-state', 'could not read the ledger: ' + err.message, 'lab'); btn.disabled = false; });
+  }
+
   if (el('b-read')) {
     el('b-read').addEventListener('click', readBoard);
+    el('l-read').addEventListener('click', readLedger);
     el('w-connect').addEventListener('click', function(){ connect().catch(function(){}); });
     $$('#t-window button').forEach(function(b){ b.addEventListener('click', function(){ $$('#t-window button').forEach(function(o){ o.setAttribute('aria-pressed', 'false'); }); b.setAttribute('aria-pressed', 'true'); state.window = Number(b.getAttribute('data-w')); preview(); }); });
     $$('#t-side button').forEach(function(b){ b.addEventListener('click', function(){ $$('#t-side button').forEach(function(o){ o.setAttribute('aria-pressed', 'false'); }); b.setAttribute('aria-pressed', 'true'); state.side = Number(b.getAttribute('data-s')); el('t-go').className = 'btn ' + (state.side ? 'yes' : 'no'); preview(); }); });

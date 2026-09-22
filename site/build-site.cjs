@@ -96,6 +96,7 @@ const values = {
   stateLine: live ? 'unaudited<br>live' : 'unaudited<br>not deployed',
   stampLine: live ? 'Unaudited · deployed · use with care' : 'Unsigned · simulated · not sent',
   deployState: live ? 'deployed' : 'unsigned',
+  sourceLine: live && live.sourcify ? '<a href="' + esc(live.sourcify.url) + '">verified on Sourcify</a> &middot; ' + esc(live.sourcify.match) : 'not yet verified',
   oddsShort: live ? live.address.slice(0, 6) + '…' + live.address.slice(-4) : 'not deployed',
   oddsAddr: live ? live.address : 'not deployed — the page runs in read-only preview until it is',
   factoryAddr: FACTORY,
@@ -107,6 +108,7 @@ const values = {
     chainId: 4663,
     factory: FACTORY,
     odds: live ? live.address : null,
+    deployedBlock: live && live.deployedBlock ? live.deployedBlock : null,
     // the public address of the keeper this repo runs, if one was made here: the board shows when it last acted
     keeper: fs.existsSync(path.join(ROOT, 'keeper', 'keeper.address')) ? fs.readFileSync(path.join(ROOT, 'keeper', 'keeper.address'), 'utf8').trim() : null,
     sel: {
@@ -119,6 +121,9 @@ const values = {
       graduated: '0x0a44ef75df69c534f43cd6c1aa3ef8983065fe5fe79ef9e79f6494e6f258c259',
       opened: '0x13d3642a6d52374b58ee776c95940fcf6486c6f740891e6d11070c1411e1d3a8',
       resolved: '0xb759306cc71252cdc2f6244717195a7cc712a5551de7fa6dd2bf1819cd7dfadd',
+      staked: '0xb1ab008fce4278d96ec4e7b40dd25e28c701cfa4fcd426922c25ad278b0d41ea',
+      feeTaken: '0xb4d6a97bdd3b0279677829534375db2695a0fb46143b58f29faeead6ccf6f9cd',
+      claimed: '0x4ec90e965519d92681267467f775ada5bd214aa92c0dc93d90a5e880ce9ed026',
     },
     // what a launch can be paired with, and how to print that unit: ETH and the stock tokens use 18 decimals, USDG 6
     pairs: Object.assign({ [ETH]: ['ETH', 18], '0x5fc5360d0400a0fd4f2af552add042d716f1d168': ['USDG', 6] },

@@ -7,7 +7,8 @@ objective moment written into Pons's own factory contract.
 Zolt Odds is a Yes/No market on that moment: will this launch graduate before the deadline? Parimutuel, settled
 by reading the factory's state, with no oracle, no committee and no owner.
 
-**Status: deployed on chain 4663 at `0xaC86B04D48033b2454b132EDED596E0c61A5b097` (23 Sep 2026), unaudited.**
+**Status: deployed on chain 4663 at `0xaC86B04D48033b2454b132EDED596E0c61A5b097` (23 Sep 2026), source verified on
+[Sourcify](https://repo.sourcify.dev/4663/0xaC86B04D48033b2454b132EDED596E0c61A5b097) (runtime and creation match), unaudited.**
 Event contracts on outcomes; not offered to persons in the United States or anywhere else they are not lawful.
 Nothing here is investment advice. Stake what you can lose in a bug.
 
@@ -43,6 +44,7 @@ placed when the answer is nearly known earns almost nothing from the pot. Once a
 cd contracts && npx hardhat test solidity   # 43 Solidity tests (17 market, 26 split guard)
 node --test keeper/odds-logic.test.cjs      # 9 keeper tests
 node --test site/site.test.cjs              # 11 page tests: figures match files, one transaction target, relay is read-only
+node --test site/encoding.test.cjs          # the page's hand-rolled calldata and struct decoding held to viem's, on a real return value
 ```
 
 Against Pons's real contracts, on a fork of mainnet (opt-in; needs an RPC the test runner can reach and a launch

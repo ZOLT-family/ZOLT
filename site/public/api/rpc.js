@@ -36,7 +36,8 @@ module.exports = async function handler(req, res) {
   res.setHeader('cache-control', 'no-store');
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'post a json-rpc body' });
-  const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '').split(',')[0].trim();
+  const headers = req.headers || {};
+  const ip = String(headers['x-forwarded-for'] || (req.socket && req.socket.remoteAddress) || '').split(',')[0].trim();
   if (overLimit(ip)) return res.status(429).json({ error: 'too many requests from this address; try again in a minute' });
 
   let body = req.body;

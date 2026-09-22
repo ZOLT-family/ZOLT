@@ -8,6 +8,7 @@
 //   options: --from-block N  --interval 5
 //   --grace 120            seconds after a deadline before the keeper records NO (a winner may do it first, on their gas)
 //   --all-markets          also witness empty and one-sided markets (default: only markets with money on both sides)
+//   --tidy-gwei 0.3        below this gas price, close out empty and one-sided markets too (they are nearly free then)
 //   --max-gwei 10          do not send while gas is above this (YES may go to 3x, it has a deadline)
 //   --reserve 0.0005       stop sending when the keeper's balance falls to this many ETH; log loudly instead
 //   --auto-open            also open a market on every young launch whose curve is showing life (default off)
@@ -38,6 +39,7 @@ const MAX_GWEI = Number(arg('max-gwei', '10'));
 const RESERVE_WEI = BigInt(Math.round(Number(arg('reserve', '0.0005')) * 1e6)) * 10n ** 12n;
 const OPEN_CFG = { minFill: Number(arg('min-fill', '0.2')), maxFill: Number(arg('max-fill', '0.85')), window: Number(arg('window', '0')), maxAgeSeconds: Number(arg('max-age', '900')), maxPerPass: Number(arg('max-opens', '1')), maxOpen: Number(arg('max-open', '3')) };
 const WITNESS_CFG = { graceSeconds: Number(arg('grace', '120')), onlyTwoSided: !flag('all-markets') };
+const TIDY_GWEI = Number(arg('tidy-gwei', '0.3'));
 const STATE_FILE = path.join(__dirname, 'odds-state.json');
 const HEALTH_FILE = path.join(__dirname, 'health.json');
 const T_OPENED = '0x13d3642a6d52374b58ee776c95940fcf6486c6f740891e6d11070c1411e1d3a8';
@@ -162,7 +164,11 @@ async function pass() {
     tokens.forEach((t, k) => { if (phases[k]) phaseOf[t] = Number(phases[k].phase); });
   }
   const now = parseInt(rpc('eth_getBlockByNumber', ['latest', false]).timestamp, 16);
-  const actions = planActions(Object.values(open), phaseOf, now, WITNESS_CFG);
+  // tidy mode: when gas is nearly free, also close out empty and one-sided markets so the ledger does not fill
+  // with stale "open" rows; each costs a few hundred-thousandths of an ETH at that price
+  const gasNow = Number(gasPriceWei()) / 1e9;
+  const tidy = SEND && gasNow < TIDY_GWEI;
+  const actions = planActions(Object.values(open), phaseOf, now, Object.assign({}, WITNESS_CFG, tidy ? { onlyTwoSided: false } : {}));
   for (const a of actions) {
     if (SEND) {
       try {
