@@ -4,6 +4,10 @@
 //   - YES the moment a launch leaves its curve, as long as the deadline has not passed
 //   - NO the moment the deadline passes with the launch still on its curve
 //   - void a market nobody could witness (graduated after the deadline, before anyone recorded NO), a day later
+//
+// Optionally it also opens markets, so the board is never empty: only on launches that are still on their curve,
+// young enough for the window to mean something, and already showing life on the curve (the calibration in
+// evidence/pons-calibration.json is why: at two minutes the curve has usually decided).
 'use strict';
 
 const VOID_AFTER = 86_400;
@@ -23,6 +27,19 @@ function planActions(markets, phaseOf, now) {
   return actions;
 }
 
+/// Which launches deserve a market right now. `candidates` carry token, launchedAt, phase, fill (0..1) and
+/// whether a market is already open for the window. Returns at most `cfg.maxPerPass` opens, liveliest first.
+function planOpens(candidates, now, cfg) {
+  const c = Object.assign({ window: 0, minFill: 0.2, maxAgeSeconds: 900, minAgeSeconds: 30, maxPerPass: 5 }, cfg || {});
+  return candidates
+    .filter((x) => x.phase === 0 && !x.hasOpen)
+    .filter((x) => now - x.launchedAt >= c.minAgeSeconds && now - x.launchedAt <= c.maxAgeSeconds)
+    .filter((x) => x.fill >= c.minFill && x.fill < 1)
+    .sort((a, b) => b.fill - a.fill)
+    .slice(0, c.maxPerPass)
+    .map((x) => ({ token: x.token, window: c.window, why: `${(x.fill * 100).toFixed(0)}% full ${now - x.launchedAt}s after launch` }));
+}
+
 /// Decode a MarketOpened log into the shape planActions reads.
 function decodeMarketOpened(log) {
   const w = log.data.slice(2);
@@ -37,4 +54,16 @@ function decodeMarketOpened(log) {
   };
 }
 
-module.exports = { VOID_AFTER, WINDOWS, planActions, decodeMarketOpened };
+/// Decode a Pons TokenLaunched log.
+function decodeTokenLaunched(log) {
+  const w = log.data.slice(2);
+  return {
+    token: '0x' + log.topics[1].slice(26),
+    curve: '0x' + log.topics[2].slice(26),
+    pairToken: '0x' + w.slice(24, 64),
+    threshold: BigInt('0x' + w.slice(128, 192)),
+    block: parseInt(log.blockNumber, 16),
+  };
+}
+
+module.exports = { VOID_AFTER, WINDOWS, planActions, planOpens, decodeMarketOpened, decodeTokenLaunched };

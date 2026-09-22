@@ -1,88 +1,36 @@
 # Outreach drafts — NOT SENT
 
-Drafts only. Nothing here has been sent to anyone. Each needs your review, your sender identity, and your
-decision to send. Every number links back to a file in `evidence/` so the recipient can check it.
+Drafts only. Nothing here has been sent to anyone. Send only after the contract is deployed and its state can be
+described truthfully; every message names the state.
 
-Who, and why them (from `evidence/doppler.json`, `evidence/doppler-authorities.json`, `evidence/steps-attributed.json`):
+## Pons (ponsfamily.com · @ponsdotfamily)
 
-| Recipient | Why | Public contact seen on chain |
-|---|---|---|
-| Whetstone Research (Doppler) | Their `DopplerHookInitializer` is the hook on 22,916 of the 35,145 v4 pools holding a stepped stock token on chain 4663. New launches can select a Zolt module; enabling it is their Safe's call (3-of-6). | `@custom:security-contact security@whetstone.cc` in the verified source |
-| Author of `RehypeDopplerHookInitializer` | Their module sits in 8,293 of those pools' slots, which can no longer change. A next version could include the check. | none found yet |
-| Author of module `0x6f02…0f77` | 11,632 slots; source not verified on Sourcify. | none found |
-| Launchpads on other hooks (PairV4Hook 1,437 pools, PonsV2MemeHook 1,240, LaunchHook 817 + 656) | Their next pools could use the Zolt hook, or the same check in their own hook. | none collected |
+Subject: a Yes/No market on your graduations, read from your factory
 
----
+Hi — we built a small thing on top of Pons V2 and wanted you to hear it from us first.
 
-## 1. Doppler / Whetstone Research
+Zolt Odds is a parimutuel Yes/No market on whether a launch graduates before a deadline (10 min / 1 h / 6 h).
+It reads `PonsV2LaunchFactory.getLaunchedToken(token).phase` and nothing else: no oracle, no committee, no call
+into your contracts that changes state. Anyone can open a market on any launch still on its curve; stakes stop
+the instant the launch graduates; a graduation after the deadline that nobody witnessed refunds both sides.
 
-**Subject:** Multiplier steps on Robinhood Chain stock tokens, and your module slot
+Base rate we measured over a day of your factory: 9,930 launches, 120 graduations, median 180 s to graduate,
+68 of 103 within ten minutes. The calibration says the curve has usually decided by minute two.
 
-Hi Whetstone team,
+Two things you may care about:
+1. It sends more eyes to launches that are showing life: the board lists every launch of the last half hour with
+   its curve fill, and a market is only interesting on one that might actually cross.
+2. It depends on your factory's address and the layout of `LaunchedToken`. If you plan a V3 or a layout change,
+   we would like to know a week ahead so the market can be redeployed against it.
 
-On Robinhood Chain (4663), stock tokens implement ERC-8056: the issuer changes how many shares one token stands
-for (`uiMultiplier`), on a schedule posted on chain about 10 minutes ahead (`newUIMultiplier`, `effectiveAt`).
-Pools price the raw token and never read it, so after a step the pool quotes the old share count.
+State today: [unaudited / deployed at 0x… — fill in]. Code and tests: [repo link]. Not affiliated with Pons; we
+do not use your name beyond describing what the contract reads.
 
-Your `DopplerHookInitializer` is the hook on 22,916 of the 35,145 v4 pools on 4663 that hold a stock token whose
-multiplier has already stepped. We measured the 37 steps since launch: so far about $80 has actually been taken,
-because the steps were small (0.002% to 0.46%) and the one ×4 split (CRWD, 2 July) hit a single empty pool. The
-pools are much larger now (about $47M of stock tokens sit in v4 pools), and a split would reach all of them at
-once.
+— Zolt
 
-We wrote a Doppler Hook module that reads the schedule and sets the pool's dynamic fee to the step's gap until
-the pool catches up. It respects your 10% `MAX_LP_FEE` and never reverts inside `onSwap`. It is a prototype:
-unaudited, not deployed, tested against a stand-in with your callback and fee-update surface.
+## Notes
 
-Two questions:
-1. Would you consider enabling a module like this for new launches whose creator selects it?
-2. Would you rather have the check (about 100 lines, `StepMath`) inside your own modules?
-
-Code, tests and every measurement: [link to repository]. Happy to walk through it.
-
-— [name]
-
----
-
-## 2. Module authors (Rehype and `0x6f02…`)
-
-**Subject:** A small check for your Doppler module: ERC-8056 multiplier steps
-
-Hi,
-
-Your Doppler module is attached to [8,293 / 11,632] pools on Robinhood Chain that hold a stock token whose
-multiplier has stepped (ERC-8056). Those slots are frozen (the timelocks are `0x0` / `0x…dEaD`), so the only way
-those pools ever get protection against a split is through the module that is already there, in its next version.
-
-The check is small: read `uiMultiplier`, `newUIMultiplier`, `effectiveAt`; when the share count changes, set the
-dynamic fee to the gap between the pool price and pool price × new ÷ old, capped at Doppler's 10%. Our version,
-with tests and the measurements behind it: [link]. Prototype, unaudited.
-
-Would it fit in your roadmap?
-
-— [name]
-
----
-
-## 3. Launchpads on other hooks
-
-**Subject:** Stock-token pools and splits: a hook check for your next pools
-
-Hi,
-
-[N] of your pools on Robinhood Chain pair a meme against a stock token whose multiplier has stepped. When a stock
-splits, the token's multiplier jumps (CRWD went ×4 on 2 July) and every pool holding it keeps quoting the old
-share count until someone takes the difference from your LPs.
-
-Zolt is a v4 hook, and a ~100-line check you can put in your own hook, that charges the step to whoever trades
-into it. Tested on Uniswap's v4-core PoolManager (26 tests); deployment prepared but not sent; unaudited.
-[link]
-
-Worth a look for your next launches?
-
-— [name]
-
----
-
-**Before sending any of these:** get the audit scheduled (or say plainly that it isn't), decide which repository
-link to share (the repo is local only today), and decide who signs.
+- Do not send before deployment; the message describes a live thing.
+- If Pons objects to the description of their contract, correct it, do not argue it.
+- The earlier drafts to Whetstone/Rehype about the split guard are retired with that product; the guard is an
+  appendix now.

@@ -138,6 +138,7 @@ html.splash-on{overflow:hidden}
 .panel th.n{text-align:right}
 .panel td{padding:7px 12px;font-size:13px;border-bottom:1px solid var(--line-2);vertical-align:middle}
 .panel tbody tr:nth-child(even){background:var(--band)}
+.panel tbody tr.live td:first-child{box-shadow:inset 3px 0 0 var(--signal)}
 .panel td.sym{font-family:var(--display);font-variation-settings:"wdth" 118,"wght" 800;font-size:15px;white-space:nowrap}
 .panel td.n{font:400 11.5px var(--mono);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .hot{color:var(--signal)}.calm{color:var(--teal)}
@@ -492,7 +493,9 @@ html.has-coin,html.has-coin *{cursor:none !important}
   var RPC = DATA.rpc, RELAY = '/api/rpc', endpoint = DATA.rpc;
   var CHAIN_HEX = '0x' + Number(DATA.chainId).toString(16);
   var FACTORY = DATA.factory, ODDS = DATA.odds || null;
-  var SEL = DATA.sel, TOPIC = DATA.topics;
+  var SEL = DATA.sel, TOPIC = DATA.topics, PAIRS = DATA.pairs || {};
+  var pairOf = function(addr){ return PAIRS[addr.toLowerCase()] || [addr.slice(0, 6) + '…', 18]; };
+  var unit = function(v, dec){ var n = Number(v) / Math.pow(10, dec); return n >= 100 ? n.toFixed(0) : n >= 1 ? n.toFixed(2) : n.toFixed(3); };
   var pad = function(v){ return String(v).replace(/^0x/, '').toLowerCase().padStart(64, '0'); };
   var big = function(hex){ try { return BigInt(hex || '0x0'); } catch (e) { return 0n; } };
   var eth = function(v){ return Number(v) / 1e18; };
@@ -582,17 +585,23 @@ html.has-coin,html.has-coin *{cursor:none !important}
       state.block = parseInt(r[0] || '0x0', 16);
       state.now = parseInt((r[1] || {}).timestamp || '0x0', 16);
       var to = '0x' + state.block.toString(16);
-      var calls = [{ method: 'eth_getLogs', params: [{ address: FACTORY, topics: [TOPIC.launched], fromBlock: '0x' + Math.max(0, state.block - 18000).toString(16), toBlock: to }] }];
+      var since = '0x' + Math.max(0, state.block - 18000).toString(16);
+      var calls = [
+        { method: 'eth_getLogs', params: [{ address: FACTORY, topics: [TOPIC.launched], fromBlock: since, toBlock: to }] },
+        { method: 'eth_getLogs', params: [{ address: FACTORY, topics: [TOPIC.graduated], fromBlock: since, toBlock: to }] },
+      ];
       if (ODDS) calls.push({ method: 'eth_getLogs', params: [{ address: ODDS, topics: [TOPIC.opened], fromBlock: '0x' + Math.max(0, state.block - 216000).toString(16), toBlock: to }] });
       return batch(calls);
     }).then(function(r){
       var launches = (r[0] || []).map(function(l){
         return { token: addrOf(l.topics[1]), curve: addrOf(l.topics[2]), pair: addrOf(word(l.data, 0)), threshold: big(word(l.data, 2)), block: parseInt(l.blockNumber, 16) };
       }).reverse().slice(0, 40);
-      var opened = (r[1] || []).map(function(l){ return { id: Number(big(l.topics[1])), token: addrOf(l.topics[2]), window: Number(big(word(l.data, 0))), closesAt: Number(big(word(l.data, 1))), deadline: Number(big(word(l.data, 2))), outcome: 0, yesPool: 0n, noPool: 0n }; });
-      state.launches = launches; state.opened = opened;
+      var graduated = (r[1] || []).map(function(l){ return { token: addrOf(l.topics[1]), block: parseInt(l.blockNumber, 16) }; }).reverse().slice(0, 12);
+      var opened = (r[2] || []).map(function(l){ return { id: Number(big(l.topics[1])), token: addrOf(l.topics[2]), window: Number(big(word(l.data, 0))), closesAt: Number(big(word(l.data, 1))), deadline: Number(big(word(l.data, 2))), outcome: 0, yesPool: 0n, noPool: 0n, yesWeight: 0n, noWeight: 0n }; });
+      state.launches = launches; state.graduated = graduated; state.opened = opened;
       var calls = [];
       launches.forEach(function(x){ calls.push({ to: x.token, data: SEL.symbol }, { to: FACTORY, data: SEL.launched + pad(x.token) }, { to: x.curve, data: SEL.reserve }); });
+      graduated.forEach(function(g){ calls.push({ to: g.token, data: SEL.symbol }); });
       opened.forEach(function(m){ calls.push({ to: ODDS, data: SEL.market + pad(m.id.toString(16)) }); });
       return multicall(calls).then(function(res){
         var k = 0;
@@ -601,9 +610,17 @@ html.has-coin,html.has-coin *{cursor:none !important}
           x.symbol = decodeString(sym); x.phase = lt && lt.length >= 2 + 64 * 15 ? Number(big(word(lt, 10))) : null;
           x.reserve = big(rs); x.fill = x.threshold > 0n ? Number(x.reserve * 10000n / x.threshold) / 100 : 0;
         });
+        graduated.forEach(function(g){ g.symbol = decodeString(res[k++]); });
         opened.forEach(function(m){
           var d = res[k++]; if (!d || d.length < 2 + 64 * 10) return;
           m.outcome = Number(big(word(d, 5))); m.yesPool = big(word(d, 6)); m.noPool = big(word(d, 7));
+          m.yesWeight = big(word(d, 8)); m.noWeight = big(word(d, 9));
+        });
+        // liveliest first: launches still on their curve with real fill, then everything else newest first
+        launches.sort(function(a, b){
+          var la = a.phase === 0 && a.fill >= 20 ? 1 : 0, lb = b.phase === 0 && b.fill >= 20 ? 1 : 0;
+          if (la !== lb) return lb - la;
+          return la ? b.fill - a.fill : b.block - a.block;
         });
         state.read = true;
         txt('b-block', state.block.toLocaleString('en-US'));
@@ -633,14 +650,17 @@ html.has-coin,html.has-coin *{cursor:none !important}
       var act = x.phase === 0
         ? '<button type="button" class="btn sm ' + (canOpen ? 'yes' : 'ghost') + '" data-pick="' + x.token + '"' + (canOpen ? '' : ' disabled') + '>' + (ODDS ? 'stake' : 'not deployed') + '</button>'
         : '<span class="mono hot" style="font-size:11px">graduated</span>';
-      return '<tr><td class="sym">' + esc(x.symbol) + '</td><td class="n">' + short(x.token) + '</td><td class="n">' + ago((x.block - state.block) / 10) + '</td>'
+      var pr = pairOf(x.pair);
+      return '<tr' + (x.phase === 0 && x.fill >= 20 ? ' class="live"' : '') + '><td class="sym">' + esc(x.symbol) + '</td><td class="n">' + short(x.token) + '</td><td class="n">' + ago((x.block - state.block) / 10) + '</td>'
         + '<td class="n"><span class="meter' + (x.fill >= 100 ? ' full' : '') + '"><i style="width:' + Math.min(100, x.fill) + '%"></i></span>' + x.fill.toFixed(1) + '%</td>'
-        + '<td class="n">' + eth(x.reserve).toFixed(3) + ' / ' + eth(x.threshold).toFixed(1) + '</td><td>' + (markets || '<span class="dim mono" style="font-size:11px">none</span>') + '</td><td><div class="acts">' + act + '</div></td></tr>';
+        + '<td class="n">' + unit(x.reserve, pr[1]) + ' / ' + unit(x.threshold, pr[1]) + ' ' + esc(pr[0]) + '</td><td>' + (markets || '<span class="dim mono" style="font-size:11px">none</span>') + '</td><td><div class="acts">' + act + '</div></td></tr>';
     }).join('');
     var resolved = state.opened.filter(function(m){ return m.outcome !== 0; }).slice(-8).reverse();
     var past = state.opened.filter(function(m){ return m.outcome === 0 && now > m.deadline; });
-    el('b-out').innerHTML = '<div class="wrapx"><table><thead><tr><th>Token</th><th class="n">Address</th><th class="n">Launched</th><th class="n">Curve</th><th class="n">ETH raised / needed</th><th>Open markets</th><th>Act</th></tr></thead><tbody>'
+    var grads = state.graduated || [];
+    el('b-out').innerHTML = '<div class="wrapx"><table><thead><tr><th>Token</th><th class="n">Address</th><th class="n">Launched</th><th class="n">Curve</th><th class="n">Raised / needed</th><th>Open markets</th><th>Act</th></tr></thead><tbody>'
       + (rows || '<tr><td colspan="7" class="msg">No launches in the last 30 minutes at block ' + state.block.toLocaleString('en-US') + '.</td></tr>') + '</tbody></table></div>'
+      + '<p class="msg">Graduated in the last 30 minutes: ' + (grads.length ? grads.map(function(g){ return '<span class="hot">' + esc(g.symbol) + '</span> ' + ago((g.block - state.block) / 10); }).join(' · ') : 'none') + '</p>'
       + (resolved.length ? '<p class="msg">Recently resolved: ' + resolved.map(function(m){ return '#' + m.id + ' ' + ['open', '<span class="hot">YES</span>', '<span class="calm">NO</span>', 'void'][m.outcome]; }).join(' · ') + (state.wallet ? ' — <button type="button" class="btn sm ghost" id="b-claims">check my claims</button>' : '') + '</p>' : '')
       + (past.length ? '<p class="msg">' + past.length + ' market(s) past the deadline. <button type="button" class="btn sm ghost" id="b-witness">record outcomes</button></p>' : '');
     $$('[data-pick]').forEach(function(b){ b.addEventListener('click', function(){ pick(b.getAttribute('data-pick')); }); });
@@ -685,8 +705,19 @@ html.has-coin,html.has-coin *{cursor:none !important}
       var add = BigInt(Math.round(amt * 1e18));
       var yes = open.yesPool + (state.side ? add : 0n), no = open.noPool + (state.side ? 0n : add);
       text += ' → joins market #' + open.id + '; pools after: YES ' + eth(yes).toFixed(3) + ' / NO ' + eth(no).toFixed(3) + ' ETH; staking closes ' + ago(open.closesAt - state.now);
+      // what this stake would take home if its side won and nothing else moved: principal plus a weighted slice of the other pool
+      var secs = Math.max(0, open.closesAt - state.now), w = add * BigInt(secs);
+      var mine = state.side ? open.yesWeight + w : open.noWeight + w;
+      var other = state.side ? open.noPool : open.yesPool;
+      if (other > 0n && mine > 0n) {
+        var pot = other - other / 100n;
+        var take = add + pot * w / mine;
+        text += '; if ' + (state.side ? 'YES' : 'NO') + ' wins and nothing else moves you would take about ' + eth(take).toFixed(4) + ' ETH';
+      } else if (other === 0n) {
+        text += '; nothing on the other side yet, so as it stands this market would refund';
+      }
     } else {
-      text += ' → opens a new market: staking closes in ' + WINDOW_NAMES[state.window] + ' / 2, deadline in ' + WINDOW_NAMES[state.window];
+      text += ' → opens a new market: staking closes in ' + WINDOW_NAMES[state.window] + ' / 2, deadline in ' + WINDOW_NAMES[state.window] + '; until someone takes the other side it would refund';
     }
     el('t-preview').textContent = text + '. Minimum 0.0001 ETH. This is the exact call your wallet will show.';
   }

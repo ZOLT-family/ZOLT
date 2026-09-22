@@ -113,8 +113,12 @@ const values = {
     },
     topics: {
       launched: '0x8d4aad4953d0ca700d468f3753aa14432d1b35b43ec6409f051fb6aa43a89607',
+      graduated: '0x0a44ef75df69c534f43cd6c1aa3ef8983065fe5fe79ef9e79f6494e6f258c259',
       opened: '0x13d3642a6d52374b58ee776c95940fcf6486c6f740891e6d11070c1411e1d3a8',
     },
+    // what a launch can be paired with, and how to print that unit: ETH and the stock tokens use 18 decimals, USDG 6
+    pairs: Object.assign({ [ETH]: ['ETH', 18], '0x5fc5360d0400a0fd4f2af552add042d716f1d168': ['USDG', 6] },
+      ...assets.map((a) => ({ [a.deployments[0].contractAddress.toLowerCase()]: [a.tokenSymbol, 18] }))),
   }).replace(/</g, '\\u003c'),
 };
 
