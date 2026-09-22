@@ -39,7 +39,7 @@ const marquee = '<ul>' + steps.map((s) => {
 // exposure bars: top 6 by value, one scale
 const top = exposure.rows.filter((r) => r.usdInPools).slice(0, 6);
 const max = top[0].usdInPools;
-const exposureBars = top.map((r) => `      <div class="bar" role="listitem"><span class="t">${esc(r.sym)}</span><span class="track2"><span class="fill" style="display:block;width:${(100 * r.usdInPools / max).toFixed(1)}%"></span></span><span class="v">${millions(r.usdInPools)} · ${r.shareOfSupplyInPoolsPct}%</span></div>`).join('\n');
+const exposureBars = top.map((r) => `      <div class="bar" role="listitem"><span class="t">${esc(r.sym)}</span><span class="track"><span class="fill" style="width:${(100 * r.usdInPools / max).toFixed(1)}%"></span></span><span class="v">${millions(r.usdInPools)} · ${r.shareOfSupplyInPoolsPct}%</span></div>`).join('\n');
 
 // the simulator's first frame: 4:1 split, 1,000 quote, same rule as the page script and the contract
 const X = 1000; const Y = 100000; const P0 = Y / X; const BASE = 0.003; const R = 4; const Q = 1000;
@@ -89,7 +89,7 @@ const values = {
   simFeePct: (stepFee * 100).toFixed(0) + '%',
   marquee,
   exposureBars,
-  json: JSON.stringify({ doppler: { pools: doppler ? doppler.dopplerPools : 0, burned } }).replace(/</g, '\\u003c'),
+  json: JSON.stringify({ lead: int(nvda.leadSeconds), doppler: { pools: doppler ? doppler.dopplerPools : 0, burned } }).replace(/</g, '\\u003c'),
 };
 
 let html = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
