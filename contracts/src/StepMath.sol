@@ -14,7 +14,7 @@ interface IERC8056 {
 }
 
 /// @title StepMath
-/// @notice The arithmetic shared by the Stepguard hook and the Stepguard Doppler module: read a stock token's
+/// @notice The arithmetic shared by the Zolt hook and the Zolt Doppler module: read a stock token's
 /// multiplier schedule, turn a step into a target pool price, and turn the gap to that target into a fee.
 library StepMath {
     uint256 internal constant ONE = 1e18;

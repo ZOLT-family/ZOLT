@@ -1,4 +1,4 @@
-// Can the Stepguard Doppler module actually reach the Doppler pools? Read-only.
+// Can the Zolt Doppler module actually reach the Doppler pools? Read-only.
 //   1. Who governs module enablement: DopplerHookInitializer.airlock() -> Airlock.owner(); EOA or contract?
 //   2. For every Doppler pool holding a stepped stock token: getState(asset) -> status, dopplerHook slot.
 //      A module can only be attached to a pool in status Locked, and the slot holds one module.

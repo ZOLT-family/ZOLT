@@ -1,8 +1,8 @@
-// Prepare (never send) the deployment of the Stepguard hook through the deterministic CREATE2 proxy.
+// Prepare (never send) the deployment of the Zolt hook through the deterministic CREATE2 proxy.
 //
 // A v4 hook's address must carry exactly its permission bits in the low 14 bits. This mines a salt so that
 // CREATE2(proxy, salt, initcode) lands on such an address, checks the proxy exists on the target chain and
-// that the address is still empty, and writes the unsigned transaction to deploy/stepguard-<chainId>.json.
+// that the address is still empty, and writes the unsigned transaction to deploy/zolt-<chainId>.json.
 // Anyone with a funded key then sends { to: proxy, data } once. test/Deployment.t.sol runs the same search
 // in the EVM and deploys and trades through the result.
 //
@@ -42,7 +42,7 @@ function rpc(method, params) {
   return j.result;
 }
 
-const artifact = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'artifacts', 'src', 'Stepguard.sol', 'Stepguard.json'), 'utf8'));
+const artifact = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'artifacts', 'src', 'Zolt.sol', 'Zolt.json'), 'utf8'));
 const args = encodeAbiParameters(
   [{ type: 'address' }, { type: 'uint24' }, { type: 'uint256' }, { type: 'uint256' }],
   [getAddress(POOL_MANAGER), BASE_FEE, LOOKAHEAD, WINDOW],
@@ -87,7 +87,7 @@ try {
 
 const out = {
   chainId, preparedAt: new Date().toISOString(), status: 'UNSIGNED — nothing has been sent',
-  contract: 'Stepguard', params: { poolManager: getAddress(POOL_MANAGER), baseFee: BASE_FEE, lookahead: Number(LOOKAHEAD), guardWindow: Number(WINDOW) },
+  contract: 'Zolt', params: { poolManager: getAddress(POOL_MANAGER), baseFee: BASE_FEE, lookahead: Number(LOOKAHEAD), guardWindow: Number(WINDOW) },
   create2Proxy: PROXY, salt, saltsTried: tries, predictedAddress: predicted, alreadyDeployed: existing !== '0x',
   initCodeHash: initHash, flagsInAddress: '0x' + (BigInt(predicted) & MASK).toString(16),
   transaction: { to: PROXY, data: txData, value: '0x0' },
@@ -95,7 +95,7 @@ const out = {
   note: 'Send only after an audit. The address depends on the exact bytecode: rebuild and re-mine after any change.',
 };
 fs.mkdirSync(path.join(__dirname, '..', 'deploy'), { recursive: true });
-const file = path.join(__dirname, '..', 'deploy', `stepguard-${chainId}.json`);
+const file = path.join(__dirname, '..', 'deploy', `zolt-${chainId}.json`);
 fs.writeFileSync(file, JSON.stringify(out, null, 1));
 console.log(`chain ${chainId} | proxy ok | PoolManager ok | salt ${salt} after ${tries} tries | hook address ${predicted} | already deployed: ${out.alreadyDeployed}`);
 console.log('simulation:', JSON.stringify(simulation));

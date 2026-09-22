@@ -15,7 +15,7 @@ import {Currency} from "@uniswap/v4-core/src/types/Currency.sol";
 import {BalanceDelta} from "@uniswap/v4-core/src/types/BalanceDelta.sol";
 import {ModifyLiquidityParams, SwapParams} from "@uniswap/v4-core/src/types/PoolOperation.sol";
 
-import {Stepguard} from "../src/Stepguard.sol";
+import {Zolt} from "../src/Zolt.sol";
 import {MockERC20} from "../src/mocks/MockERC20.sol";
 import {MockStockToken} from "../src/mocks/MockStockToken.sol";
 
@@ -29,12 +29,12 @@ contract DeploymentTest is Test {
         vm.warp(1_790_000_000);
         PoolManager manager = new PoolManager(address(this));
         bytes memory args = abi.encode(manager, uint24(3000), uint256(2 hours), uint256(24 hours));
-        bytes32 initHash = keccak256(abi.encodePacked(type(Stepguard).creationCode, args));
+        bytes32 initHash = keccak256(abi.encodePacked(type(Zolt).creationCode, args));
 
         (bytes32 salt, address predicted, uint256 tries) = _mine(address(this), initHash);
         emit log_named_uint("salts tried", tries);
 
-        Stepguard hook = new Stepguard{salt: salt}(manager, 3000, 2 hours, 24 hours);
+        Zolt hook = new Zolt{salt: salt}(manager, 3000, 2 hours, 24 hours);
         assertEq(address(hook), predicted, "CREATE2 landed where the miner said");
         assertEq(uint160(address(hook)) & Hooks.ALL_HOOK_MASK, FLAGS, "exactly the three permission bits");
         Hooks.validateHookPermissions(IHooks(address(hook)), hook.getHookPermissions()); // reverts on mismatch

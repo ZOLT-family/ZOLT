@@ -1,5 +1,5 @@
 // Pure keeper logic, no network: decode schedule events, index module registrations, decide what to poke.
-// The Stepguard hook needs no keeper (it reads the schedule before every swap). The Doppler module does: it
+// The Zolt hook needs no keeper (it reads the schedule before every swap). The Doppler module does: it
 // only runs after a swap, so without a poke the first trade after a step goes through at the old fee.
 const viemRequire = require('module').createRequire(require('path').join(__dirname, '..', 'contracts', 'package.json'));
 const { keccak256, toHex, decodeAbiParameters } = viemRequire('viem');

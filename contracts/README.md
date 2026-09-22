@@ -1,9 +1,9 @@
-# Stepguard contracts
+# Zolt contracts
 
-The Stepguard logic for pools that hold a Robinhood Chain stock token (ERC-8056), in two forms:
+The Zolt logic for pools that hold a Robinhood Chain stock token (ERC-8056), in two forms:
 
-- **`Stepguard`**, a Uniswap v4 hook for new pools, and
-- **`StepguardDopplerModule`**, a Doppler Hook module for new launches on Doppler's `DopplerHookInitializer`.
+- **`Zolt`**, a Uniswap v4 hook for new pools, and
+- **`ZoltDopplerModule`**, a Doppler Hook module for new launches on Doppler's `DopplerHookInitializer`.
 
 Both use the same arithmetic in `StepMath`.
 
@@ -17,7 +17,7 @@ and never reads the multiplier. After a step up, the pool sells the token at the
 step down, it buys it at the old share count. Whoever trades first in the profitable direction takes the
 difference from the LPs.
 
-Stepguard reads the same schedule:
+Zolt reads the same schedule:
 
 1. `afterInitialize` records which side(s) of the pool are ERC-8056 tokens and the multiplier the opening
    price reflects. Pools without a stock token, and static-fee pools, are rejected.
@@ -38,7 +38,7 @@ frontends.
 On chain 4663, Doppler's `DopplerHookInitializer` (`0x4e3468951d49f2eea976ed0d6e75ffcb44a9a544`, Sourcify match) is the
 hook on 20,300 of the 30,862 v4 pools that hold a stock token whose multiplier has stepped, and 20,136 of those pools
 use a dynamic LP fee. Doppler lets a module (a "Doppler Hook") be attached per asset: it gets `onSwap` after
-every swap and may call `updateDynamicLPFee(asset, fee)`. `StepguardDopplerModule` is that module. It differs from
+every swap and may call `updateDynamicLPFee(asset, fee)`. `ZoltDopplerModule` is that module. It differs from
 the hook in three ways, all forced by the module interface:
 
 - it runs after a swap, so it sets the fee for the next one; anyone can call `poke(asset)` when a schedule is
@@ -74,7 +74,7 @@ npm test
 by Hardhat 3), plus 5 keeper tests (`npm run test:keeper`). 16 cover the hook. Every scenario runs the same trade on a bare pool (0.30% static fee, no hook) and a guarded pool
 (0.30% base fee), both opened at 100 quote per stock with the same full-range liquidity:
 
-| Scenario | Bare pool | Stepguard pool |
+| Scenario | Bare pool | Zolt pool |
 |---|---|---|
 | 1,000 quote buy after a 4x step | more than 2,500 quote taken | 0 or less |
 | Same buy inside the lookahead, before `effectiveAt` | more than 2,500 taken | 0 or less |
@@ -108,9 +108,9 @@ node scripts/mine-salt.cjs --chain 46630 --rpc https://rpc.testnet.chain.robinho
 
 `scripts/mine-salt.cjs` mines a salt for the deterministic CREATE2 proxy (`0x4e59b44847b379578588920cA78FbF26c0B4956C`,
 present on 4663), checks the proxy and the PoolManager exist, simulates the deployment against the live chain with
-`eth_call` and `eth_estimateGas`, and writes the unsigned transaction to `deploy/stepguard-<chainId>.json`. For 4663
+`eth_call` and `eth_estimateGas`, and writes the unsigned transaction to `deploy/zolt-<chainId>.json`. For 4663
 with the default parameters: hook address `0xed3D93c9dD52A7e52Ff038d4311Be9AF4eDd7080`, the simulation returns that
-address, about 1.45M gas, 6,357 bytes of runtime code. Testnet 46630 is prepared the same way (`deploy/stepguard-46630.json`): the PoolManager sits at the same address with identical runtime bytecode (hashes compared), so the hook address is the same too. Nothing has been sent. The address changes with any change to
+address, about 1.45M gas, 6,357 bytes of runtime code. Testnet 46630 is prepared the same way (`deploy/zolt-46630.json`): the PoolManager sits at the same address with identical runtime bytecode (hashes compared), so the hook address is the same too. Nothing has been sent. The address changes with any change to
 the bytecode or constructor arguments.
 
 ## Keeper
@@ -142,16 +142,16 @@ needs no keeper.
 ## Layout
 
 ```
-src/Stepguard.sol              the hook
-src/StepguardDopplerModule.sol the Doppler Hook module
+src/Zolt.sol              the hook
+src/ZoltDopplerModule.sol the Doppler Hook module
 src/StepMath.sol               the shared arithmetic
 src/mocks/MockDopplerInitializer.sol  stand-in for Doppler's initializer (tests only)
 src/mocks/MockStockToken.sol   ERC20 + ERC-8056 schedule, mirroring the reference behaviour
 src/mocks/MockERC20.sol        plain ERC20
-test/Stepguard.t.sol           hook tests
-test/StepguardDopplerModule.t.sol  module tests
+test/Zolt.t.sol           hook tests
+test/ZoltDopplerModule.t.sol  module tests
 test/Deployment.t.sol          CREATE2 deployment rehearsal
-scripts/mine-salt.cjs          salt miner + live simulation, writes deploy/stepguard-<chainId>.json
+scripts/mine-salt.cjs          salt miner + live simulation, writes deploy/zolt-<chainId>.json
 SECURITY.md                    internal review (not an audit)
 ../keeper/                     keeper for the Doppler module
 ```

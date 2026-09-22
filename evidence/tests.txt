@@ -1,7 +1,7 @@
-# npx hardhat test solidity — 2026-09-22T13:02:20Z
+# npx hardhat test solidity — 2026-09-22T16:22:30Z
 # @uniswap/v4-core 1.0.2  hardhat "3.17.0"  solc 0.8.26 cancun via-IR  fuzz seed pinned in hardhat.config.ts
 23 |             tstore(CURRENCY_SLOT, 0)
-  test/StepguardDopplerModule.t.sol:StepguardDopplerModuleTest
+  test/ZoltDopplerModule.t.sol:ZoltDopplerModuleTest
     ✔ test_withoutAPokeTheFirstTradeGetsThroughAndTheSecondIsCharged()
     ✔ test_whileArmedTheFeeAppliesToBothDirections()
     ✔ test_pokedWhenTheScheduleIsPostedNothingIsTaken()
@@ -14,7 +14,7 @@
   test/Deployment.t.sol:DeploymentTest
 salts tried: 20601
     ✔ test_mineDeployAndTradeWithoutEtch()
-  test/Stepguard.t.sol:StepguardTest
+  test/Zolt.t.sol:ZoltTest
     ✔ test_twoStocksSteppingTogetherLeaveThePriceAlone()
     ✔ test_twoStepsBeforeThePoolCatchesUpCompose()
     ✔ test_tokenThatStopsAnsweringFailsOpen()
@@ -34,10 +34,10 @@ salts tried: 20601
   26 passing
 
 # node --test keeper/logic.test.cjs
-✔ decodes the real NVDA step from chain 4663 (2.2156ms)
-✔ indexes registrations by the stock side only (1.5319ms)
-✔ pokes inside the lookahead, not before it, not after the guard window (0.652ms)
-✔ an asset registered on two stepping tokens is poked once (0.4328ms)
-✔ steps on tokens nobody registered produce nothing (0.188ms)
+✔ decodes the real NVDA step from chain 4663 (2.3839ms)
+✔ indexes registrations by the stock side only (1.7931ms)
+✔ pokes inside the lookahead, not before it, not after the guard window (0.7629ms)
+✔ an asset registered on two stepping tokens is poked once (0.5125ms)
+✔ steps on tokens nobody registered produce nothing (0.2389ms)
 ℹ pass 5
 ℹ fail 0

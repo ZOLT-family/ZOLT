@@ -8,7 +8,7 @@ import {PoolId, PoolIdLibrary} from "@uniswap/v4-core/src/types/PoolId.sol";
 import {BalanceDelta} from "@uniswap/v4-core/src/types/BalanceDelta.sol";
 import {SwapParams} from "@uniswap/v4-core/src/types/PoolOperation.sol";
 
-import {StepguardDopplerModule} from "../StepguardDopplerModule.sol";
+import {ZoltDopplerModule} from "../ZoltDopplerModule.sol";
 
 /// @notice Test stand-in for Doppler's DopplerHookInitializer, reduced to the surface a Doppler Hook sees:
 ///   - it is the pool's v4 hook and, after every swap, calls the attached module's onSwap
@@ -38,7 +38,7 @@ contract MockDopplerInitializer {
     function attach(address asset, PoolKey calldata key, address module, bytes calldata initData) external {
         states[asset] = State({key: key, module: module});
         assetOf[key.toId()] = asset;
-        StepguardDopplerModule(module).onInitialization(asset, key, initData);
+        ZoltDopplerModule(module).onInitialization(asset, key, initData);
     }
 
     /// Same cap as DopplerHookInitializer: MAX_LP_FEE = 100_000 (10%), `require(lpFee <= MAX_LP_FEE)`.
@@ -65,7 +65,7 @@ contract MockDopplerInitializer {
         require(msg.sender == address(poolManager), "not the pool manager");
         address module = states[assetOf[key.toId()]].module;
         if (module != address(0)) {
-            StepguardDopplerModule(module).onSwap(sender, key, params, delta, data);
+            ZoltDopplerModule(module).onSwap(sender, key, params, delta, data);
         }
         return (IHooks.afterSwap.selector, 0);
     }

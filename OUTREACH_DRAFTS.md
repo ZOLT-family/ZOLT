@@ -7,10 +7,10 @@ Who, and why them (from `evidence/doppler.json`, `evidence/doppler-authorities.j
 
 | Recipient | Why | Public contact seen on chain |
 |---|---|---|
-| Whetstone Research (Doppler) | Their `DopplerHookInitializer` is the hook on 20,300 of the 30,862 v4 pools holding a stepped stock token on chain 4663. New launches can select a Stepguard module; enabling it is their Safe's call (3-of-6). | `@custom:security-contact security@whetstone.cc` in the verified source |
+| Whetstone Research (Doppler) | Their `DopplerHookInitializer` is the hook on 20,300 of the 30,862 v4 pools holding a stepped stock token on chain 4663. New launches can select a Zolt module; enabling it is their Safe's call (3-of-6). | `@custom:security-contact security@whetstone.cc` in the verified source |
 | Author of `RehypeDopplerHookInitializer` | Their module sits in 8,293 of those pools' slots, which can no longer change. A next version could include the check. | none found yet |
 | Author of module `0x6f02…0f77` | 11,632 slots; source not verified on Sourcify. | none found |
-| Launchpads on other hooks (PairV4Hook 1,437 pools, PonsV2MemeHook 1,240, LaunchHook 817 + 656) | Their next pools could use the Stepguard hook, or the same check in their own hook. | none collected |
+| Launchpads on other hooks (PairV4Hook 1,437 pools, PonsV2MemeHook 1,240, LaunchHook 817 + 656) | Their next pools could use the Zolt hook, or the same check in their own hook. | none collected |
 
 ---
 
@@ -74,7 +74,7 @@ Hi,
 splits, the token's multiplier jumps (CRWD went ×4 on 2 July) and every pool holding it keeps quoting the old
 share count until someone takes the difference from your LPs.
 
-Stepguard is a v4 hook, and a ~100-line check you can put in your own hook, that charges the step to whoever trades
+Zolt is a v4 hook, and a ~100-line check you can put in your own hook, that charges the step to whoever trades
 into it. Tested on Uniswap's v4-core PoolManager (26 tests); deployment prepared but not sent; unaudited.
 [link]
 

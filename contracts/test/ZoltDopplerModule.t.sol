@@ -17,7 +17,7 @@ import {Currency} from "@uniswap/v4-core/src/types/Currency.sol";
 import {BalanceDelta} from "@uniswap/v4-core/src/types/BalanceDelta.sol";
 import {ModifyLiquidityParams, SwapParams} from "@uniswap/v4-core/src/types/PoolOperation.sol";
 
-import {StepguardDopplerModule} from "../src/StepguardDopplerModule.sol";
+import {ZoltDopplerModule} from "../src/ZoltDopplerModule.sol";
 import {MockDopplerInitializer} from "../src/mocks/MockDopplerInitializer.sol";
 import {MockERC20} from "../src/mocks/MockERC20.sol";
 import {MockStockToken} from "../src/mocks/MockStockToken.sol";
@@ -25,7 +25,7 @@ import {MockStockToken} from "../src/mocks/MockStockToken.sol";
 /// The module sits behind a stand-in for Doppler's initializer (see MockDopplerInitializer). Same comparison as
 /// the hook tests: a bare pool (0.30% static fee, no hook) against a Doppler-style pool with the module attached
 /// (0.30% base fee), both opened at 100 quote per stock with the same liquidity.
-contract StepguardDopplerModuleTest is Test {
+contract ZoltDopplerModuleTest is Test {
     using PoolIdLibrary for PoolKey;
     using StateLibrary for PoolManager;
 
@@ -40,7 +40,7 @@ contract StepguardDopplerModuleTest is Test {
     PoolSwapTest swapRouter;
     PoolModifyLiquidityTest lpRouter;
     MockDopplerInitializer initializer;
-    StepguardDopplerModule module;
+    ZoltDopplerModule module;
     MockStockToken stock;
     MockERC20 quote;
     PoolKey bare;
@@ -58,7 +58,7 @@ contract StepguardDopplerModuleTest is Test {
         );
         vm.etch(flagged, address(impl).code);
         initializer = MockDopplerInitializer(flagged);
-        module = new StepguardDopplerModule(flagged, manager, BASE_FEE, LOOKAHEAD, WINDOW);
+        module = new ZoltDopplerModule(flagged, manager, BASE_FEE, LOOKAHEAD, WINDOW);
 
         stock = new MockStockToken("Test Stock", "TSTK");
         quote = new MockERC20("Test Dollar", "TUSD", 18);
@@ -151,14 +151,14 @@ contract StepguardDopplerModuleTest is Test {
     }
 
     function test_onlyTheInitializerCanCallTheCallbacks() public {
-        vm.expectRevert(StepguardDopplerModule.SenderNotInitializer.selector);
+        vm.expectRevert(ZoltDopplerModule.SenderNotInitializer.selector);
         module.onInitialization(address(stock), doppler, "");
-        vm.expectRevert(StepguardDopplerModule.SenderNotInitializer.selector);
+        vm.expectRevert(ZoltDopplerModule.SenderNotInitializer.selector);
         module.onSwap(address(this), doppler, SwapParams(true, -1, 0), BalanceDelta.wrap(0), "");
     }
 
     function test_pokeRejectsUnknownAssets() public {
-        vm.expectRevert(StepguardDopplerModule.NotRegistered.selector);
+        vm.expectRevert(ZoltDopplerModule.NotRegistered.selector);
         module.poke(address(quote));
     }
 

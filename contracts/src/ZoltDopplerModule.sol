@@ -18,11 +18,11 @@ interface IDopplerInitializerFees {
     function updateDynamicLPFee(address asset, uint24 lpFee) external;
 }
 
-/// @title StepguardDopplerModule
-/// @notice The Stepguard logic packaged as a Doppler Hook: a module that Doppler's DopplerHookInitializer calls
+/// @title ZoltDopplerModule
+/// @notice The Zolt logic packaged as a Doppler Hook: a module that Doppler's DopplerHookInitializer calls
 /// after every swap (`onSwap`) on the pools it is attached to, and that may set the pool's dynamic LP fee.
 ///
-/// Differences from the Stepguard hook, all forced by the Doppler module interface:
+/// Differences from the Zolt hook, all forced by the Doppler module interface:
 ///   - It runs after a swap, not before, so it sets the fee for the next swap. Anyone can call `poke` when a
 ///     schedule is posted to set the fee before the first trade.
 ///   - The fee it sets applies to both directions. While a step is priced in, the side that would lose to a
@@ -39,7 +39,7 @@ interface IDopplerInitializerFees {
 ///
 /// @dev PROTOTYPE. Unaudited, undeployed. Tested against a stand-in initializer with the same callback and
 /// fee-update surface (including the 10% cap), not against Doppler's own contracts.
-contract StepguardDopplerModule {
+contract ZoltDopplerModule {
     using PoolIdLibrary for PoolKey;
     using StateLibrary for IPoolManager;
 

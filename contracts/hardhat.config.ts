@@ -1,7 +1,7 @@
 import { defineConfig } from "hardhat/config";
 
 /**
- * Stepguard: the hook and its Solidity tests. Sources in src/, tests in test/.
+ * Zolt: the hook and its Solidity tests. Sources in src/, tests in test/.
  * Tests run against the real Uniswap v4 PoolManager (@uniswap/v4-core 1.0.2) in
  * the EVM, with forge-std cheatcodes. No network is configured on purpose:
  * nothing here is deployed.

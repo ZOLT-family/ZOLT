@@ -13,4 +13,4 @@ http.createServer((req, res) => {
     res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
     res.end(page);
   });
-}).listen(PORT, () => console.log('stepguard site on http://localhost:' + PORT));
+}).listen(PORT, () => console.log('zolt site on http://localhost:' + PORT));

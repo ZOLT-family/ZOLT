@@ -16,7 +16,7 @@ const exposure = read('exposure.json');
 const crwd = read('crwd-history.json');
 const doppler = maybe('doppler.json');
 const dopplerAuth = maybe('doppler-authorities.json');
-const deploy = JSON.parse(fs.readFileSync(path.join(ROOT, 'contracts', 'deploy', 'stepguard-4663.json'), 'utf8'));
+const deploy = JSON.parse(fs.readFileSync(path.join(ROOT, 'contracts', 'deploy', 'zolt-4663.json'), 'utf8'));
 const testsTxt = fs.readFileSync(path.join(EVID, 'tests.txt'), 'utf8');
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -104,7 +104,7 @@ console.log('wrote site/index.html', html.length, 'chars');
 // charset and viewport itself; a plain browser needs them in the file.
 const standalone = '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
   + '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
-  + '<meta name="description" content="Stepguard: stock-token splits on Robinhood Chain, and a Uniswap v4 hook that charges them to the trader instead of the LPs.">\n'
+  + '<meta name="description" content="Zolt: stock-token splits on Robinhood Chain, and a Uniswap v4 hook that charges them to the trader instead of the LPs.">\n'
   + '</head>\n<body>\n' + html + '\n</body>\n</html>\n';
-fs.writeFileSync(path.join(__dirname, 'stepguard.html'), standalone);
-console.log('wrote site/stepguard.html (standalone)', standalone.length, 'chars');
+fs.writeFileSync(path.join(__dirname, 'zolt.html'), standalone);
+console.log('wrote site/zolt.html (standalone)', standalone.length, 'chars');

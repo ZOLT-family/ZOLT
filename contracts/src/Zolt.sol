@@ -15,7 +15,7 @@ import {ModifyLiquidityParams, SwapParams} from "@uniswap/v4-core/src/types/Pool
 
 import {StepMath} from "./StepMath.sol";
 
-/// @title Stepguard
+/// @title Zolt
 /// @notice A Uniswap v4 hook for pools that hold an ERC-8056 stock token.
 ///
 /// A stock token's multiplier (how many shares one token stands for) steps on a schedule that is readable
@@ -23,7 +23,7 @@ import {StepMath} from "./StepMath.sol";
 /// count, so the first buyer after a step up (or the first seller after a step down) takes the difference
 /// out of the LPs.
 ///
-/// Stepguard reads the same schedule. When the multiplier the pool's price reflects is about to change, or
+/// Zolt reads the same schedule. When the multiplier the pool's price reflects is about to change, or
 /// has changed, it records the price the step implies and charges any swap in the profitable direction a
 /// fee equal to the gap between the pool price and that target. The fee goes to the LPs. Swaps in the other
 /// direction pay the base fee. The guard clears once the pool trades within the base fee of the target or
@@ -32,7 +32,7 @@ import {StepMath} from "./StepMath.sol";
 /// @dev PROTOTYPE. Unaudited, undeployed. Known limits are listed in README.md. The hook address must carry
 /// exactly the BEFORE_INITIALIZE, AFTER_INITIALIZE and BEFORE_SWAP permission bits, and pools must be
 /// created with the dynamic fee flag.
-contract Stepguard is IHooks {
+contract Zolt is IHooks {
     using PoolIdLibrary for PoolKey;
     using StateLibrary for IPoolManager;
     using LPFeeLibrary for uint24;

@@ -1,4 +1,4 @@
-// Stepguard keeper: watch UIMultiplierUpdated on the stock tokens and poke the Doppler module for every
+// Zolt keeper: watch UIMultiplierUpdated on the stock tokens and poke the Doppler module for every
 // registered asset, so the step fee is set before the first trade instead of after it.
 //
 // Dry run by default: it reads the chain and prints what it would send. Nothing is signed or sent unless

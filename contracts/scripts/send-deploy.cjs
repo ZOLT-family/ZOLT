@@ -1,4 +1,4 @@
-// Send the prepared Stepguard deployment, then verify it on chain. Run it yourself; the key never leaves your
+// Send the prepared Zolt deployment, then verify it on chain. Run it yourself; the key never leaves your
 // machine and is never printed.
 //
 //   node scripts/send-deploy.cjs --chain 4663                 # dry run: checks everything, sends nothing
@@ -20,8 +20,8 @@ const YES = process.argv.includes('--yes');
 const CHAIN = Number(arg('chain', '4663'));
 const RPC = arg('rpc', CHAIN === 4663 ? 'https://rpc.mainnet.chain.robinhood.com' : CHAIN === 46630 ? 'https://rpc.testnet.chain.robinhood.com' : null);
 const ROOT = path.join(__dirname, '..');
-const PLAN_FILE = path.join(ROOT, 'deploy', `stepguard-${CHAIN}.json`);
-const OUT_FILE = path.join(ROOT, 'deploy', `stepguard-${CHAIN}.deployed.json`);
+const PLAN_FILE = path.join(ROOT, 'deploy', `zolt-${CHAIN}.json`);
+const OUT_FILE = path.join(ROOT, 'deploy', `zolt-${CHAIN}.deployed.json`);
 
 function die(msg) { console.error('STOP: ' + msg); process.exit(1); }
 if (!RPC) die('no default RPC for chain ' + CHAIN + '; pass --rpc');
@@ -48,7 +48,7 @@ const view = (to, fn) => decodeFunctionResult({ abi: hookAbi, functionName: fn, 
 
 (async () => {
   // 1. the build still matches what was mined
-  const artifact = JSON.parse(fs.readFileSync(path.join(ROOT, 'artifacts', 'src', 'Stepguard.sol', 'Stepguard.json'), 'utf8'));
+  const artifact = JSON.parse(fs.readFileSync(path.join(ROOT, 'artifacts', 'src', 'Zolt.sol', 'Zolt.json'), 'utf8'));
   const p = plan.params;
   const initcode = concatHex([artifact.bytecode, encodeAbiParameters(
     [{ type: 'address' }, { type: 'uint24' }, { type: 'uint256' }, { type: 'uint256' }],

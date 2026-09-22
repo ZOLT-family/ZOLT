@@ -1,4 +1,4 @@
-# Stepguard — brief
+# Zolt — brief
 
 > **Status (22 Sep 2026):** prototype lengkap. Hook + modul Doppler + keeper + tooling deploy. **26 test kontrak + 5 test keeper lolos** di PoolManager Uniswap v4 asli. Transaksi deploy buat mainnet 4663 dan testnet 46630 udah disiapin dan disimulasi ke chain live, **tapi belum dikirim**. Repo git lokal (`main`), belum di-push ke mana pun. **Belum diaudit, belum ada dana siapa pun di belakangnya.** Semua angka on-chain di dokumen ini keluar dari script di `research/` dan tersimpan di `evidence/`.
 
@@ -6,17 +6,17 @@
 
 ## 1. Narasi
 
-**Stepguard — split-proof liquidity for stock tokens.**
+**Zolt — split-proof liquidity for stock tokens.**
 
-> The share count changes. Your pool doesn't know. Stepguard does.
+> The share count changes. Your pool doesn't know. Zolt does.
 
 Stock token di Robinhood Chain (ERC-8056) bisa ngubah **berapa share yang diwakili satu token**. Jadwalnya ditulis on-chain beberapa menit sebelum berlaku (`newUIMultiplier()`, `effectiveAt()`). Pool DEX menghargai token mentah dan gak pernah baca angka itu. Setelah step naik, pool masih jual di jumlah share lama. Siapa pun yang dagang duluan ke arah yang untung ngambil selisihnya dari LP.
 
-Stepguard baca jadwal yang sama, lalu nagih selisih itu ke orang yang dagang ke arah step. Fee itu masuk ke LP.
+Zolt baca jadwal yang sama, lalu nagih selisih itu ke orang yang dagang ke arah step. Fee itu masuk ke LP.
 
-**Kalimat satu baris (buat orang non-teknis):** *Kalau satu token tiba-tiba mewakili 4 share, pool lo masih jual dia seharga 1 share. Stepguard nutup celah itu.*
+**Kalimat satu baris (buat orang non-teknis):** *Kalau satu token tiba-tiba mewakili 4 share, pool lo masih jual dia seharga 1 share. Zolt nutup celah itu.*
 
-**Posisi yang jujur setelah semua pengukuran:** Stepguard ngelindungin **pool yang dibuka berikutnya**, bukan ~$50 juta yang udah ada di pool sekarang. Pool yang udah ada gak bisa diubah oleh siapa pun (lihat §5). Jadi pembelinya **launchpad dan pembuat modul**, bukan LP satu-satu.
+**Posisi yang jujur setelah semua pengukuran:** Zolt ngelindungin **pool yang dibuka berikutnya**, bukan ~$50 juta yang udah ada di pool sekarang. Pool yang udah ada gak bisa diubah oleh siapa pun (lihat §5). Jadi pembelinya **launchpad dan pembuat modul**, bukan LP satu-satu.
 
 ## 2. Kenapa sekarang
 
@@ -36,7 +36,7 @@ Semua angka di bawah diukur read-only dari chain 4663 (21–22 Sep 2026).
 **Artinya, dan ini harus dibaca jujur:**
 - Hipotesis awal "pool dikuras tiap step" **gak terbukti**. Step kecil masih di bawah fee pool, dan satu-satunya step gede kejadian waktu pasarnya belum ada.
 - Pasarnya sekarang jauh lebih gede: waktu CRWD split cuma ada 1 pool; sekarang ~31.800 pool dan ~$50 juta. Split berikutnya bakal kena semuanya di detik yang sama.
-- **Tapi pool-pool itu gak bisa dilindungin di level pool oleh siapa pun**, termasuk Stepguard: hook-nya dikunci pas pool dibuat, dan slot modul Doppler-nya udah dibekukan.
+- **Tapi pool-pool itu gak bisa dilindungin di level pool oleh siapa pun**, termasuk Zolt: hook-nya dikunci pas pool dibuat, dan slot modul Doppler-nya udah dibekukan.
 
 Kata yang boleh dipakai: *exposed, gives away, quotes the old share count*. Kata yang **gak boleh** dipakai sampai ada tx hash-nya: *drained, robbed, exploited*. Klaim yang **gak boleh** dipakai: "protects today's pools".
 
@@ -44,13 +44,13 @@ Batas pengukuran: jendela 60 menit per step; cuma pool dengan quote USDG/ETH yan
 
 ## 3. Mekanisme
 
-**Hook (`Stepguard.sol`), buat pool baru:**
+**Hook (`Zolt.sol`), buat pool baru:**
 1. **Register** (`afterInitialize`): catat sisi mana yang stock token ERC-8056 dan multiplier yang dicerminin harga awal. Pool tanpa stock token dan pool fee statis ditolak.
 2. **Arm** (`beforeSwap`): tiap swap, baca `uiMultiplier()`, `newUIMultiplier()`, `effectiveAt()`. Kalau jumlah share berubah, atau bakal berubah dalam `lookahead`, catat harga target = harga pool × baru ÷ lama. Dua step beruntun, pool stock/stock, dan jadwal yang dibatalin semuanya dikomposisi.
 3. **Charge**: swap ke arah yang ngambil nilai dari LP bayar fee = selisih harga pool vs target (`1 − P/T` buat beli setelah step naik, `1 − T/P` buat jual setelah reverse split), dibulatkan ke atas. Arah sebaliknya bayar fee normal.
 4. **Clear**: guard lepas kalau pool udah dagang dalam fee normal dari target, kalau harga nyebrang target, atau kalau `guardWindow` habis.
 
-**Modul Doppler (`StepguardDopplerModule.sol`), buat launch Doppler baru yang milih modul ini:** logika sama, tapi jalan **setelah** swap dan nyetel fee buat swap berikutnya, fee-nya berlaku dua arah, dan dipatok di **10%** (batas `MAX_LP_FEE` Doppler). Keeper manggil `poke(asset)` begitu jadwal diumumin. Aturan keras di kontrak: **gak pernah revert di dalam `onSwap`**, karena revert di situ ngunci semua swap di pool.
+**Modul Doppler (`ZoltDopplerModule.sol`), buat launch Doppler baru yang milih modul ini:** logika sama, tapi jalan **setelah** swap dan nyetel fee buat swap berikutnya, fee-nya berlaku dua arah, dan dipatok di **10%** (batas `MAX_LP_FEE` Doppler). Keeper manggil `poke(asset)` begitu jadwal diumumin. Aturan keras di kontrak: **gak pernah revert di dalam `onSwap`**, karena revert di situ ngunci semua swap di pool.
 
 **Rumus bersama (`StepMath.sol`)** dipakai dua-duanya. Ini juga yang bisa di-copy pembuat modul lain.
 
@@ -58,9 +58,9 @@ Selector ERC-8056 dicek live di chain 4663: `uiMultiplier 0xa60bf13d`, `newUIMul
 
 ## 4. Bukti
 
-**26 test Solidity** di PoolManager `@uniswap/v4-core` 1.0.2 + **5 test keeper** (log: `evidence/tests.txt`). Tiap skenario dijalanin di pool polos (fee 0,30%, tanpa hook) dan pool Stepguard (base fee 0,30%), harga awal dan likuiditas sama:
+**26 test Solidity** di PoolManager `@uniswap/v4-core` 1.0.2 + **5 test keeper** (log: `evidence/tests.txt`). Tiap skenario dijalanin di pool polos (fee 0,30%, tanpa hook) dan pool Zolt (base fee 0,30%), harga awal dan likuiditas sama:
 
-| Skenario | Pool polos | Pool Stepguard |
+| Skenario | Pool polos | Pool Zolt |
 |---|---|---|
 | Beli 1.000 quote tepat setelah step ×4 | > 2.500 diambil | ≤ 0 |
 | Beli yang sama 10 menit sebelum `effectiveAt` | > 2.500 diambil | ≤ 0 |
@@ -80,13 +80,13 @@ Tiga baris "masih ngambil" itu sengaja dijadiin test, supaya gak ada yang ngira 
 2. **Ngunci pool:** modul bisa minta fee sampai 99,99%, padahal Doppler nolak di atas 10% dan penolakannya ngebatalin semua swap. Ketemu dari baca source Doppler, bukan dari test → dipatok 10% + `try/catch`.
 3. **Ngunci pool:** modul yang dipasang tanpa `onInitialization` revert di `onSwap` → sekarang diam.
 
-**Deploy yang udah disiapin (belum dikirim):** `contracts/deploy/stepguard-4663.json` (mainnet) dan `contracts/deploy/stepguard-46630.json` (testnet; PoolManager di testnet ada di alamat yang sama dan bytecode-nya identik, dicek hash-nya; simulasi testnet ~1,63 juta gas). Alamat hook-nya sama di dua chain. Alamat hook `0xed3D93c9dD52A7e52Ff038d4311Be9AF4eDd7080`, lewat proxy CREATE2 Arachnid `0x4e59…956C` (ada di 4663). Simulasi `eth_call` ke chain live balikin alamat itu persis; ~1,45 juta gas (≈0,00007 ETH di harga gas sekarang); kode 6.357 byte.
+**Deploy yang udah disiapin (belum dikirim):** `contracts/deploy/zolt-4663.json` (mainnet) dan `contracts/deploy/zolt-46630.json` (testnet; PoolManager di testnet ada di alamat yang sama dan bytecode-nya identik, dicek hash-nya; simulasi testnet ~1,63 juta gas). Alamat hook-nya sama di dua chain. Alamat hook `0xed3D93c9dD52A7e52Ff038d4311Be9AF4eDd7080`, lewat proxy CREATE2 Arachnid `0x4e59…956C` (ada di 4663). Simulasi `eth_call` ke chain live balikin alamat itu persis; ~1,45 juta gas (≈0,00007 ETH di harga gas sekarang); kode 6.357 byte.
 
 **Keeper:** `keeper/keeper.cjs`, dry-run default. Replay ke 31 step historis jalan; satu pass live jalan. Ngirim cuma kalau dikasih `--send`, `--module`, dan `KEEPER_PRIVATE_KEY`.
 
 ## 5. Batas jujur
 
-- **Gak ada satu pun pool yang sekarang ada yang bisa dilindungin.** Hook v4 dikunci pas pool dibuat. Di Doppler, slot modul 20.279 dari 20.300 pool udah beku (timelock `0x0`/`0x…dEaD`). Stepguard **cuma buat pool baru**. Jalurnya: (a) launchpad yang bikin pool baru milih hook atau modul Stepguard, atau (b) pembuat modul yang udah ada (Rehype dan `0x6f02…`) masukin `StepMath` ke versi berikutnya.
+- **Gak ada satu pun pool yang sekarang ada yang bisa dilindungin.** Hook v4 dikunci pas pool dibuat. Di Doppler, slot modul 20.279 dari 20.300 pool udah beku (timelock `0x0`/`0x…dEaD`). Zolt **cuma buat pool baru**. Jalurnya: (a) launchpad yang bikin pool baru milih hook atau modul Zolt, atau (b) pembuat modul yang udah ada (Rehype dan `0x6f02…`) masukin `StepMath` ke versi berikutnya.
 - **Modul Doppler cuma ngelindungin sebagian buat split.** Batas fee 10% dari Doppler berarti step di atas ~10% (semua split) cuma kepotong sebagian. Buat split, cuma bentuk hook yang ngelindungin penuh.
 - **Modul Doppler telat satu langkah.** Tanpa keeper, trade pertama setelah step lolos.
 - **Hook gak bisa gerakin harga.** Dia cuma nagih selisih; pool yang gak ada yang dagang akan terbuka lagi setelah `guardWindow`.
@@ -96,7 +96,7 @@ Tiga baris "masih ngambil" itu sengaja dijadiin test, supaya gak ada yang ngira 
 - **Token jahat bisa ngabisin gas** di pool yang dia pasangin sendiri (bukan pool lain). Dicatat di `SECURITY.md` buat auditor.
 - **Belum diaudit.** `SECURITY.md` itu review internal, bukan audit.
 - **Modul Doppler cuma dites pakai stand-in**, bukan kontrak Doppler asli.
-- **Legal.** Stepguard gak nyentuh dana user dan gak ngasih nasihat, tapi dia infrastruktur buat pasar sekuritas utang ter-tokenisasi. Belum ada legal read.
+- **Legal.** Zolt gak nyentuh dana user dan gak ngasih nasihat, tapi dia infrastruktur buat pasar sekuritas utang ter-tokenisasi. Belum ada legal read.
 
 ## 6. Yang udah beres vs yang tinggal
 
@@ -119,13 +119,13 @@ Tiga baris "masih ngambil" itu sengaja dijadiin test, supaya gak ada yang ngira 
 ## 7. File
 
 ```
-contracts/src/Stepguard.sol                hook
-contracts/src/StepguardDopplerModule.sol   modul Doppler
+contracts/src/Zolt.sol                hook
+contracts/src/ZoltDopplerModule.sol   modul Doppler
 contracts/src/StepMath.sol                 rumus bersama
 contracts/test/*.t.sol                     26 test (hook, modul, gladi deploy)
-contracts/scripts/mine-salt.cjs            mining salt + simulasi live → deploy/stepguard-<chainId>.json
-contracts/deploy/stepguard-4663.json       transaksi deploy mainnet UNSIGNED + simulasi
-contracts/deploy/stepguard-46630.json      transaksi deploy testnet UNSIGNED + simulasi
+contracts/scripts/mine-salt.cjs            mining salt + simulasi live → deploy/zolt-<chainId>.json
+contracts/deploy/zolt-4663.json       transaksi deploy mainnet UNSIGNED + simulasi
+contracts/deploy/zolt-46630.json      transaksi deploy testnet UNSIGNED + simulasi
 OUTREACH_DRAFTS.md                         draft pesan ke Doppler, pembuat modul, launchpad (BELUM dikirim)
 contracts/SECURITY.md                      review internal (bukan audit)
 contracts/README.md                        dokumentasi teknis (EN)

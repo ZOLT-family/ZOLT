@@ -1,10 +1,10 @@
-# Stepguard — internal security review
+# Zolt — internal security review
 
 **This is not an audit.** It is the author's own review of the prototype, written so an auditor starts from
 what is already known. Nothing here is deployed. Do not put liquidity behind these contracts before an
 independent audit.
 
-Scope: `src/Stepguard.sol`, `src/StepguardDopplerModule.sol`, `src/StepMath.sol` (mocks are test-only).
+Scope: `src/Zolt.sol`, `src/ZoltDopplerModule.sol`, `src/StepMath.sol` (mocks are test-only).
 Reviewed 2026-09-22 against `@uniswap/v4-core` 1.0.2 and the verified `DopplerHookInitializer` source on chain
 4663 (`0x4e3468951d49f2eea976ed0d6e75ffcb44a9a544`).
 
@@ -12,10 +12,10 @@ Reviewed 2026-09-22 against `@uniswap/v4-core` 1.0.2 and the verified `DopplerHo
 
 | # | Contract | Issue | Fix | Test |
 |---|---|---|---|---|
-| 1 | Stepguard | Once buyers pushed the price past the target, the guard flipped direction and charged sellers a "step" fee for ordinary market movement. | The guard records the protected direction when it arms and clears when the pool crosses the target. | `test_guardClearsOnceBuyersRepriceThePool` |
+| 1 | Zolt | Once buyers pushed the price past the target, the guard flipped direction and charged sellers a "step" fee for ordinary market movement. | The guard records the protected direction when it arms and clears when the pool crosses the target. | `test_guardClearsOnceBuyersRepriceThePool` |
 | 2 | Doppler module | **Pool lock.** Doppler rejects an LP fee above `MAX_LP_FEE = 100_000` (10%). The module asked for up to 99.99% on large steps; the revert inside Doppler's `afterSwap` would have reverted every swap in the pool. | Fee capped at `DOPPLER_MAX_LP_FEE`; the fee update is wrapped in `try/catch`; the stand-in initializer enforces the same cap. | `test_bigSplitIsOnlyPartlyPricedUnderDopplersTenPercentCap`, `test_aFailingFeeUpdateNeverBlocksSwaps` |
 | 3 | Doppler module | **Pool lock.** A module attached without `onInitialization` reverted `NotRegistered` inside `onSwap`, again reverting every swap. | `onSwap` stays inert for unregistered pools. Rule written into the contract: it never reverts inside `onSwap`. | covered by the same rule; `poke` still reverts for unknown assets (`test_pokeRejectsUnknownAssets`) |
-| 4 | Stepguard | A cancelled schedule (ERC-8056 `UIMultiplierUpdateCancelled`) could have left buyers paying for a step that would not happen. | Not a code change: arming compares the expected multiplier on every swap, so a cancel re-arms with the inverse ratio and the gap closes. Now tested. | `test_cancelledScheduleDisarmsTheGuard` |
+| 4 | Zolt | A cancelled schedule (ERC-8056 `UIMultiplierUpdateCancelled`) could have left buyers paying for a step that would not happen. | Not a code change: arming compares the expected multiplier on every swap, so a cancel re-arms with the inverse ratio and the gap closes. Now tested. | `test_cancelledScheduleDisarmsTheGuard` |
 
 ## Checked, no issue found
 
@@ -35,7 +35,7 @@ Reviewed 2026-09-22 against `@uniswap/v4-core` 1.0.2 and the verified `DopplerHo
 - **Deployment address.** `test/Deployment.t.sol` mines a salt, deploys through CREATE2 with no `vm.etch`, and
   the PoolManager's own `validateHookPermissions` accepts the address. `scripts/mine-salt.cjs` produced
   `0xed3D93c9dD52A7e52Ff038d4311Be9AF4eDd7080` for chain 4663, and `eth_call` against the live chain returned
-  that address (`deploy/stepguard-4663.json`).
+  that address (`deploy/zolt-4663.json`).
 
 ## Open risks an auditor should look at
 

@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Stepguard: stock-token splits on Robinhood Chain, and a Uniswap v4 hook that charges them to the trader instead of the LPs.">
+<meta name="description" content="Zolt: stock-token splits on Robinhood Chain, and a Uniswap v4 hook that charges them to the trader instead of the LPs.">
 </head>
 <body>
-<title>Stepguard</title>
+<title>Zolt</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:ital,wdth,wght@0,50..150,100..900;1,50..150,100..900&family=Gloock&family=Onest:wght@400;500;600&family=Fragment+Mono&display=swap">
@@ -305,7 +305,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
 <div class="cursor" aria-hidden="true"></div>
 
 <nav class="nav" aria-label="Sections">
-  <a class="logo" href="#top" aria-label="Stepguard, top of page"><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M2 18h4.5v-4.5H11V9h4.5V4.5H20" fill="none" stroke="#E1B35A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="18" cy="4.5" r="2.4" fill="#63DDBB"></circle></svg><span>STEP<em>guard</em></span></a>
+  <a class="logo" href="#top" aria-label="Zolt, top of page"><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M2 18h4.5v-4.5H11V9h4.5V4.5H20" fill="none" stroke="#E1B35A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="18" cy="4.5" r="2.4" fill="#63DDBB"></circle></svg><span>ZOLT</span></a>
   <a class="l" href="#story">Story</a>
   <a class="l" href="#play">Play</a>
   <a class="l" href="#measured">Measured</a>
@@ -323,14 +323,14 @@ html.has-coin,html.has-coin *{cursor:none !important}
       <span class="eyebrow"><i></i>Uniswap v4 hook · Robinhood Chain</span>
       <h1 class="kinetic"><span class="a">The share</span><span class="b">count</span><span class="c">changes.</span></h1>
       <span class="sticker">Your pool <b>doesn’t know.</b></span>
-      <p class="lede">When a stock token splits, every pool holding it keeps quoting the old share count, and the first trader takes the difference from the LPs. Stepguard reads the split before it lands and charges it to whoever trades into it.</p>
+      <p class="lede">When a stock token splits, every pool holding it keeps quoting the old share count, and the first trader takes the difference from the LPs. Zolt reads the split before it lands and charges it to whoever trades into it.</p>
       <div class="ctas">
         <a class="btn gold hot" href="#play">Break a token <span class="arr">→</span></a>
         <a class="btn ghost hot" href="#story">How it happens</a>
       </div>
     </div>
 
-    <figure class="stage" id="stage" aria-label="Illustration: a token goes from one share to four; a bare pool keeps quoting 100, a Stepguard pool moves to 400">
+    <figure class="stage" id="stage" aria-label="Illustration: a token goes from one share to four; a bare pool keeps quoting 100, a Zolt pool moves to 400">
       <div class="tilt" id="tilt">
         <svg viewBox="0 0 520 470" role="img">
           <defs>
@@ -367,7 +367,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
       </div>
       <div class="label-cloud">
         <div class="tagx b">bare pool <strong>100</strong></div>
-        <div class="tagx g">stepguard <strong class="swap"><span class="o">100</span><span class="n">400</span></strong></div>
+        <div class="tagx g">zolt <strong class="swap"><span class="o">100</span><span class="n">400</span></strong></div>
       </div>
     </figure>
   </div>
@@ -394,7 +394,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
       <div class="beat" data-beat="3">
         <span class="n">03 · the gap</span>
         <h3>One pool shrugs. <span class="serif">One listens.</span></h3>
-        <p>A pool prices the raw token, so it keeps quoting the old share count. The first buyer gets four shares for the price of one, paid by the LPs. A Stepguard pool read the same notice and prices the step in.</p>
+        <p>A pool prices the raw token, so it keeps quoting the old share count. The first buyer gets four shares for the price of one, paid by the LPs. A Zolt pool read the same notice and prices the step in.</p>
       </div>
     </div>
     <div class="board-wrap">
@@ -404,7 +404,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
         <div class="stack-coins" aria-hidden="true"><i></i><i class="x"></i><i class="x"></i><i class="x"></i></div>
         <div class="quotes">
           <div class="quote b"><span>bare pool quotes</span><strong id="qb">100</strong></div>
-          <div class="quote g"><span>stepguard pool quotes</span><strong id="qg">100</strong></div>
+          <div class="quote g"><span>zolt pool quotes</span><strong id="qg">100</strong></div>
         </div>
       </div>
     </div>
@@ -440,7 +440,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
           <dl><dt>trader pays</dt><dd id="bare-pay">1,000</dd><dt>gets, worth after the split</dt><dd id="bare-get">3,949</dd><dt>pool still quotes</dt><dd>100</dd></dl>
         </div>
         <div class="pool guard">
-          <div class="k"><span>Stepguard pool</span><span id="guard-fee-label">step fee 75%</span></div>
+          <div class="k"><span>Zolt pool</span><span id="guard-fee-label">step fee 75%</span></div>
           <div class="big" id="guard-taken">0</div>
           <p class="cap">taken from the LPs by the same trade</p>
           <dl><dt>trader pays</dt><dd id="guard-pay">1,000</dd><dt>gets, worth after the split</dt><dd id="guard-get">998</dd><dt>step fee kept by the LPs</dt><dd id="guard-kept">750</dd></dl>
@@ -527,7 +527,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
     </div>
     <div class="sheet"><div class="scroll">
       <table>
-        <thead><tr><th>Scenario</th><th class="n">Bare pool</th><th class="n">Stepguard</th></tr></thead>
+        <thead><tr><th>Scenario</th><th class="n">Bare pool</th><th class="n">Zolt</th></tr></thead>
         <tbody>
           <tr><td>1,000 quote buy right after a ×4 split</td><td class="n bad">&gt; 2,500 taken</td><td class="n good">≤ 0</td></tr>
           <tr><td>Same buy ten minutes before it takes effect</td><td class="n bad">&gt; 2,500 taken</td><td class="n good">≤ 0</td></tr>
@@ -583,7 +583,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
 
 <footer class="grain">
   <div class="wrap">
-    <div class="word" id="word" aria-hidden="true">Step<em>guard</em></div>
+    <div class="word" id="word" aria-hidden="true">ZOLT</div>
     <div class="fine">
       <div>A prototype. Not affiliated with Robinhood Markets, Uniswap Labs or Whetstone Research.</div>
       <div class="mono" style="font-size:11.5px">Every figure comes from read-only calls to chain 4663. Last read at block 68,685,412.</div>

@@ -17,16 +17,16 @@ import {Currency} from "@uniswap/v4-core/src/types/Currency.sol";
 import {BalanceDelta} from "@uniswap/v4-core/src/types/BalanceDelta.sol";
 import {ModifyLiquidityParams, SwapParams} from "@uniswap/v4-core/src/types/PoolOperation.sol";
 
-import {Stepguard} from "../src/Stepguard.sol";
+import {Zolt} from "../src/Zolt.sol";
 import {MockERC20} from "../src/mocks/MockERC20.sol";
 import {MockStockToken} from "../src/mocks/MockStockToken.sol";
 
 /// Every scenario runs the same trade against two pools that differ only in the hook:
 ///   bare    - a normal v4 pool, 0.30% static fee, no hook
-///   guarded - a v4 pool with Stepguard, 0.30% base fee
+///   guarded - a v4 pool with Zolt, 0.30% base fee
 /// Both start at 100 quote per stock with the same full-range liquidity.
 /// "Taken" = value of what the trader received at the post-step fair price, minus what they paid.
-contract StepguardTest is Test {
+contract ZoltTest is Test {
     using PoolIdLibrary for PoolKey;
 
     uint24 constant BASE_FEE = 3000;
@@ -42,7 +42,7 @@ contract StepguardTest is Test {
     PoolManager manager;
     PoolSwapTest swapRouter;
     PoolModifyLiquidityTest lpRouter;
-    Stepguard hook;
+    Zolt hook;
 
     MockStockToken stock;
     MockERC20 quote;
@@ -55,13 +55,13 @@ contract StepguardTest is Test {
         swapRouter = new PoolSwapTest(manager);
         lpRouter = new PoolModifyLiquidityTest(manager);
 
-        Stepguard impl = new Stepguard(manager, BASE_FEE, LOOKAHEAD, WINDOW);
+        Zolt impl = new Zolt(manager, BASE_FEE, LOOKAHEAD, WINDOW);
         address flagged = address(
-            uint160(uint256(keccak256("stepguard")) & ~uint256(Hooks.ALL_HOOK_MASK))
+            uint160(uint256(keccak256("zolt")) & ~uint256(Hooks.ALL_HOOK_MASK))
                 | Hooks.BEFORE_INITIALIZE_FLAG | Hooks.AFTER_INITIALIZE_FLAG | Hooks.BEFORE_SWAP_FLAG
         );
         vm.etch(flagged, address(impl).code);
-        hook = Stepguard(flagged);
+        hook = Zolt(flagged);
 
         stock = new MockStockToken("Test Stock", "TSTK");
         quote = new MockERC20("Test Dollar", "TUSD", 18);
@@ -185,7 +185,7 @@ contract StepguardTest is Test {
         assertTrue(armed);
         vm.warp(t0 + 2 minutes + WINDOW + 1);
         vm.expectEmit(true, false, false, true, address(hook));
-        emit Stepguard.StepCleared(guarded.toId(), 2); // 2 = window ended, not repriced
+        emit Zolt.StepCleared(guarded.toId(), 2); // 2 = window ended, not repriced
         _swap(guarded, !buy, 1e18);
         (,,, bool after_,,,,,) = hook.guards(guarded.toId());
         assertFalse(after_, "a guard does not hold a pool forever");
@@ -233,7 +233,7 @@ contract StepguardTest is Test {
     }
 
     function test_onlyThePoolManagerCanCallTheHook() public {
-        vm.expectRevert(Stepguard.NotPoolManager.selector);
+        vm.expectRevert(Zolt.NotPoolManager.selector);
         hook.beforeSwap(address(this), guarded, SwapParams(true, -1, 0), "");
     }
 
