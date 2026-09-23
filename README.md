@@ -108,7 +108,7 @@ The deployment record is `contracts/deploy/odds-4663.deployed.json`; the page an
 and `railway.toml` points Railway at it. Set `KEEPER_PRIVATE_KEY` and `ODDS_ADDRESS` in the service's variables and fund
 the address with a little ETH; nothing in the image holds a key. A second key pair is made with
 `node keeper/new-keeper-key.cjs --name cloud`. Since 23 Sep 2026 this runs as the Railway service `zolt-keeper`
-(project of the same name), keeper address `0x77E04FD8a97638953aeE3C249fB85199b01634C6`; it reads the chain and
+(project of the same name), keeper address `0xe925c7c5FD5CaB9D665Cbb38654ABB855275Fa6E`; it reads the chain and
 logs `LOW BALANCE` until that address holds ETH. Run one keeper per contract: two racing for the same outcome only
 waste the loser's gas. `railway up --detach -y --service zolt-keeper` redeploys from a checkout; `.railwayignore`
 keeps keys and dependencies out of the upload.
