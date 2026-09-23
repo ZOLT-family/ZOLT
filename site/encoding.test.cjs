@@ -61,6 +61,31 @@ test('the market struct is read from the right word positions', () => {
   assert.equal(Number(ref.closesAt) - Number(ref.openedAt), 300);
 });
 
+// v2 and the token: bond, unbond, approve, and the two-word bonds(address) return
+const abiV2 = parseAbi([
+  'function bond(uint256 amount)',
+  'function unbond(uint256 amount)',
+  'function approve(address spender, uint256 amount) returns (bool)',
+  'function bonds(address who) view returns (uint128 amount, uint40 lockedUntil)',
+  'function feeBpsOf(address who) view returns (uint256)',
+  'function isKeeper(address who) view returns (bool)',
+]);
+const SELV2 = { bond: '0x9940686e', unbond: '0x27de9e32', approve: '0x095ea7b3', bonds: '0xfe10d774', feeBpsOf: '0xe868ce52', isKeeper: '0x6ba42aaa' };
+
+test('bond, unbond, approve and bonds calldata built by hand equal viem\'s, and bonds() decodes by word', () => {
+  const wei = 1_000_000n * 10n ** 18n, odds = '0xac86b04d48033b2454b132eded596e0c61a5b097', who = '0x9a2Ed3a6BB196Ed3c33A7b826d6D7180D405Bd58';
+  assert.equal((SELV2.bond + pad(wei.toString(16))).toLowerCase(), encodeFunctionData({ abi: abiV2, functionName: 'bond', args: [wei] }).toLowerCase());
+  assert.equal((SELV2.unbond + pad(wei.toString(16))).toLowerCase(), encodeFunctionData({ abi: abiV2, functionName: 'unbond', args: [wei] }).toLowerCase());
+  assert.equal((SELV2.approve + pad(odds) + pad(wei.toString(16))).toLowerCase(), encodeFunctionData({ abi: abiV2, functionName: 'approve', args: [odds, wei] }).toLowerCase());
+  assert.equal((SELV2.bonds + pad(who)).toLowerCase(), encodeFunctionData({ abi: abiV2, functionName: 'bonds', args: [who] }).toLowerCase());
+  assert.equal((SELV2.feeBpsOf + pad(who)).toLowerCase(), encodeFunctionData({ abi: abiV2, functionName: 'feeBpsOf', args: [who] }).toLowerCase());
+  assert.equal((SELV2.isKeeper + pad(who)).toLowerCase(), encodeFunctionData({ abi: abiV2, functionName: 'isKeeper', args: [who] }).toLowerCase());
+  const ret = '0x' + pad((5_000_000n * 10n ** 18n).toString(16)) + pad((1_800_604_800).toString(16));
+  const dec = decodeFunctionResult({ abi: abiV2, functionName: 'bonds', data: ret });
+  assert.equal(big(word(ret, 0)), dec[0]);
+  assert.equal(Number(big(word(ret, 1))), Number(dec[1]));
+});
+
 test('the amount the page sends is the wei the contract sees', () => {
   for (const amt of ['0.01', '0.0001', '1.5', '0.123456']) {
     const wei = BigInt(Math.round(parseFloat(amt) * 1e18));

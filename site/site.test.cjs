@@ -27,8 +27,9 @@ test('the base rate on the page is the base rate in the file', () => {
 
 test('the tests it cites are the tests that exist', () => {
   const sol = (fs.readFileSync(path.join(ROOT, 'contracts', 'test', 'ZoltOdds.t.sol'), 'utf8').match(/function test/g) || []).length;
+  const v2 = (fs.readFileSync(path.join(ROOT, 'contracts', 'test', 'ZoltOddsV2.t.sol'), 'utf8').match(/function test/g) || []).length;
   const keeper = (fs.readFileSync(path.join(ROOT, 'keeper', 'odds-logic.test.cjs'), 'utf8').match(/^test\(/gm) || []).length;
-  assert.ok(page.includes('>' + sol + ' + ' + keeper + '<'), 'test counts on the page do not match the test files');
+  assert.ok(page.includes('>' + sol + ' + ' + v2 + ' + ' + keeper + '<'), 'test counts on the page do not match the test files');
 });
 
 // The words the evidence does not support.
@@ -58,11 +59,17 @@ test('the splash can never trap a reader', () => {
 });
 
 // The page builds transactions for the reader's wallet. Exactly one place does, and it can only ever address the
-// market contract. Nothing on the page can produce a signature or a raw transaction on its own.
-test('the only transaction the page builds goes to the market contract', () => {
+// market contract or, for the token approval, the ZOLT token. Nothing on the page can produce a signature or a raw
+// transaction on its own.
+test('the only transaction the page builds goes to the market contract or the token', () => {
   const sends = page.match(/eth_sendTransaction/g) || [];
   assert.equal(sends.length, 1, 'expected one eth_sendTransaction, found ' + sends.length);
-  assert.ok(/eth_sendTransaction', params: \[\{ from: state\.wallet, to: ODDS,/.test(page), 'the transaction is not pinned to the market contract');
+  assert.ok(/eth_sendTransaction', params: \[\{ from: state\.wallet, to: to,/.test(page), 'the transaction is not built by sendTo');
+  assert.ok(/if \(to !== ODDS && to !== ZOLT\) return Promise\.reject/.test(page), 'sendTo does not pin its target to the market contract or the token');
+  // approve is the only call that goes to the token, and it can only ever approve the market contract
+  const approves = page.match(/SEL\.approve \+ pad\(([^)]*)\)/g) || [];
+  assert.equal(approves.length, 1, 'expected one approve builder, found ' + approves.length);
+  assert.ok(approves[0].includes('pad(ODDS)'), 'approve is not pinned to the market contract as spender');
   for (const m of ['eth_sendRawTransaction', 'eth_signTypedData', 'personal_sign', "'eth_sign'", 'wallet_addEthereumChain', 'eth_signTransaction']) {
     assert.equal(page.includes(m), false, 'the page mentions ' + m);
   }
@@ -74,9 +81,26 @@ test('the page and the contract agree on selectors', () => {
   assert.equal(data.factory.toLowerCase(), '0x7ed598bcef8bd9edd8c97a195c6d13f40801ec7e');
   const expect = { openAndStake: '0x34feb02b', claim: '0x379607f5', payout: '0xbe95e01a', witnessYes: '0x9d73a63c', witnessNo: '0xbfc7b653', voidUnobserved: '0x9fcb4976', market: '0x28861d22', launched: '0x3cf28b5a', reserve: '0x4f1f58fd', symbol: '0x95d89b41' };
   for (const [k, v] of Object.entries(expect)) assert.equal(data.sel[k], v, 'selector ' + k);
+  const expectV2 = { bond: '0x9940686e', unbond: '0x27de9e32', bonds: '0xfe10d774', feeBpsOf: '0xe868ce52', isKeeper: '0x6ba42aaa', balanceOf: '0x70a08231', allowance: '0xdd62ed3e', approve: '0x095ea7b3' };
+  for (const [k, v] of Object.entries(expectV2)) assert.equal(data.sel[k], v, 'selector ' + k);
   assert.equal(data.topics.launched, '0x8d4aad4953d0ca700d468f3753aa14432d1b35b43ec6409f051fb6aa43a89607');
   assert.equal(data.topics.opened, '0x13d3642a6d52374b58ee776c95940fcf6486c6f740891e6d11070c1411e1d3a8');
+  assert.equal(data.topics.bountyPaid, '0x07e339a02227d9329089b11d9cdeea1af6caea87244864b70935aca91d7dc7fd');
   if (data.odds) assert.ok(/^0x[0-9a-fA-F]{40}$/.test(data.odds), 'bad market address');
+});
+
+// The token section is built either way; it says plainly whether the token and v2 are on mainnet.
+test('the token section states whether ZOLT is on mainnet', () => {
+  assert.ok(page.includes('id="token"') && page.includes('id="bond-panel"'), 'the token section is missing');
+  if (data.v2) {
+    assert.ok(/^0x[0-9a-fA-F]{40}$/.test(data.zolt), 'v2 is live but the token address is not on the page');
+    assert.ok(data.bonds && /^\d+$/.test(data.bonds.discount) && /^\d+$/.test(data.bonds.keeper), 'v2 is live but the bond thresholds are not on the page');
+    assert.ok(page.includes(data.zolt), 'the token address is not shown');
+  } else {
+    assert.equal(data.zolt, null);
+    assert.ok(page.includes('not on mainnet yet'), 'the page does not say the token is not on mainnet');
+    assert.ok(page.includes('not launched yet') && page.includes('not deployed yet'), 'the receipts do not say the token and v2 are not deployed');
+  }
 });
 
 test('the relay forwards bounded read-only calls only', () => {

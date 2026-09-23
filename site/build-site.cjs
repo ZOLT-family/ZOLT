@@ -71,7 +71,16 @@ const FACTORY = '0x7eD598BcEf8bd9Edd8C97A195C6d13f40801EC7e';
 const deployed = maybe(path.join(ROOT, 'contracts', 'deploy', 'odds-4663.deployed.json'));
 const plan = maybe(path.join(ROOT, 'contracts', 'deploy', 'odds-4663.json'));
 const live = deployed && deployed.status === 'DEPLOYED' ? deployed : null;
-const gasPlan = live || plan;
+// v2 (a fee discount and a witness bounty for a bonded ZOLT) takes over the board the moment its record exists
+// ZOLT_V2_RECORD / ZOLT_PREVIEW_OUT / ZOLT_PREVIEW_RPC: build one standalone page against another record and RPC
+// (a local fork), written to ZOLT_PREVIEW_OUT only; nothing under site/ or public/ is touched in that mode
+const PREVIEW = process.env.ZOLT_PREVIEW_OUT || null;
+const deployedV2 = maybe(process.env.ZOLT_V2_RECORD || path.join(ROOT, 'contracts', 'deploy', 'odds-v2-4663.deployed.json'));
+const liveV2 = deployedV2 && deployedV2.status === 'DEPLOYED' ? deployedV2 : null;
+const market = liveV2 || live;
+const oddsV2Tests = countTests('contracts/test/ZoltOddsV2.t.sol', /function test/g);
+const wholeTokens = (wei) => int(Number(BigInt(wei) / 10n ** 18n));
+const gasPlan = live && live.estimatedGas ? live : plan; // a wallet deploy records no estimate; the dry-run plan has one
 // priced at 2 gwei: the chain sat near 0.05 gwei when quiet and 1.7-3.5 gwei during the memecoin rush of 23 Sep
 const gasEth = gasPlan && gasPlan.estimatedGas ? (gasPlan.estimatedGas * 2e-9).toFixed(4) + ' at 2 gwei' : '–';
 
@@ -92,29 +101,50 @@ const values = {
   pairBars,
   calibration,
   oddsTests,
+  oddsV2Tests,
   oddsKeeperTests,
-  stateLine: live ? 'live<br>on chain' : 'not<br>deployed',
-  stampLine: live ? 'Deployed · verified · use with care' : 'Unsigned · simulated · not sent',
-  deployState: live ? 'deployed' : 'unsigned',
-  sourceLine: live && live.sourcify ? '<a href="' + esc(live.sourcify.url) + '">verified on Sourcify</a> &middot; ' + esc(live.sourcify.match) : 'not yet verified',
-  oddsShort: live ? live.address.slice(0, 6) + '…' + live.address.slice(-4) : 'not deployed',
-  oddsAddr: live ? live.address : 'not deployed — the page runs in read-only preview until it is',
+  stateLine: market ? 'live<br>on chain' : 'not<br>deployed',
+  stampLine: market ? 'Deployed · verified · use with care' : 'Unsigned · simulated · not sent',
+  deployState: market ? (liveV2 ? 'deployed · v2' : 'deployed') : 'unsigned',
+  sourceLine: market && market.sourcify ? '<a href="' + esc(market.sourcify.url) + '">verified on Sourcify</a> &middot; ' + esc(market.sourcify.match) : 'not yet verified',
+  oddsShort: market ? market.address.slice(0, 6) + '…' + market.address.slice(-4) : 'not deployed',
+  oddsAddr: market ? market.address : 'not deployed — the page runs in read-only preview until it is',
+  v1Addr: liveV2 && live ? live.address + ' — its own markets still resolve and pay there' : (live ? 'this contract' : '—'),
   factoryAddr: FACTORY,
-  treasuryAddr: live ? live.treasury : (plan && plan.treasury) || 'set at deployment',
+  treasuryAddr: market ? market.treasury : (plan && plan.treasury) || 'set at deployment',
+  feeLine: liveV2 ? '1% of a winner’s share of the losing pool, 0.5% with a bond; 0.2% of the losing pool to a bonded witness' : '1% of the losing pool',
+  // the token section: wired to the v2 build either way, live only once the v2 record exists
+  zoltAddr: liveV2 ? liveV2.zolt : 'not launched yet',
+  v2Addr: liveV2 ? liveV2.address : 'not deployed yet',
+  tokenState: liveV2 ? 'live on chain 4663' : 'prepared · not on mainnet yet',
+  tokenStamp: liveV2 ? 'ZOLT is live and this page reads the v2 contract' : 'The token has not been launched and the v2 contract is not on mainnet: this section is wired to the tested v2 build and switches on when the deployment record exists',
+  discountBondTokens: liveV2 ? wholeTokens(liveV2.discountBond) : '1,000,000',
+  keeperBondTokens: liveV2 ? wholeTokens(liveV2.keeperBond) : '5,000,000',
+  bondNote: liveV2 ? 'read from the contract' : 'planned; fixed at deployment',
+  bondPanelNote: liveV2
+    ? 'Connect a wallet and press Read my bond. Bonding is one approval to the token, then one bond call to the market contract; unbonding is one call once the lock has run out.'
+    : 'Not on mainnet yet. These buttons build the exact calls the v2 contract takes (approve on the token, bond and unbond on the market) and stay off until it is deployed.',
   deployGasOdds: gasPlan && gasPlan.estimatedGas ? int(gasPlan.estimatedGas) : '–',
   deployEthOdds: gasEth,
   json: JSON.stringify({
-    rpc: 'https://rpc.mainnet.chain.robinhood.com',
+    rpc: (PREVIEW && process.env.ZOLT_PREVIEW_RPC) || 'https://rpc.mainnet.chain.robinhood.com',
     chainId: 4663,
     factory: FACTORY,
-    odds: live ? live.address : null,
-    deployedBlock: live && live.deployedBlock ? live.deployedBlock : null,
+    odds: market ? market.address : null,
+    deployedBlock: market && market.deployedBlock ? market.deployedBlock : null,
+    v2: !!liveV2,
+    v1: live ? live.address : null,
+    zolt: liveV2 ? liveV2.zolt : null,
+    bonds: liveV2 ? { discount: liveV2.discountBond, keeper: liveV2.keeperBond } : null,
     // the public address of the keeper this repo runs, if one was made here: the board shows when it last acted
     keeper: fs.existsSync(path.join(ROOT, 'keeper', 'keeper.address')) ? fs.readFileSync(path.join(ROOT, 'keeper', 'keeper.address'), 'utf8').trim() : null,
     sel: {
       symbol: '0x95d89b41', launched: '0x3cf28b5a', reserve: '0x4f1f58fd', market: '0x28861d22',
       openAndStake: '0x34feb02b', claim: '0x379607f5', payout: '0xbe95e01a',
       witnessYes: '0x9d73a63c', witnessNo: '0xbfc7b653', voidUnobserved: '0x9fcb4976',
+      // v2 and the token (held to viem in site/encoding.test.cjs)
+      bond: '0x9940686e', unbond: '0x27de9e32', bonds: '0xfe10d774', feeBpsOf: '0xe868ce52', isKeeper: '0x6ba42aaa',
+      balanceOf: '0x70a08231', allowance: '0xdd62ed3e', approve: '0x095ea7b3',
     },
     topics: {
       launched: '0x8d4aad4953d0ca700d468f3753aa14432d1b35b43ec6409f051fb6aa43a89607',
@@ -124,6 +154,7 @@ const values = {
       staked: '0xb1ab008fce4278d96ec4e7b40dd25e28c701cfa4fcd426922c25ad278b0d41ea',
       feeTaken: '0xb4d6a97bdd3b0279677829534375db2695a0fb46143b58f29faeead6ccf6f9cd',
       claimed: '0x4ec90e965519d92681267467f775ada5bd214aa92c0dc93d90a5e880ce9ed026',
+      bountyPaid: '0x07e339a02227d9329089b11d9cdeea1af6caea87244864b70935aca91d7dc7fd',
     },
     // what a launch can be paired with, and how to print that unit: ETH and the stock tokens use 18 decimals, USDG 6
     pairs: Object.assign({ [ETH]: ['ETH', 18], '0x5fc5360d0400a0fd4f2af552add042d716f1d168': ['USDG', 6] },
@@ -136,8 +167,10 @@ html = html.replace(/\{\{(\w+)\}\}/g, (m, k) => {
   if (!(k in values)) throw new Error('template asks for {{' + k + '}} and the builder has no value for it');
   return String(values[k]);
 });
-fs.writeFileSync(path.join(__dirname, 'index.html'), html);
-console.log('wrote site/index.html', html.length, 'chars');
+if (!PREVIEW) {
+  fs.writeFileSync(path.join(__dirname, 'index.html'), html);
+  console.log('wrote site/index.html', html.length, 'chars');
+}
 
 // The social card is drawn from the same figures: site/og-card.html renders them on a canvas and, opened through
 // the local helper, saves site/public/og.png. The PNG is committed; this only refreshes the page that draws it.
@@ -178,6 +211,11 @@ const head = [
   '<meta name="twitter:image" content="' + SITE + 'og.png">',
 ].join('\n');
 const standalone = '<!doctype html>\n<html lang="en">\n<head>\n' + head + '\n</head>\n<body>\n' + html + '\n</body>\n</html>\n';
+if (PREVIEW) {
+  fs.writeFileSync(PREVIEW, standalone);
+  console.log('wrote preview', PREVIEW, '(record ' + (process.env.ZOLT_V2_RECORD || 'default') + ', rpc ' + (process.env.ZOLT_PREVIEW_RPC || 'default') + ')');
+  process.exit(0);
+}
 fs.writeFileSync(path.join(__dirname, 'zolt.html'), standalone);
 console.log('wrote site/zolt.html (standalone)', standalone.length, 'chars');
 

@@ -5,6 +5,8 @@
 > **Update 23 Sep 2026 (malam):** kontrak live di `0xaC86…b097` (source terverifikasi di Sourcify), keeper jalan sebagai backstop + **auto-open hemat**: cuma buka pasar (maks 1 hidup, window 1 jam) pas gas ≤ 0,3 gwei, biaya ≈ 0,0003 ETH/hari; pasar kosong/satu sisi dirapikan pas gas murah. Halaman punya buku besar pasar, kartu sosial (`/og.png`), baris "no market is open" buat pengunjung pertama. Usulan token ada di `TOKEN_ID.md` (belum disetujui, belum ada token).
 >
 > **Update 23 Sep 2026 (pagi, setelah "gaas"):** token dianggap disetujui arah A + B. `contracts/src/ZoltOddsV2.sol` (diskon fee 0,5% buat bond ≥ discountBond, bounty saksi 0,2% buat bond ≥ keeperBond, lock 7 hari) + 15 test lolos, halaman deploy lokal `site/deploy-v2.html`, `scripts/verify-odds-v2.cjs`, angka Pons dari chain di `evidence/pons-config.json`. Belum ada token, belum ada deploy. Runbook di `TOKEN_ID.md` §5.
+>
+> **Update 23 Sep 2026 (siang, "persiapkan semuanya di website"):** situs siap buat v2/token: §06 ZOLT (dua kerjaan token + panel bond: approve → bond → unbond, tiga call itu doang), tiket pakai fee tier pembaca, buku besar baca event BountyPaid, receipts nampilin v2/token/v1. Builder otomatis pindah ke v2 begitu `contracts/deploy/odds-v2-4663.deployed.json` ada; sebelum itu panel bilang "not on mainnet yet" dan tombolnya mati. Diuji end-to-end di fork lokal chain 4663 (Hardhat node + ZoltOddsV2 asli + ZOLT stand-in): approve 1 jt → bond → fee 0,5%; bond 5 jt lagi → status keeper "yes"; lock 168 jam; setelah 7 hari unbond 5 jt → 1 jt tersisa, keeper "no".
 
 ---
 

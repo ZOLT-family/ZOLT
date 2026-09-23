@@ -265,7 +265,8 @@ html.has-coin,html.has-coin *{cursor:none !important}
       <a href="#base"><i>03</i>Base rate</a>
       <a href="#resolve"><i>04</i>Resolve</a>
       <a href="#receipts"><i>05</i>Receipts</a>
-      <a href="#limits"><i>06</i>Limits</a>
+      <a href="#token"><i>06</i>ZOLT</a>
+      <a href="#limits"><i>07</i>Limits</a>
     </nav>
     <div class="spine-foot">
       <b>live<br>on chain</b>
@@ -300,7 +301,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
       <div class="stat"><span class="lab">Launches per day</span><div class="n">9,930</div><div class="s">Pons V2 factory, blocks 69,013,351&ndash;69,877,351</div></div>
       <div class="stat"><span class="lab">Reach the threshold</span><div class="n sg">1.2%</div><div class="s">120 in that day &middot; what a NO is priced against</div></div>
       <div class="stat"><span class="lab">Median time to graduate</span><div class="n">3.0 min</div><div class="s">the ones that make it, make it fast</div></div>
-      <div class="stat"><span class="lab">Tests green</span><div class="n tl">17 + 12</div><div class="s">market contract &middot; keeper</div></div>
+      <div class="stat"><span class="lab">Tests green</span><div class="n tl">17 + 15 + 12</div><div class="s">market contract &middot; v2 with ZOLT &middot; keeper</div></div>
     </div>
 
     <section class="sec row" id="board">
@@ -482,17 +483,67 @@ html.has-coin,html.has-coin *{cursor:none !important}
               <dt>contract</dt><dd>0xaC86B04D48033b2454b132EDED596E0c61A5b097</dd>
               <dt>factory it reads</dt><dd>0x7eD598BcEf8bd9Edd8C97A195C6d13f40801EC7e</dd>
               <dt>treasury</dt><dd>0x9a2Ed3a6BB196Ed3c33A7b826d6D7180D405Bd58</dd>
-              <dt>deploy cost</dt><dd>– gas &middot; about – ETH</dd>
+              <dt>deploy cost</dt><dd>1,366,495 gas &middot; about 0.0027 at 2 gwei ETH</dd>
               <dt>source</dt><dd><a href="https://repo.sourcify.dev/4663/0xaC86B04D48033b2454b132EDED596E0c61A5b097">verified on Sourcify</a> &middot; match</dd>
               <dt>fee</dt><dd>1% of the losing pool</dd>
+              <dt>v2 contract</dt><dd>not deployed yet</dd>
+              <dt>ZOLT token</dt><dd>not launched yet</dd>
+              <dt>v1</dt><dd>this contract</dd>
             </dl>
           </div>
         </div>
       </div>
     </section>
 
+    <section class="sec row" id="token">
+      <div class="sec-head"><span class="ix">&sect; 06</span><h2>ZOLT</h2>
+        <p>The token has two jobs, both written into the v2 market contract and nowhere else: it halves the fee a winner pays, and it decides which witness is paid for recording an outcome. It promises no yield and pays no dividend. The token has not been launched and the v2 contract is not on mainnet: this section is wired to the tested v2 build and switches on when the deployment record exists.</p></div>
+      <div class="sec-body"><span class="gutter">prepared · not on mainnet yet</span>
+        <div>
+          <div class="two">
+            <div class="note-box">
+              <span class="lab">Job 1 &middot; the fee discount</span>
+              <ol class="notes">
+                <li><b>Bond</b><span>Lock at least <b>1,000,000 ZOLT</b> in the market contract (planned; fixed at deployment). Every deposit locks the whole bond for seven days.</span></li>
+                <li><b>Win</b><span>The fee is charged when a winner claims, on the share of the losing pool they take home, never on their own stake.</span></li>
+                <li><b>Pay half</b><span>A bonded winner pays <b>0.5%</b> of that share instead of 1%. The bond is read at claim, so it cannot be flashed in and out around one.</span></li>
+              </ol>
+            </div>
+            <div class="note-box">
+              <span class="lab">Job 2 &middot; the witness bounty</span>
+              <ol class="notes">
+                <li><b>Bond</b><span>Lock at least <b>5,000,000 ZOLT</b> (planned; fixed at deployment). Anyone can still record an outcome without one; the bond only decides who is paid for it.</span></li>
+                <li><b>Record</b><span>A bonded witness who records YES or NO is paid <b>0.2%</b> of the losing pool on the spot, before the winners share it.</span></li>
+                <li><b>Nothing to slash</b><span>Outcomes are read from Pons&rsquo;s factory, so there is nothing a witness could lie about. Void markets pay nobody.</span></li>
+              </ol>
+            </div>
+          </div>
+          <div class="panel" style="margin-top:18px" id="bond-panel">
+            <div class="panel-hd">
+              <span class="lab" id="k-state">your bond &middot; prepared · not on mainnet yet</span>
+              <button type="button" class="btn ghost" id="k-read">Read my bond</button>
+            </div>
+            <div class="grid4">
+              <div class="cell"><span class="k">ZOLT in wallet</span><b id="k-bal">&mdash;</b></div>
+              <div class="cell"><span class="k">Bonded</span><b id="k-bond">&mdash;</b></div>
+              <div class="cell"><span class="k">Locked until</span><b id="k-lock">&mdash;</b></div>
+              <div class="cell"><span class="k">Your fee &middot; paid as witness</span><b id="k-tier">&mdash;</b></div>
+            </div>
+            <div class="ticket" id="k-ticket">
+              <div class="field"><span class="lab">Amount &middot; ZOLT</span><input id="k-amt" type="text" inputmode="decimal" value="1,000,000" aria-label="Amount in ZOLT"></div>
+              <button type="button" class="btn ghost" id="k-approve">Approve</button>
+              <button type="button" class="btn yes" id="k-bond-go">Bond</button>
+              <button type="button" class="btn ghost" id="k-unbond">Unbond</button>
+            </div>
+            <p class="preview" id="k-preview">Not on mainnet yet. These buttons build the exact calls the v2 contract takes (approve on the token, bond and unbond on the market) and stay off until it is deployed.</p>
+          </div>
+          <p class="foot">This section makes three calls and no others: <span class="mono">approve</span> to the token, <span class="mono">bond</span> and <span class="mono">unbond</span> to the market contract. A bond earns nothing by itself; it changes the fee you pay and whether you are paid to witness.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="sec row" id="limits">
-      <div class="sec-head"><span class="ix">&sect; 06</span><h2>Read this part</h2></div>
+      <div class="sec-head"><span class="ix">&sect; 07</span><h2>Read this part</h2></div>
       <div class="sec-body"><span class="gutter">limits</span>
         <div class="two">
           <div class="note-box limits">
@@ -522,7 +573,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
   </div>
 </div>
 
-<script id="data" type="application/json">{"rpc":"https://rpc.mainnet.chain.robinhood.com","chainId":4663,"factory":"0x7eD598BcEf8bd9Edd8C97A195C6d13f40801EC7e","odds":"0xaC86B04D48033b2454b132EDED596E0c61A5b097","deployedBlock":69936682,"keeper":"0xa5C758147BFb551EF630FAf12146f6DB2a17b695","sel":{"symbol":"0x95d89b41","launched":"0x3cf28b5a","reserve":"0x4f1f58fd","market":"0x28861d22","openAndStake":"0x34feb02b","claim":"0x379607f5","payout":"0xbe95e01a","witnessYes":"0x9d73a63c","witnessNo":"0xbfc7b653","voidUnobserved":"0x9fcb4976"},"topics":{"launched":"0x8d4aad4953d0ca700d468f3753aa14432d1b35b43ec6409f051fb6aa43a89607","graduated":"0x0a44ef75df69c534f43cd6c1aa3ef8983065fe5fe79ef9e79f6494e6f258c259","opened":"0x13d3642a6d52374b58ee776c95940fcf6486c6f740891e6d11070c1411e1d3a8","resolved":"0xb759306cc71252cdc2f6244717195a7cc712a5551de7fa6dd2bf1819cd7dfadd","staked":"0xb1ab008fce4278d96ec4e7b40dd25e28c701cfa4fcd426922c25ad278b0d41ea","feeTaken":"0xb4d6a97bdd3b0279677829534375db2695a0fb46143b58f29faeead6ccf6f9cd","claimed":"0x4ec90e965519d92681267467f775ada5bd214aa92c0dc93d90a5e880ce9ed026"},"pairs":{"0x0000000000000000000000000000000000000000":["ETH",18],"0x5fc5360d0400a0fd4f2af552add042d716f1d168":["USDG",6],"0xd95b44124e475743a7589e68f3d74008a5536d44":["CRM",18],"0x1cdad396db64bda184d5182a97dd9b3c62100b7d":["P",18],"0x44f6d488021f8233b9416294d1fe9b1fee28382d":["CIEN",18],"0xbbd09f72b025360fee5c928053dca6248d35be54":["ON",18],"0xb8dbf92f9741c9ac1c32115e78581f23509916fd":["APLD",18],"0x5f604fba1162193a4388a5dfa56f556f3e133cc2":["AEHR",18],"0x5b97476b922f3305131b8f0b9d333172e87f4aae":["TEAM",18],"0xc583c60aef9dc401da72cec1b404743a93cea1cc":["QBTS",18],"0x95052ddcd5dc25641657424a8cf04834997e1730":["SATS",18],"0x93dbb1d2dc5d63f4abacff30485273f538df68ac":["FIX",18],"0xc93f4d80e268ab922e871bd169156c3cc41894e6":["MTSI",18],"0xc01aa1fecec0605b13bc84874ff7256c0f5f562a":["SMCI",18],"0x941ae714ec6d8130c7b75d67160ca08f1e7d11dd":["DELL",18],"0x48961813349333209994750ffa89b3c5c22ec969":["MXL",18],"0x756bc80af765c82da966a788858d65adf14f3793":["RUN",18],"0x82da4646242e1d962e96e932269dc644c94a9caa":["WDAY",18],"0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea":["SPCX",18],"0x2d427692e928fa156ec22acfabafa0447c5805b7":["GLXY",18],"0xea72ecca2d0f6bfa1394dbbcff85b52cd4233931":["CRWD",18],"0x156e175dd063a8ce274c50654ef40e0032b3fbcf":["AVGO",18],"0x117cc2133c37b721f49de2a7a74833232b3b4c0c":["SPY",18],"0x9651342cea770ae9a2969ba2a52611523146aef9":["CCL",18],"0xc9a981fee1f9dec688bb123ccdecc63d0debfc4e":["GLD",18],"0xba0cab75495255d0cb58e22b648bfed4ecd1f47e":["SNOW",18],"0xa48f22a46c0f1c46ca7d111cb6c137c271987180":["FICO",18],"0x4189f0c66ebbb0bfef1c31f763131361ef32f77c":["PR",18],"0xd5f3879160bc7c32ebb4dc785f8a4f505888de68":["QQQ",18],"0x9e7abd3c9139d14e4c86dce0e455aab7a0c2fb3e":["WYFI",18],"0xbef75684c43c4ea7bd18dd532a2244674ee8b926":["NNE",18],"0x63b814ddbd6bf339f25fed8c36158a008d5b373e":["GE",18],"0xf6589f11bc40b669e584073f428b05562f568733":["SNAP",18],"0x84cab63bc87912e71ad199ff14a0ba45de68fef8":["SKHY",18],"0x5c90450bbb4273d7b2f17cf6917aeb237a569679":["CBRS",18],"0xeb30663bdff0622ef4e4e5cbb4e975f19f33f51d":["FUTU",18],"0x58ffe4a942d3885baa22d7520691f611ef09e7aa":["TSM",18],"0x408c14038a04f7bd235329e26d2bf569ee20e250":["NU",18],"0xc72b96e0e48ecd4dc75e1e45396e26300bc39681":["INTC",18],"0xe93237c50d904957cf27e7b1133b510c669c2e74":["MSFT",18],"0xfde6b5d9bb419b10c23268c74e369abff39c0460":["RCAT",18],"0x284358abc07f9359f19f4b5b4ac91901be2597ba":["RGTI",18],"0x5e81213613b6b86eab4c6c50d718d34359459786":["TTWO",18],"0xc0d6457c16cc70d6790dd43521c899c87ce02f35":["META",18],"0x6006ed4b2f94110851ff7509d97d034f0eed9226":["VICR",18],"0x89776d4cd68193597a2fc132cfac1fde36ccea8a":["TSEM",18],"0x05b37fb53a299a1b874a619e1c4c404d52c36f4c":["RDDT",18],"0x7c04e6a3368f2a1de3874f0e80d2e0a1a9915da6":["GLW",18],"0xf23250dac154d05bb671cb0d0ebef3c635c79ce2":["UPS",18],"0xb039597ed45cba7b6e2fb9e8be51802969cee5be":["PANW",18],"0x48d60243c66437c6ac3c2495be94747aed5dfe25":["LHX",18],"0x03bc731ffb162cdd7b98d3c6542bfc291126075d":["FLY",18],"0xb90a19ff0af67f7779aff50a882a9cff42446400":["SNDK",18],"0x4d21483a44bf67a86b77e3da301411880797d452":["BA",18],"0x56d23bee5f41a7120170b0c603dae30128e460e9":["INTU",18],"0x39ec44bee4f6a116c6f9b8de566848a985c53c60":["ELF",18],"0x12f190a9f9d7d37a250758b26824b97ce941bf54":["AMZN",18],"0xe0444ef8bf4ed74f74fd73686e2ddf4c1c5591e8":["NFLX",18],"0xdf0992e440dd0be65bd8439b609d6d4366bf1cb5":["CRCL",18],"0xd917b029c761d264c6a312bbbcda868658ef86a6":["USAR",18],"0x561e2a49212b7ccf47f2744ccb83e200722fadbc":["VST",18],"0xf543967eebb6f1917992ef0e68de63ab07a5a0da":["CSCO",18],"0x9ece29a4a2397c0a35fb5fa8ee2b9509130a98cc":["FISV",18],"0x2e0847e8910a9732eb3fb1bb4b70a580adad4fe3":["GOOGL",18],"0x48e39e56acdba37b09020c0b734a613c9a2f100a":["BB",18],"0xa4f319104089fe321dc8093c6e707d4fe190a988":["CVNA",18],"0x141eea040c2250eec0314e336975e81f85f6585e":["AXTI",18],"0xc6cbad1016b38b797610c25e1dc7d95988b1f362":["MOD",18],"0x4e62068525ab11fe768e29dfd00ef909b9803016":["LULU",18],"0x329fcaceb9ad6f9580dd5f643fed0646900d043c":["LMT",18],"0xb853bc83a753342a4f8320ea680b4b1e84118d21":["INFQ",18],"0x92fd66527192e3e61d4ddd13322aa222de86f9b5":["SGOV",18],"0x40e7a279850e443f582059ae5dc1c3b6563e6395":["OUST",18],"0xf0ab0c93be6f41369d302e55db1a96b3c430212d":["IREN",18],"0x43b07d15ce533bec5476d70c22a78a1b2b662155":["MRNA",18],"0x57b0030166db0c31690d1a5aa167e2e26e2c29a4":["LRCX",18],"0x2f62fc9fabb470c690f141c28340ed832bb27020":["BND",18],"0xae517a2903e68bd929dfd15be875f8369d53e94a":["CEG",18],"0x748c32c3ca24edf31ea597db1f3d330a7a6da3dc":["ALAB",18],"0xb1cc0ec7db69cf43539119814df40071b9d61793":["TEM",18],"0xcef9027c7d6985b85f0ba431125073529a947a68":["BULL",18],"0xcf364ea52787e289de6f32077834056e3e70d6a8":["UNH",18],"0x62200915e7deab1ec7f79fb246dadbb80eacddd0":["CLOV",18],"0xad25ac6c84d497db898fa1e8387bf6af3532a1c4":["BABA",18],"0x77e655e37f4d913fb9540e0d541d824171a60e81":["SIMO",18],"0xf52597345a8edf418bc4071b4a35112472277d3e":["WDC",18],"0xcbb95bbf36099d34da091dc6fa6f49efa257cee3":["CLSK",18],"0x894e1ec2d74ffe5aef8dc8a9e84686accb964f2a":["PLTR",18],"0xff080c8ce2e5feadaca0da81314ae59d232d4afd":["MU",18],"0x1af6446f07eb1d97c546afc8c9544cbdf3ad5137":["ASTS",18],"0x237c16d66590f67b886d978acd362eaead8b18c7":["POWL",18],"0x0594134df3f171a354d9c85ebd65b7a6148f6d09":["VTI",18],"0x3b14c39e89d60d627b42a1a4ca45b5bb45fc12e2":["RKLB",18],"0x2778c5024d5ca2cdb0f8ead671ffc69963adcd9c":["TER",18],"0x5f10a1c971b69e47e059e1dc91901b59b3fb49c3":["CRWV",18],"0xbf449977089c718c004a66c554b26b94ef3ad4de":["CLS",18],"0x41f4267525a8aff329540ef24fd83d9044758b33":["FIG",18],"0x86923f96303d656e4aa86d9d42d1e57ad2023fdc":["AMD",18],"0x7f0abef0c07280f82c6a08ead09ded6bae2c13fc":["EWY",18],"0x285b231728c7e4333799183df1094d775246a535":["SLS",18],"0x4d67253bc223e6b0e104f1084c1fb2b669ddc41b":["CRDO",18],"0x072f979c2cac8e1391b0162a87fee094bf8744a0":["SMH",18],"0xfa78c12e6488814a0262e4e802749a4a737d5fb7":["VRT",18],"0x0c3260af4b8f13a69c4c2dfb84fd667890cdfa14":["NOW",18],"0x15cd20759ce7f3285c29a319de2d1a2e098c6f43":["XLK",18],"0x99d9d8663545151603863c5acbd6fc3218899009":["AMBA",18],"0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec":["NVDA",18],"0xb334c5ce741b80b5b671f47f5c269cb193fe8e24":["JOBY",18],"0x59818904ab4ce163b3ce4ffb64f2d6ca02c434b4":["QUBT",18],"0xa30fa36db767ad9ed3f7a60fc79526fb4d56d344":["USO",18],"0x9ab02ead789b6903c3c44d0ed32f9c707cdf12fd":["PWR",18],"0x25c288e6d899b9bc30160965ad9644c67e73be0c":["F",18],"0x7dc013eb55e436f30d7ed1afe4e36d6e45e3c3f7":["ZS",18],"0x6330d8c3178a418788df01a47479c0ce7ccf450b":["COIN",18],"0xf9b46d3d1b22199d4d1025a9cedb540a33f1a2d5":["XOM",18],"0x9d9c6684f596f66a64c030b93a886d51fd4d7931":["NBIS",18],"0xbe274710bf3d9567e1b290ef6a5f9f90ca016fd8":["SHY",18],"0x1eebee7f74517e0279dfb09d25b0407beec3fdd6":["SMR",18],"0x6e3dfd9f7e1649baa14d25cac18c94d62db10a54":["SOUN",18],"0xcf6b2d875361be807eafa57458c80f28521f9333":["POET",18],"0xa249baf1063af884807c1e1400aef7784836917e":["APP",18],"0x521cf887e6531c6f667b5bc4d896e5d9bfe8eb2e":["AAOI",18],"0x8ef20885f94e3d9bc7eb3080279188bd5ed7c08c":["LITE",18],"0xfaf9cb261b5fcc1f404bb10cd39c5c6c1974e612":["AEIS",18],"0x7fd06a4d81ccfa3f351394e144d5191874c31313":["KTOS",18],"0x36046893810a7e7fce501229d57dc3fc8c8716d0":["AMAT",18],"0x62fd0668e10d8b72339be2dcf7643001688ff13b":["MRVL",18],"0xeaf2512dfc1beac608f8794b3793cd4e02894aa6":["JBL",18],"0x8005d266423c7ea827372c9c864491e5786600ea":["LLY",18],"0x0f17206447090e464c277571124dd2688e48aea9":["QCOM",18],"0x03dfbbe0ac4e7bcdafd08ed41a400326b77d8c80":["JNJ",18],"0x12e3c047bf9aecaf9ddc98c05c31bfd1dd043993":["KSS",18],"0x28babd556b60e53663b8615036479a29c2cdd1bf":["ANET",18],"0x63d5a3b6939a33f1e75d8bcd85759858239600db":["CTSH",18],"0xaa4d64474c172010ab57719cb9951e6142a100d3":["PL",18],"0x558378e000d634a36593e338ebacdd6207640efe":["IONQ",18],"0xb1969f6604ca1ae7a2cd3f1827876e914594ca2d":["TE",18],"0xf53f66751b1eff985311b693531e3290f600c410":["SHOP",18],"0xbe6702d7b70315376dc48a3293f24f0982f86386":["NVTS",18],"0xfb2664f07b6aadd29ea7a59d8859b1aeb8645cda":["PATH",18],"0x0e6e67ba88e7b5d9b67636a215c76779b948de79":["UMC",18],"0xb0992820e760d836549ba69bc7598b4af75dee03":["ORCL",18],"0x92f9f459f1a9a5ad266b182be7bffd1c6c666894":["COHR",18],"0x94b8aae43a1ccc08aa64b7d1f29b4d920af4a0c9":["GEV",18],"0x373c06c4f7bde527d7dae4ba169e42b55e393ced":["AUR",18],"0x980dcf6766fa79f5cf0c4aadb3ab477ff15a9619":["IBM",18],"0xf7181b63fdb858558a74ba96bc42732684cd7965":["NAVN",18],"0xf1953dab6fad537488d5a022361ffaa8b4c95ec6":["INOD",18],"0xaf3d76f1834a1d425780943c99ea8a608f8a93f9":["AAPL",18],"0x05a3d1cd21d0c88145e82600e62e7e496e0f222b":["AMC",18],"0xb1bf26c1d20ff267a4f93550d1e0d06ac40a114b":["RIVN",18],"0x1b0e319c6a659f002271b69db8a7df2f911c153e":["GME",18],"0x52d50d0280ad1054b43f052bd70a49a212a1b128":["MPWR",18],"0x9b23573b156b52565012f5ce02cdf60afbaa70be":["PENG",18],"0x116f00968269b7bfbad4109ce591d6e74c0601d4":["NET",18],"0xd63abb2c13d7a8421a8017a712802053568e3c1d":["SCHD",18],"0xa5d4968421ba94814be3b136b15cf422101ac1a3":["LUNR",18],"0xec262a75e413fafd0df80480274532c79d42da09":["MSTR",18],"0x3139d77ace0cbaa5bdfd38bd1f1911a794af0b0e":["ABCL",18],"0xc27dbd474af5181c5a8777903690d8d262d12648":["AXON",18],"0x322f0929c4625ed5bad873c95208d54e1c003b2d":["TSLA",18],"0x1c690498150252222c275a5ced69d3a6b1f52d5e":["EWT",18],"0x3fb8976980d486084b2eb4a404bd12e72823958f":["FTNT",18],"0x59dd09d4900c2e4b5f75b7c0d4e6796fcc234cb1":["HPE",18],"0x26dcbfb34fc83cabd6990f449674efdc6097ff85":["VSAT",18],"0x232b8ed6377be97813853b0ac104c4cda8378d1b":["ADBE",18],"0xa8eb3bccbf2017ee7cbfb652eb51cf2e1b153289":["XNDU",18],"0x27c99fbde9d0d2aa4f4bfb4943f237843ddf6958":["DDOG",18],"0x92ef19e82bd8ff36661de838d5eae7e5cef0effe":["RDW",18],"0x822cc93ffd030293e9842c30bbd678f530701867":["BE",18],"0x1d11f0496982706c5e14a514d4e79f2e6bde4516":["DJT",18],"0x8b2f88497f15a18e9d4ffa1a8ffb8538399ae774":["OKLO",18],"0x44c4f142009036cf477ed2d09932051843137cf1":["ZM",18],"0x282e87451e10fa6679bc7d76c69be44cd3fc777c":["FLNC",18],"0x411efb0e7f985935daec3d4c3ebaea0d0ad7d89f":["SLV",18],"0x98e75885157c80992a8d41b696d8c9c6fb30a926":["SOFI",18],"0xc02f12b9fe9e707079ec0d546f3050d3f6c1f8bd":["DOCN",18],"0x348be1a8663f15edde5cdf8a96bb69078f7ab6fd":["WULF",18],"0x4ea005168d7f09a7a0ba9d1def21a479950e44c2":["COST",18],"0x0b5fb4031cae9163db10b169ee72685f0edc8545":["TTD",18],"0xaea445c5f3db1a462998ccc422a875a361ee5d99":["HWM",18],"0xccee82fe024c36fa15e1005ede3e9e4787e23d09":["HIMS",18],"0x8cf07c5a878945185d327aaa6e33faa95f95e7bf":["CELH",18],"0xf0c4bf4c582cb3836e98394b1d4e7b7281101be8":["RBLX",18],"0xad622320e520de39e72d41ef07438c3fd3354875":["SPMO",18],"0xdd356aa38f40a7b7076755ac854b6fbb1f0d305b":["AMKR",18],"0x8ff63eaeee3fe54ba450c4f5538064ec5a893aef":["ONTO",18],"0x75742c18bc1f1c5c5f448f4c9d9c6f66dafaaa38":["SOXX",18],"0x47f93d52cbec7c6d2cfc080e154002370a60daea":["ASML",18],"0xeb61c0ed490a367d4e3631ccf8a74b3bfc7e775d":["HII",18],"0xf6290b5e7c26502e2da514c31509849718ea76a5":["AVAV",18],"0xacef2e09adb47ad6abebad9ff06689e60615c2b6":["INDA",18],"0xddf2266b79abf0b48898959b0ed6e6adf512be74":["MDB",18],"0x7066a64c24e4206cd62e83bf198c1e7eb361f51e":["PFE",18],"0x96b933c74ecb4a0926b9210cef7b743ef46be2e9":["KLAC",18],"0x7c148f74ac7445d1f28366b7fcdc6792a9fcd0cf":["IBRX",18]}}</script>
+<script id="data" type="application/json">{"rpc":"https://rpc.mainnet.chain.robinhood.com","chainId":4663,"factory":"0x7eD598BcEf8bd9Edd8C97A195C6d13f40801EC7e","odds":"0xaC86B04D48033b2454b132EDED596E0c61A5b097","deployedBlock":69936682,"v2":false,"v1":"0xaC86B04D48033b2454b132EDED596E0c61A5b097","zolt":null,"bonds":null,"keeper":"0xa5C758147BFb551EF630FAf12146f6DB2a17b695","sel":{"symbol":"0x95d89b41","launched":"0x3cf28b5a","reserve":"0x4f1f58fd","market":"0x28861d22","openAndStake":"0x34feb02b","claim":"0x379607f5","payout":"0xbe95e01a","witnessYes":"0x9d73a63c","witnessNo":"0xbfc7b653","voidUnobserved":"0x9fcb4976","bond":"0x9940686e","unbond":"0x27de9e32","bonds":"0xfe10d774","feeBpsOf":"0xe868ce52","isKeeper":"0x6ba42aaa","balanceOf":"0x70a08231","allowance":"0xdd62ed3e","approve":"0x095ea7b3"},"topics":{"launched":"0x8d4aad4953d0ca700d468f3753aa14432d1b35b43ec6409f051fb6aa43a89607","graduated":"0x0a44ef75df69c534f43cd6c1aa3ef8983065fe5fe79ef9e79f6494e6f258c259","opened":"0x13d3642a6d52374b58ee776c95940fcf6486c6f740891e6d11070c1411e1d3a8","resolved":"0xb759306cc71252cdc2f6244717195a7cc712a5551de7fa6dd2bf1819cd7dfadd","staked":"0xb1ab008fce4278d96ec4e7b40dd25e28c701cfa4fcd426922c25ad278b0d41ea","feeTaken":"0xb4d6a97bdd3b0279677829534375db2695a0fb46143b58f29faeead6ccf6f9cd","claimed":"0x4ec90e965519d92681267467f775ada5bd214aa92c0dc93d90a5e880ce9ed026","bountyPaid":"0x07e339a02227d9329089b11d9cdeea1af6caea87244864b70935aca91d7dc7fd"},"pairs":{"0x0000000000000000000000000000000000000000":["ETH",18],"0x5fc5360d0400a0fd4f2af552add042d716f1d168":["USDG",6],"0xd95b44124e475743a7589e68f3d74008a5536d44":["CRM",18],"0x1cdad396db64bda184d5182a97dd9b3c62100b7d":["P",18],"0x44f6d488021f8233b9416294d1fe9b1fee28382d":["CIEN",18],"0xbbd09f72b025360fee5c928053dca6248d35be54":["ON",18],"0xb8dbf92f9741c9ac1c32115e78581f23509916fd":["APLD",18],"0x5f604fba1162193a4388a5dfa56f556f3e133cc2":["AEHR",18],"0x5b97476b922f3305131b8f0b9d333172e87f4aae":["TEAM",18],"0xc583c60aef9dc401da72cec1b404743a93cea1cc":["QBTS",18],"0x95052ddcd5dc25641657424a8cf04834997e1730":["SATS",18],"0x93dbb1d2dc5d63f4abacff30485273f538df68ac":["FIX",18],"0xc93f4d80e268ab922e871bd169156c3cc41894e6":["MTSI",18],"0xc01aa1fecec0605b13bc84874ff7256c0f5f562a":["SMCI",18],"0x941ae714ec6d8130c7b75d67160ca08f1e7d11dd":["DELL",18],"0x48961813349333209994750ffa89b3c5c22ec969":["MXL",18],"0x756bc80af765c82da966a788858d65adf14f3793":["RUN",18],"0x82da4646242e1d962e96e932269dc644c94a9caa":["WDAY",18],"0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea":["SPCX",18],"0x2d427692e928fa156ec22acfabafa0447c5805b7":["GLXY",18],"0xea72ecca2d0f6bfa1394dbbcff85b52cd4233931":["CRWD",18],"0x156e175dd063a8ce274c50654ef40e0032b3fbcf":["AVGO",18],"0x117cc2133c37b721f49de2a7a74833232b3b4c0c":["SPY",18],"0x9651342cea770ae9a2969ba2a52611523146aef9":["CCL",18],"0xc9a981fee1f9dec688bb123ccdecc63d0debfc4e":["GLD",18],"0xba0cab75495255d0cb58e22b648bfed4ecd1f47e":["SNOW",18],"0xa48f22a46c0f1c46ca7d111cb6c137c271987180":["FICO",18],"0x4189f0c66ebbb0bfef1c31f763131361ef32f77c":["PR",18],"0xd5f3879160bc7c32ebb4dc785f8a4f505888de68":["QQQ",18],"0x9e7abd3c9139d14e4c86dce0e455aab7a0c2fb3e":["WYFI",18],"0xbef75684c43c4ea7bd18dd532a2244674ee8b926":["NNE",18],"0x63b814ddbd6bf339f25fed8c36158a008d5b373e":["GE",18],"0xf6589f11bc40b669e584073f428b05562f568733":["SNAP",18],"0x84cab63bc87912e71ad199ff14a0ba45de68fef8":["SKHY",18],"0x5c90450bbb4273d7b2f17cf6917aeb237a569679":["CBRS",18],"0xeb30663bdff0622ef4e4e5cbb4e975f19f33f51d":["FUTU",18],"0x58ffe4a942d3885baa22d7520691f611ef09e7aa":["TSM",18],"0x408c14038a04f7bd235329e26d2bf569ee20e250":["NU",18],"0xc72b96e0e48ecd4dc75e1e45396e26300bc39681":["INTC",18],"0xe93237c50d904957cf27e7b1133b510c669c2e74":["MSFT",18],"0xfde6b5d9bb419b10c23268c74e369abff39c0460":["RCAT",18],"0x284358abc07f9359f19f4b5b4ac91901be2597ba":["RGTI",18],"0x5e81213613b6b86eab4c6c50d718d34359459786":["TTWO",18],"0xc0d6457c16cc70d6790dd43521c899c87ce02f35":["META",18],"0x6006ed4b2f94110851ff7509d97d034f0eed9226":["VICR",18],"0x89776d4cd68193597a2fc132cfac1fde36ccea8a":["TSEM",18],"0x05b37fb53a299a1b874a619e1c4c404d52c36f4c":["RDDT",18],"0x7c04e6a3368f2a1de3874f0e80d2e0a1a9915da6":["GLW",18],"0xf23250dac154d05bb671cb0d0ebef3c635c79ce2":["UPS",18],"0xb039597ed45cba7b6e2fb9e8be51802969cee5be":["PANW",18],"0x48d60243c66437c6ac3c2495be94747aed5dfe25":["LHX",18],"0x03bc731ffb162cdd7b98d3c6542bfc291126075d":["FLY",18],"0xb90a19ff0af67f7779aff50a882a9cff42446400":["SNDK",18],"0x4d21483a44bf67a86b77e3da301411880797d452":["BA",18],"0x56d23bee5f41a7120170b0c603dae30128e460e9":["INTU",18],"0x39ec44bee4f6a116c6f9b8de566848a985c53c60":["ELF",18],"0x12f190a9f9d7d37a250758b26824b97ce941bf54":["AMZN",18],"0xe0444ef8bf4ed74f74fd73686e2ddf4c1c5591e8":["NFLX",18],"0xdf0992e440dd0be65bd8439b609d6d4366bf1cb5":["CRCL",18],"0xd917b029c761d264c6a312bbbcda868658ef86a6":["USAR",18],"0x561e2a49212b7ccf47f2744ccb83e200722fadbc":["VST",18],"0xf543967eebb6f1917992ef0e68de63ab07a5a0da":["CSCO",18],"0x9ece29a4a2397c0a35fb5fa8ee2b9509130a98cc":["FISV",18],"0x2e0847e8910a9732eb3fb1bb4b70a580adad4fe3":["GOOGL",18],"0x48e39e56acdba37b09020c0b734a613c9a2f100a":["BB",18],"0xa4f319104089fe321dc8093c6e707d4fe190a988":["CVNA",18],"0x141eea040c2250eec0314e336975e81f85f6585e":["AXTI",18],"0xc6cbad1016b38b797610c25e1dc7d95988b1f362":["MOD",18],"0x4e62068525ab11fe768e29dfd00ef909b9803016":["LULU",18],"0x329fcaceb9ad6f9580dd5f643fed0646900d043c":["LMT",18],"0xb853bc83a753342a4f8320ea680b4b1e84118d21":["INFQ",18],"0x92fd66527192e3e61d4ddd13322aa222de86f9b5":["SGOV",18],"0x40e7a279850e443f582059ae5dc1c3b6563e6395":["OUST",18],"0xf0ab0c93be6f41369d302e55db1a96b3c430212d":["IREN",18],"0x43b07d15ce533bec5476d70c22a78a1b2b662155":["MRNA",18],"0x57b0030166db0c31690d1a5aa167e2e26e2c29a4":["LRCX",18],"0x2f62fc9fabb470c690f141c28340ed832bb27020":["BND",18],"0xae517a2903e68bd929dfd15be875f8369d53e94a":["CEG",18],"0x748c32c3ca24edf31ea597db1f3d330a7a6da3dc":["ALAB",18],"0xb1cc0ec7db69cf43539119814df40071b9d61793":["TEM",18],"0xcef9027c7d6985b85f0ba431125073529a947a68":["BULL",18],"0xcf364ea52787e289de6f32077834056e3e70d6a8":["UNH",18],"0x62200915e7deab1ec7f79fb246dadbb80eacddd0":["CLOV",18],"0xad25ac6c84d497db898fa1e8387bf6af3532a1c4":["BABA",18],"0x77e655e37f4d913fb9540e0d541d824171a60e81":["SIMO",18],"0xf52597345a8edf418bc4071b4a35112472277d3e":["WDC",18],"0xcbb95bbf36099d34da091dc6fa6f49efa257cee3":["CLSK",18],"0x894e1ec2d74ffe5aef8dc8a9e84686accb964f2a":["PLTR",18],"0xff080c8ce2e5feadaca0da81314ae59d232d4afd":["MU",18],"0x1af6446f07eb1d97c546afc8c9544cbdf3ad5137":["ASTS",18],"0x237c16d66590f67b886d978acd362eaead8b18c7":["POWL",18],"0x0594134df3f171a354d9c85ebd65b7a6148f6d09":["VTI",18],"0x3b14c39e89d60d627b42a1a4ca45b5bb45fc12e2":["RKLB",18],"0x2778c5024d5ca2cdb0f8ead671ffc69963adcd9c":["TER",18],"0x5f10a1c971b69e47e059e1dc91901b59b3fb49c3":["CRWV",18],"0xbf449977089c718c004a66c554b26b94ef3ad4de":["CLS",18],"0x41f4267525a8aff329540ef24fd83d9044758b33":["FIG",18],"0x86923f96303d656e4aa86d9d42d1e57ad2023fdc":["AMD",18],"0x7f0abef0c07280f82c6a08ead09ded6bae2c13fc":["EWY",18],"0x285b231728c7e4333799183df1094d775246a535":["SLS",18],"0x4d67253bc223e6b0e104f1084c1fb2b669ddc41b":["CRDO",18],"0x072f979c2cac8e1391b0162a87fee094bf8744a0":["SMH",18],"0xfa78c12e6488814a0262e4e802749a4a737d5fb7":["VRT",18],"0x0c3260af4b8f13a69c4c2dfb84fd667890cdfa14":["NOW",18],"0x15cd20759ce7f3285c29a319de2d1a2e098c6f43":["XLK",18],"0x99d9d8663545151603863c5acbd6fc3218899009":["AMBA",18],"0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec":["NVDA",18],"0xb334c5ce741b80b5b671f47f5c269cb193fe8e24":["JOBY",18],"0x59818904ab4ce163b3ce4ffb64f2d6ca02c434b4":["QUBT",18],"0xa30fa36db767ad9ed3f7a60fc79526fb4d56d344":["USO",18],"0x9ab02ead789b6903c3c44d0ed32f9c707cdf12fd":["PWR",18],"0x25c288e6d899b9bc30160965ad9644c67e73be0c":["F",18],"0x7dc013eb55e436f30d7ed1afe4e36d6e45e3c3f7":["ZS",18],"0x6330d8c3178a418788df01a47479c0ce7ccf450b":["COIN",18],"0xf9b46d3d1b22199d4d1025a9cedb540a33f1a2d5":["XOM",18],"0x9d9c6684f596f66a64c030b93a886d51fd4d7931":["NBIS",18],"0xbe274710bf3d9567e1b290ef6a5f9f90ca016fd8":["SHY",18],"0x1eebee7f74517e0279dfb09d25b0407beec3fdd6":["SMR",18],"0x6e3dfd9f7e1649baa14d25cac18c94d62db10a54":["SOUN",18],"0xcf6b2d875361be807eafa57458c80f28521f9333":["POET",18],"0xa249baf1063af884807c1e1400aef7784836917e":["APP",18],"0x521cf887e6531c6f667b5bc4d896e5d9bfe8eb2e":["AAOI",18],"0x8ef20885f94e3d9bc7eb3080279188bd5ed7c08c":["LITE",18],"0xfaf9cb261b5fcc1f404bb10cd39c5c6c1974e612":["AEIS",18],"0x7fd06a4d81ccfa3f351394e144d5191874c31313":["KTOS",18],"0x36046893810a7e7fce501229d57dc3fc8c8716d0":["AMAT",18],"0x62fd0668e10d8b72339be2dcf7643001688ff13b":["MRVL",18],"0xeaf2512dfc1beac608f8794b3793cd4e02894aa6":["JBL",18],"0x8005d266423c7ea827372c9c864491e5786600ea":["LLY",18],"0x0f17206447090e464c277571124dd2688e48aea9":["QCOM",18],"0x03dfbbe0ac4e7bcdafd08ed41a400326b77d8c80":["JNJ",18],"0x12e3c047bf9aecaf9ddc98c05c31bfd1dd043993":["KSS",18],"0x28babd556b60e53663b8615036479a29c2cdd1bf":["ANET",18],"0x63d5a3b6939a33f1e75d8bcd85759858239600db":["CTSH",18],"0xaa4d64474c172010ab57719cb9951e6142a100d3":["PL",18],"0x558378e000d634a36593e338ebacdd6207640efe":["IONQ",18],"0xb1969f6604ca1ae7a2cd3f1827876e914594ca2d":["TE",18],"0xf53f66751b1eff985311b693531e3290f600c410":["SHOP",18],"0xbe6702d7b70315376dc48a3293f24f0982f86386":["NVTS",18],"0xfb2664f07b6aadd29ea7a59d8859b1aeb8645cda":["PATH",18],"0x0e6e67ba88e7b5d9b67636a215c76779b948de79":["UMC",18],"0xb0992820e760d836549ba69bc7598b4af75dee03":["ORCL",18],"0x92f9f459f1a9a5ad266b182be7bffd1c6c666894":["COHR",18],"0x94b8aae43a1ccc08aa64b7d1f29b4d920af4a0c9":["GEV",18],"0x373c06c4f7bde527d7dae4ba169e42b55e393ced":["AUR",18],"0x980dcf6766fa79f5cf0c4aadb3ab477ff15a9619":["IBM",18],"0xf7181b63fdb858558a74ba96bc42732684cd7965":["NAVN",18],"0xf1953dab6fad537488d5a022361ffaa8b4c95ec6":["INOD",18],"0xaf3d76f1834a1d425780943c99ea8a608f8a93f9":["AAPL",18],"0x05a3d1cd21d0c88145e82600e62e7e496e0f222b":["AMC",18],"0xb1bf26c1d20ff267a4f93550d1e0d06ac40a114b":["RIVN",18],"0x1b0e319c6a659f002271b69db8a7df2f911c153e":["GME",18],"0x52d50d0280ad1054b43f052bd70a49a212a1b128":["MPWR",18],"0x9b23573b156b52565012f5ce02cdf60afbaa70be":["PENG",18],"0x116f00968269b7bfbad4109ce591d6e74c0601d4":["NET",18],"0xd63abb2c13d7a8421a8017a712802053568e3c1d":["SCHD",18],"0xa5d4968421ba94814be3b136b15cf422101ac1a3":["LUNR",18],"0xec262a75e413fafd0df80480274532c79d42da09":["MSTR",18],"0x3139d77ace0cbaa5bdfd38bd1f1911a794af0b0e":["ABCL",18],"0xc27dbd474af5181c5a8777903690d8d262d12648":["AXON",18],"0x322f0929c4625ed5bad873c95208d54e1c003b2d":["TSLA",18],"0x1c690498150252222c275a5ced69d3a6b1f52d5e":["EWT",18],"0x3fb8976980d486084b2eb4a404bd12e72823958f":["FTNT",18],"0x59dd09d4900c2e4b5f75b7c0d4e6796fcc234cb1":["HPE",18],"0x26dcbfb34fc83cabd6990f449674efdc6097ff85":["VSAT",18],"0x232b8ed6377be97813853b0ac104c4cda8378d1b":["ADBE",18],"0xa8eb3bccbf2017ee7cbfb652eb51cf2e1b153289":["XNDU",18],"0x27c99fbde9d0d2aa4f4bfb4943f237843ddf6958":["DDOG",18],"0x92ef19e82bd8ff36661de838d5eae7e5cef0effe":["RDW",18],"0x822cc93ffd030293e9842c30bbd678f530701867":["BE",18],"0x1d11f0496982706c5e14a514d4e79f2e6bde4516":["DJT",18],"0x8b2f88497f15a18e9d4ffa1a8ffb8538399ae774":["OKLO",18],"0x44c4f142009036cf477ed2d09932051843137cf1":["ZM",18],"0x282e87451e10fa6679bc7d76c69be44cd3fc777c":["FLNC",18],"0x411efb0e7f985935daec3d4c3ebaea0d0ad7d89f":["SLV",18],"0x98e75885157c80992a8d41b696d8c9c6fb30a926":["SOFI",18],"0xc02f12b9fe9e707079ec0d546f3050d3f6c1f8bd":["DOCN",18],"0x348be1a8663f15edde5cdf8a96bb69078f7ab6fd":["WULF",18],"0x4ea005168d7f09a7a0ba9d1def21a479950e44c2":["COST",18],"0x0b5fb4031cae9163db10b169ee72685f0edc8545":["TTD",18],"0xaea445c5f3db1a462998ccc422a875a361ee5d99":["HWM",18],"0xccee82fe024c36fa15e1005ede3e9e4787e23d09":["HIMS",18],"0x8cf07c5a878945185d327aaa6e33faa95f95e7bf":["CELH",18],"0xf0c4bf4c582cb3836e98394b1d4e7b7281101be8":["RBLX",18],"0xad622320e520de39e72d41ef07438c3fd3354875":["SPMO",18],"0xdd356aa38f40a7b7076755ac854b6fbb1f0d305b":["AMKR",18],"0x8ff63eaeee3fe54ba450c4f5538064ec5a893aef":["ONTO",18],"0x75742c18bc1f1c5c5f448f4c9d9c6f66dafaaa38":["SOXX",18],"0x47f93d52cbec7c6d2cfc080e154002370a60daea":["ASML",18],"0xeb61c0ed490a367d4e3631ccf8a74b3bfc7e775d":["HII",18],"0xf6290b5e7c26502e2da514c31509849718ea76a5":["AVAV",18],"0xacef2e09adb47ad6abebad9ff06689e60615c2b6":["INDA",18],"0xddf2266b79abf0b48898959b0ed6e6adf512be74":["MDB",18],"0x7066a64c24e4206cd62e83bf198c1e7eb361f51e":["PFE",18],"0x96b933c74ecb4a0926b9210cef7b743ef46be2e9":["KLAC",18],"0x7c148f74ac7445d1f28366b7fcdc6792a9fcd0cf":["IBRX",18]}}</script>
 <script>
 (function(){
   var DATA = {}; try { DATA = JSON.parse(document.getElementById('data').textContent); } catch (e) {}
@@ -554,7 +605,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
   /* ------------------------------------------------ chain access: direct first, the site's read-only relay second */
   var RPC = DATA.rpc, RELAY = '/api/rpc', endpoint = DATA.rpc;
   var CHAIN_HEX = '0x' + Number(DATA.chainId).toString(16);
-  var FACTORY = DATA.factory, ODDS = DATA.odds || null;
+  var FACTORY = DATA.factory, ODDS = DATA.odds || null, ZOLT = DATA.zolt || null, V2 = !!DATA.v2;
   var SEL = DATA.sel, TOPIC = DATA.topics, PAIRS = DATA.pairs || {};
   var pairOf = function(addr){ return PAIRS[addr.toLowerCase()] || [addr.slice(0, 6) + '…', 18]; };
   var unit = function(v, dec){ var n = Number(v) / Math.pow(10, dec); return n >= 100 ? n.toFixed(0) : n >= 1 ? n.toFixed(2) : n.toFixed(3); };
@@ -630,7 +681,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
   }
 
   /* ------------------------------------------------ the board */
-  var state = { block: 0, now: 0, launches: [], opened: [], read: false, wallet: null, pick: null, window: 0, side: 1 };
+  var state = { block: 0, now: 0, launches: [], opened: [], read: false, wallet: null, pick: null, window: 0, side: 1, feeBps: 100, bond: null };
   var WINDOW_NAMES = ['10 min', '1 h', '6 h'];
   var txt = function(id, s, cls){ var n = el(id); if (!n) return; n.textContent = s; n.className = cls || ''; };
   function ago(sec){ var d = Math.abs(sec); var s = d < 90 ? Math.round(d) + ' s' : d < 5400 ? Math.round(d / 60) + ' min' : Math.round(d / 3600) + ' h'; return sec >= 0 ? 'in ' + s : s + ' ago'; }
@@ -789,14 +840,16 @@ html.has-coin,html.has-coin *{cursor:none !important}
     }).then(function(){ txt('w-state', short(state.wallet) + ' on 4663'); if (state.read) render(); })
       .catch(function(e){ txt('w-state', e.message || 'the wallet said no'); throw e; });
   }
-  // the only transaction builder on this page: every call goes to the market contract and nothing else
-  function tx(data, valueWei){
+  // the only transaction builder on this page: every call goes to the market contract, or to the token for approve
+  function sendTo(to, data, valueWei){
     if (!ODDS) return Promise.reject(new Error('market contract not deployed'));
+    if (to !== ODDS && to !== ZOLT) return Promise.reject(new Error('this page only addresses the market contract and the token'));
     var p = state.wallet ? Promise.resolve() : connect();
     return p.then(function(){
-      return wallet().request({ method: 'eth_sendTransaction', params: [{ from: state.wallet, to: ODDS, data: data, value: valueWei ? '0x' + valueWei.toString(16) : '0x0' }] });
+      return wallet().request({ method: 'eth_sendTransaction', params: [{ from: state.wallet, to: to, data: data, value: valueWei ? '0x' + valueWei.toString(16) : '0x0' }] });
     });
   }
+  function tx(data, valueWei){ return sendTo(ODDS, data, valueWei); }
   function pick(token){
     state.pick = token;
     el('ticket').hidden = false; el('t-preview').hidden = false;
@@ -824,8 +877,9 @@ html.has-coin,html.has-coin *{cursor:none !important}
       var mine = state.side ? open.yesWeight + w : open.noWeight + w;
       var other = state.side ? open.noPool : open.yesPool;
       if (other > 0n && mine > 0n) {
-        var pot = other - other / 100n;
-        var take = add + pot * w / mine;
+        // v1 takes 1% of the losing pool at resolution; v2 charges the winner's own fee on their share at claim
+        var share = V2 ? other * w / mine : (other - other / 100n) * w / mine;
+        var take = V2 ? add + share - share * BigInt(state.feeBps) / 10000n : add + share;
         text += '; if ' + (state.side ? 'YES' : 'NO') + ' wins and nothing else moves you would take about ' + eth(take).toFixed(4) + ' ETH';
       } else if (other === 0n) {
         text += '; nothing on the other side yet, so as it stands this market would refund';
@@ -863,6 +917,57 @@ html.has-coin,html.has-coin *{cursor:none !important}
     $$('[data-wvoid]').forEach(function(b){ b.addEventListener('click', function(){ tx(SEL.voidUnobserved + pad(Number(b.getAttribute('data-wvoid')).toString(16))).then(function(){ b.textContent = 'sent'; }).catch(function(e){ b.textContent = (e.message || 'no').slice(0, 40); }); }); });
   }
 
+  /* ------------------------------------------------ the bond panel: approve to the token, bond and unbond to the market, nothing else */
+  var ZOLT_UNIT = 1000000000000000000n;
+  function zoltAmt(){ var v = parseFloat(String(el('k-amt').value).replace(/,/g, '')) || 0; return v > 0 ? BigInt(Math.round(v * 1e6)) * (ZOLT_UNIT / 1000000n) : 0n; }
+  function fmtZolt(wei){ return (Number(wei / (ZOLT_UNIT / 1000000n)) / 1e6).toLocaleString('en-US', { maximumFractionDigits: 2 }); }
+  function bondButtons(on){ ['k-approve', 'k-bond-go', 'k-unbond'].forEach(function(id){ el(id).disabled = !on; }); }
+  // which of the three calls make sense right now, from the last read and the amount typed; no network
+  function paintBond(){
+    var b = state.bond; if (!b) return;
+    var want = zoltAmt(), locked = b.bonded > 0n && b.until > state.now;
+    el('k-approve').disabled = !(want > 0n && b.allowance < want);
+    el('k-bond-go').disabled = !(want > 0n && b.allowance >= want && b.bal >= want);
+    el('k-unbond').disabled = !(want > 0n && b.bonded >= want && !locked);
+    var text = want === 0n ? 'Type an amount of ZOLT.'
+      : b.allowance < want ? 'Approve ' + fmtZolt(want) + ' ZOLT for the market contract first, then bond.'
+      : b.bal < want ? 'Your wallet holds ' + fmtZolt(b.bal) + ' ZOLT, less than that.'
+      : 'Bond ' + fmtZolt(want) + ' ZOLT: locks your whole bond for seven days.';
+    if (b.bonded > 0n) text += locked ? ' Your bond unlocks ' + ago(b.until - state.now) + '.' : ' Your bond is unlocked; unbond takes it back.';
+    el('k-preview').textContent = text + ' This is the exact call your wallet will show.';
+  }
+  function readBond(){
+    if (!V2 || !ZOLT) { txt('k-state', 'your bond · not on mainnet yet', 'lab'); bondButtons(false); return Promise.resolve(); }
+    var p = state.wallet ? Promise.resolve() : connect();
+    return p.then(function(){
+      txt('k-state', 'reading the bond of ' + short(state.wallet) + ' …', 'lab');
+      return batch([{ method: 'eth_blockNumber', params: [] }, { method: 'eth_getBlockByNumber', params: ['latest', false] }]);
+    }).then(function(r){
+      state.block = parseInt(r[0] || '0x0', 16); state.now = parseInt((r[1] || {}).timestamp || '0x0', 16);
+      return multicall([
+        { to: ZOLT, data: SEL.balanceOf + pad(state.wallet) },
+        { to: ZOLT, data: SEL.allowance + pad(state.wallet) + pad(ODDS) },
+        { to: ODDS, data: SEL.bonds + pad(state.wallet) },
+        { to: ODDS, data: SEL.feeBpsOf + pad(state.wallet) },
+        { to: ODDS, data: SEL.isKeeper + pad(state.wallet) },
+      ]);
+    }).then(function(r){
+      var bonds = r[2] || '0x';
+      var b = { bal: big(r[0]), allowance: big(r[1]), bonded: big(word(bonds, 0)), until: Number(big(word(bonds, 1))), fee: Number(big(r[3])) || 100, keeper: big(r[4]) === 1n };
+      state.bond = b; state.feeBps = b.fee;
+      txt('k-bal', fmtZolt(b.bal) + ' ZOLT');
+      txt('k-bond', fmtZolt(b.bonded) + ' ZOLT', b.bonded > 0n ? 'hot' : '');
+      txt('k-lock', b.bonded === 0n ? '—' : b.until > state.now ? ago(b.until - state.now) : 'unlocked');
+      txt('k-tier', (b.fee / 100).toFixed(1) + '% · ' + (b.keeper ? 'yes' : 'no'), b.fee === 50 ? 'hot' : '');
+      paintBond();
+      txt('k-state', 'your bond · read at block ' + state.block.toLocaleString('en-US'), 'lab');
+    }).catch(function(e){ txt('k-state', 'could not read the bond: ' + (e.message || 'no'), 'lab'); });
+  }
+  function bondCall(to, data, sent){
+    sendTo(to, data).then(function(h){ el('k-preview').innerHTML = sent + ' <span class="mono">' + esc(h) + '</span>. Press Read my bond in a few seconds.'; })
+      .catch(function(e){ el('k-preview').textContent = e.message || 'the wallet said no'; });
+  }
+
   /* ------------------------------------------------ the ledger of markets: a day of the contract's own events */
   function readLedger(){
     if (!ODDS) { el('l-out').innerHTML = '<p class="msg">No contract deployed yet.</p>'; return; }
@@ -874,7 +979,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
       var start = Math.max(DATA.deployedBlock || 0, head - 864000), calls = [];
       // the relay caps a log query at six hours, so a day is four queries, each asking for every event type at once
       for (var from = start; from <= head; from += 216000) {
-        calls.push({ method: 'eth_getLogs', params: [{ address: ODDS, topics: [[TOPIC.opened, TOPIC.staked, TOPIC.resolved, TOPIC.feeTaken, TOPIC.claimed]], fromBlock: '0x' + from.toString(16), toBlock: '0x' + Math.min(head, from + 215999).toString(16) }] });
+        calls.push({ method: 'eth_getLogs', params: [{ address: ODDS, topics: [[TOPIC.opened, TOPIC.staked, TOPIC.resolved, TOPIC.feeTaken, TOPIC.claimed].concat(V2 ? [TOPIC.bountyPaid] : [])], fromBlock: '0x' + from.toString(16), toBlock: '0x' + Math.min(head, from + 215999).toString(16) }] });
       }
       return batch(calls).then(function(chunks){
         var logs = []; chunks.forEach(function(c){ if (Array.isArray(c)) logs = logs.concat(c); });
@@ -885,7 +990,8 @@ html.has-coin,html.has-coin *{cursor:none !important}
           var m = markets[id]; if (!m) { if (t === TOPIC.staked) staked += big(word(l.data, 1)); if (t === TOPIC.feeTaken) fees += big(word(l.data, 0)); if (t === TOPIC.resolved) outcomes++; return; }
           if (t === TOPIC.staked) { var amt = big(word(l.data, 1)); staked += amt; m.stakers++; if (big(word(l.data, 0)) === 1n) m.yes += amt; else m.no += amt; }
           if (t === TOPIC.resolved) { outcomes++; m.outcome = Number(big(word(l.data, 0))); m.by = addrOf(l.topics[2]); }
-          if (t === TOPIC.feeTaken) { fees += big(word(l.data, 0)); m.fee = big(word(l.data, 0)); }
+          if (t === TOPIC.feeTaken) { fees += big(word(l.data, 0)); m.fee = (m.fee || 0n) + big(word(l.data, 0)); } // v2 takes it per claim, so a market can have several
+          if (t === TOPIC.bountyPaid) { m.bounty = big(word(l.data, 0)); }
         });
         var list = Object.values(markets).sort(function(a, b){ return b.id - a.id; });
         txt('l-staked', eth(staked).toFixed(4) + ' ETH'); txt('l-outcomes', String(outcomes)); txt('l-fees', eth(fees).toFixed(5) + ' ETH');
@@ -895,8 +1001,8 @@ html.has-coin,html.has-coin *{cursor:none !important}
           var who = function(a){ return !a ? '—' : (DATA.keeper && a.toLowerCase() === DATA.keeper.toLowerCase()) ? 'keeper' : short(a); };
           el('l-out').innerHTML = list.length
             ? '<div class="wrapx"><table><thead><tr><th>#</th><th>Launch</th><th>Window</th><th class="n">Opened</th><th class="n">YES</th><th class="n">NO</th><th class="n">Stakers</th><th>Outcome</th><th>Recorded by</th><th class="n">Fee</th></tr></thead><tbody>'
-              + list.map(function(m){ return '<tr><td class="n">' + m.id + '</td><td class="sym">' + esc(symOf[m.token] || '?') + '</td><td class="n">' + WINDOW_NAMES[m.window] + '</td><td class="n">' + ago((m.block - head) / 10) + '</td><td class="n">' + eth(m.yes).toFixed(4) + '</td><td class="n">' + eth(m.no).toFixed(4) + '</td><td class="n">' + m.stakers + '</td><td>' + ['<span class="dim">open</span>', '<span class="hot">YES</span>', '<span class="calm">NO</span>', 'void'][m.outcome] + '</td><td class="n">' + who(m.by) + '</td><td class="n">' + (m.fee ? eth(m.fee).toFixed(5) : '—') + '</td></tr>'; }).join('')
-              + '</tbody></table></div><p class="msg">A void is a market that had one side or none, or that nobody could witness in time: every stake in it is refundable. Fees are 1% of the losing pool, paid to the treasury when a market resolves YES or NO.</p>'
+              + list.map(function(m){ return '<tr><td class="n">' + m.id + '</td><td class="sym">' + esc(symOf[m.token] || '?') + '</td><td class="n">' + WINDOW_NAMES[m.window] + '</td><td class="n">' + ago((m.block - head) / 10) + '</td><td class="n">' + eth(m.yes).toFixed(4) + '</td><td class="n">' + eth(m.no).toFixed(4) + '</td><td class="n">' + m.stakers + '</td><td>' + ['<span class="dim">open</span>', '<span class="hot">YES</span>', '<span class="calm">NO</span>', 'void'][m.outcome] + '</td><td class="n">' + who(m.by) + '</td><td class="n">' + (m.fee ? eth(m.fee).toFixed(5) : '—') + (m.bounty ? ' <span class="dim">+ ' + eth(m.bounty).toFixed(5) + ' bounty</span>' : '') + '</td></tr>'; }).join('')
+              + '</tbody></table></div><p class="msg">A void is a market that had one side or none, or that nobody could witness in time: every stake in it is refundable. ' + (V2 ? 'Fees are 1% of each winner’s share of the losing pool (0.5% with a bond), paid to the treasury at claim; a bonded witness takes 0.2% of the losing pool when recording.' : 'Fees are 1% of the losing pool, paid to the treasury when a market resolves YES or NO.') + '</p>'
             : '<p class="msg">No markets opened in the last day.</p>';
           txt('l-state', 'the ledger of markets · read at block ' + head.toLocaleString('en-US'), 'lab');
           btn.disabled = false;
@@ -909,6 +1015,14 @@ html.has-coin,html.has-coin *{cursor:none !important}
     el('b-read').addEventListener('click', readBoard);
     el('l-read').addEventListener('click', readLedger);
     el('w-connect').addEventListener('click', function(){ connect().catch(function(){}); });
+    // the bond panel stays off until the v2 record exists; then three buttons, three calls
+    bondButtons(false);
+    el('k-read').disabled = !V2;
+    el('k-read').addEventListener('click', function(){ readBond(); });
+    el('k-amt').addEventListener('input', paintBond);
+    el('k-approve').addEventListener('click', function(){ var want = zoltAmt(); if (want > 0n) bondCall(ZOLT, SEL.approve + pad(ODDS) + pad(want.toString(16)), 'approval sent'); });
+    el('k-bond-go').addEventListener('click', function(){ var want = zoltAmt(); if (want > 0n) bondCall(ODDS, SEL.bond + pad(want.toString(16)), 'bond sent'); });
+    el('k-unbond').addEventListener('click', function(){ var want = zoltAmt(); if (want > 0n) bondCall(ODDS, SEL.unbond + pad(want.toString(16)), 'unbond sent'); });
     $$('#t-window button').forEach(function(b){ b.addEventListener('click', function(){ $$('#t-window button').forEach(function(o){ o.setAttribute('aria-pressed', 'false'); }); b.setAttribute('aria-pressed', 'true'); state.window = Number(b.getAttribute('data-w')); preview(); }); });
     $$('#t-side button').forEach(function(b){ b.addEventListener('click', function(){ $$('#t-side button').forEach(function(o){ o.setAttribute('aria-pressed', 'false'); }); b.setAttribute('aria-pressed', 'true'); state.side = Number(b.getAttribute('data-s')); el('t-go').className = 'btn ' + (state.side ? 'yes' : 'no'); preview(); }); });
     el('t-amt').addEventListener('input', preview);
