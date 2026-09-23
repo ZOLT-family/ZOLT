@@ -1,0 +1,14 @@
+# What `railway up` must never upload: keys, build output, dependencies (the image installs its own), local state.
+*.key
+.env*
+node_modules/
+contracts/node_modules/
+contracts/artifacts/
+contracts/cache/
+keeper/odds-state.json
+keeper/health.json
+keeper/keeper.log*
+keeper/keeper.flags
+site/
+.vercel/
+.git/
