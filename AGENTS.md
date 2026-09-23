@@ -64,4 +64,5 @@ goes to the treasury.
 | Multicall3 | `0xcA11bde05977b3631167028862bE2a173976CA11` |
 
 A v2 contract (a fee discount and a witness bounty for a bonded ZOLT token) is written and tested but not deployed;
-`/api/markets` and this page will switch to it when it is, and `config.json` next to the API will say so.
+`/api/markets` and this page will switch to it when it is, and `https://zolt-smoky.vercel.app/config.json` (chain,
+contract, factory, token, keeper addresses, the base-rate figures) will say so.

@@ -261,6 +261,8 @@ fs.writeFileSync(path.join(PUB, 'api', 'config.json'), JSON.stringify({
   keeper: keeperAddrs[0] || null,
   keepers: keeperAddrs,
 }, null, 1) + '\n');
+// files under api/ are function sources, not static files; a public copy sits at /config.json for anyone to read
+fs.copyFileSync(path.join(PUB, 'api', 'config.json'), path.join(PUB, 'config.json'));
 fs.writeFileSync(path.join(PUB, 'sitemap.xml'),
   '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
   + '  <url><loc>' + SITE + '</loc><lastmod>' + new Date().toISOString().slice(0, 10) + '</lastmod></url>\n'
