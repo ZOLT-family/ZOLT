@@ -689,7 +689,8 @@ html.has-coin,html.has-coin *{cursor:none !important}
   function short(a){ return a.slice(0, 6) + '…' + a.slice(-4); }
   function decodeString(hex){
     if (!hex || hex.length < 130) return '?';
-    try { var len = Number(big(word(hex, 1))); var s = ''; var h = hex.slice(130, 130 + len * 2); for (var i = 0; i < h.length; i += 2) s += String.fromCharCode(parseInt(h.substr(i, 2), 16)); return s.replace(/[^\x20-\x7E]/g, '') || '?'; } catch (e) { return '?'; }
+    // symbols are UTF-8 (one launch today is called 牛); control characters go, everything printable stays, esc() handles the rest
+    try { var len = Number(big(word(hex, 1))); var h = hex.slice(130, 130 + len * 2); var bytes = new Uint8Array(len); for (var i = 0; i < len; i++) bytes[i] = parseInt(h.substr(i * 2, 2), 16); var s = new TextDecoder('utf-8').decode(bytes).replace(/[\x00-\x1F\x7F]/g, '').trim(); return s || '?'; } catch (e) { return '?'; }
   }
 
   function readBoard(){
