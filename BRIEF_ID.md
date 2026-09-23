@@ -1,6 +1,8 @@
 # Zolt Odds — brief
 
 > **Status (23 Sep 2026):** narasi dirombak total hari ini. Produknya sekarang **Zolt Odds — "The first launch odds market on Robinhood Chain."** Kontrak `ZoltOdds.sol` jadi (**17 test Solidity + 2 test fork melawan kontrak Pons asli**, total suite repo 43), keeper jadi (**9 test**), halaman live jadi (**11 test**). **DEPLOYED di mainnet 4663:** `0xaC86B04D48033b2454b132EDED596E0c61A5b097`, blok 69.936.682, dari wallet pemilik lewat `site/deploy.html`, treasury = wallet pemilik `0x9a2E…Bd58`, diverifikasi (`contracts/deploy/odds-4663.deployed.json`). Papan di zolt-smoky.vercel.app **nyala**. Kode publik di https://github.com/ZOLT-family/ZOLT. Event contract → **bukan buat orang AS**. Semua angka di dokumen ini keluar dari `research/` dan tersimpan di `evidence/`. Kerja lama soal split stock token diarsipin di `/guard` dan `contracts/src/Zolt.sol`; gak dihapus, gak dipromosiin.
+>
+> **Update 23 Sep 2026 (malam):** kontrak live di `0xaC86…b097` (source terverifikasi di Sourcify), keeper jalan sebagai backstop + **auto-open hemat**: cuma buka pasar (maks 1 hidup, window 1 jam) pas gas ≤ 0,3 gwei, biaya ≈ 0,0003 ETH/hari; pasar kosong/satu sisi dirapikan pas gas murah. Halaman punya buku besar pasar, kartu sosial (`/og.png`), baris "no market is open" buat pengunjung pertama. Usulan token ada di `TOKEN_ID.md` (belum disetujui, belum ada token).
 
 ---
 

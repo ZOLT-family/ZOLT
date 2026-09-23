@@ -91,7 +91,7 @@ Then, either way:
 
 ```bash
 node keeper/new-keeper-key.cjs                                     # a burner for the keeper; fund its address with a little ETH
-KEEPER_PRIVATE_KEY=$(cat keeper/keeper.key) node keeper/odds-keeper.cjs --odds 0x… --send [--auto-open]
+KEEPER_PRIVATE_KEY=$(cat keeper/keeper.key) node keeper/odds-keeper.cjs --odds 0x… --send [--auto-open --max-open 1 --window 1 --open-max-gwei 0.3]   # auto-open only while gas is cheap
 node site/build-site.cjs                                           # the page picks up deploy/odds-4663.deployed.json and switches the board on
 ```
 

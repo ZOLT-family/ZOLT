@@ -16,6 +16,7 @@
 //   --max-fill 0.85        above this the curve crosses before anyone can stake; opening would only spend gas
 //   --max-age 900          seconds since launch, at most        --max-opens 1  per pass
 //   --max-open 3           keep at most this many markets open at once; the keeper refills, it does not flood
+//   --open-max-gwei 0.3    auto-open only while gas is at or below this (an open is ~134k gas: 0.000007 ETH at 0.05 gwei)
 //   another endpoint: RH_RPC=<url> (default: the public chain 4663 RPC, reached through DNS-over-HTTPS)
 //
 // Every pass writes keeper/health.json (block, balance, open markets, last actions, last error, spend); read it
@@ -40,6 +41,7 @@ const RESERVE_WEI = BigInt(Math.round(Number(arg('reserve', '0.0005')) * 1e6)) *
 const OPEN_CFG = { minFill: Number(arg('min-fill', '0.2')), maxFill: Number(arg('max-fill', '0.85')), window: Number(arg('window', '0')), maxAgeSeconds: Number(arg('max-age', '900')), maxPerPass: Number(arg('max-opens', '1')), maxOpen: Number(arg('max-open', '3')) };
 const WITNESS_CFG = { graceSeconds: Number(arg('grace', '120')), onlyTwoSided: !flag('all-markets') };
 const TIDY_GWEI = Number(arg('tidy-gwei', '0.3'));
+const OPEN_MAX_GWEI = Number(arg('open-max-gwei', '0.3'));
 const STATE_FILE = path.join(__dirname, 'odds-state.json');
 const HEALTH_FILE = path.join(__dirname, 'health.json');
 const T_OPENED = '0x13d3642a6d52374b58ee776c95940fcf6486c6f740891e6d11070c1411e1d3a8';
@@ -184,9 +186,12 @@ async function pass() {
     }
   }
 
-  // optionally seed the board: launches of the last --max-age seconds whose curve shows life and has no market yet
+  // optionally seed the board: launches of the last --max-age seconds whose curve shows life and has no market yet;
+  // only while gas is cheap, so a quiet chain keeps the board alive and a memecoin rush does not drain the keeper
   let opens = [];
-  if (AUTO_OPEN) {
+  const openNow = AUTO_OPEN && gasNow <= OPEN_MAX_GWEI;
+  if (AUTO_OPEN && !openNow && health.passes % 120 === 0) log(`auto-open paused: gas ${gasNow.toFixed(3)} gwei is above --open-max-gwei ${OPEN_MAX_GWEI}`);
+  if (openNow) {
     const span = Math.ceil(OPEN_CFG.maxAgeSeconds * 10) + 100;
     const launched = getLogsChunked({ address: FACTORY, topics: [T_LAUNCHED] }, head - span, head).map(decodeTokenLaunched);
     const reads = [];
