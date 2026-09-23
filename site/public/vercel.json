@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "functions": {
-    "api/card.js": { "includeFiles": "api/resvg.wasm" }
+    "api/card.js": { "includeFiles": "{api/resvg.wasm,node_modules/harfbuzzjs/*.wasm,node_modules/satori/*.wasm}" }
   },
   "rewrites": [
     { "source": "/m/:id", "destination": "/api/m?id=:id" }
