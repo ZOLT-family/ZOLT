@@ -139,6 +139,14 @@ html = html.replace(/\{\{(\w+)\}\}/g, (m, k) => {
 fs.writeFileSync(path.join(__dirname, 'index.html'), html);
 console.log('wrote site/index.html', html.length, 'chars');
 
+// The social card is drawn from the same figures: site/og-card.html renders them on a canvas and, opened through
+// the local helper, saves site/public/og.png. The PNG is committed; this only refreshes the page that draws it.
+const ogCard = fs.readFileSync(path.join(__dirname, 'og-template.html'), 'utf8').replace(/\{\{(\w+)\}\}/g, (m, k) => {
+  if (!(k in values)) throw new Error('og-template asks for {{' + k + '}} and the builder has no value for it');
+  return String(values[k]);
+});
+fs.writeFileSync(path.join(__dirname, 'og-card.html'), ogCard);
+
 // A standalone copy for opening straight from disk or hosting anywhere: the artifact platform adds the doctype,
 // charset and viewport itself; a plain browser needs them in the file, and a shared link needs the cards.
 const SITE = 'https://zolt-smoky.vercel.app/';
@@ -160,9 +168,14 @@ const head = [
   '<meta property="og:title" content="Zolt Odds — will it graduate?">',
   '<meta property="og:description" content="' + DESC + '">',
   '<meta property="og:url" content="' + SITE + '">',
-  '<meta name="twitter:card" content="summary">',
+  '<meta property="og:image" content="' + SITE + 'og.png">',
+  '<meta property="og:image:width" content="1200">',
+  '<meta property="og:image:height" content="630">',
+  '<meta property="og:image:alt" content="Will it graduate? The first launch odds market on Robinhood Chain.">',
+  '<meta name="twitter:card" content="summary_large_image">',
   '<meta name="twitter:title" content="Zolt Odds — will it graduate?">',
   '<meta name="twitter:description" content="' + DESC + '">',
+  '<meta name="twitter:image" content="' + SITE + 'og.png">',
 ].join('\n');
 const standalone = '<!doctype html>\n<html lang="en">\n<head>\n' + head + '\n</head>\n<body>\n' + html + '\n</body>\n</html>\n';
 fs.writeFileSync(path.join(__dirname, 'zolt.html'), standalone);

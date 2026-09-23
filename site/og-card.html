@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Zolt Odds social card</title>
+<!-- The 1200x630 card behind og:image / twitter:image. Drawn on a canvas with the page's own fonts and palette,
+     from the same figures the page shows (filled in by build-site.cjs), then saved as site/public/og.png by
+     posting the PNG to a local helper (POST /save-og). Open it once after the figures change. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:ital,wdth,wght@0,50..150,100..900;1,50..150,100..900&family=Gloock&family=Onest:wght@400;500;600&family=Fragment+Mono&display=swap">
+<style>
+  body{margin:0;background:#101012;color:#ddd;font:14px/1.5 monospace;padding:16px}
+  canvas{display:block;width:600px;height:315px;background:#E6EBE2;box-shadow:0 0 0 1px #333}
+</style>
+</head>
+<body>
+<canvas id="c" width="1200" height="630"></canvas>
+<p id="status">drawing…</p>
+<script>
+(async function () {
+  var C = { paper: '#E6EBE2', band: '#DBE4D5', ink: '#11171A', line: 'rgba(17,23,26,.16)', hot: '#D2401F', teal: '#0E5A50', amber: '#B9861F' };
+  var F = { display: '"Anybody"', serif: '"Gloock"', mono: '"Fragment Mono"', body: '"Onest"' };
+  await Promise.all([
+    document.fonts.load('400 100px ' + F.serif),
+    document.fonts.load('800 60px ' + F.display),
+    document.fonts.load('600 30px ' + F.display),
+    document.fonts.load('400 20px ' + F.mono),
+    document.fonts.load('500 20px ' + F.body),
+  ]);
+  var cv = document.getElementById('c');
+  var g = cv.getContext('2d');
+  var W = cv.width, H = cv.height;
+
+  // paper with green-bar bands and ruled lines, like the page
+  g.fillStyle = C.paper; g.fillRect(0, 0, W, H);
+  var ROW = 42;
+  for (var y = 0, i = 0; y < H; y += ROW, i++) {
+    if (i % 2 === 1) { g.fillStyle = C.band; g.fillRect(0, y, W, ROW); }
+    g.fillStyle = C.line; g.fillRect(0, y, W, 1);
+  }
+  // the spine: a vertical rule with the running head, as on the page
+  g.fillStyle = C.ink; g.fillRect(84, 0, 2, H);
+  g.save(); g.translate(60, H - 40); g.rotate(-Math.PI / 2);
+  g.font = '400 18px ' + F.mono; g.fillStyle = C.ink; g.textBaseline = 'middle';
+  g.fillText('ZOLT ODDS  ·  ROBINHOOD CHAIN 4663', 0, 0);
+  g.restore();
+
+  // section tag
+  g.font = '400 20px ' + F.mono; g.fillStyle = C.hot; g.textBaseline = 'alphabetic';
+  g.fillText('§ 01  THE BOARD', 130, 78);
+  g.fillStyle = C.ink;
+  g.fillText('Yes / No on whether a launch graduates in time', 130, 106);
+
+  // headline
+  g.font = '400 128px ' + F.serif; g.fillStyle = C.ink;
+  g.fillText('Will it graduate?', 124, 250);
+  g.font = 'italic 600 38px ' + F.display;
+  g.fillStyle = C.teal;
+  g.fillText('The first launch odds market on Robinhood Chain.', 130, 312);
+
+  // the three figures the page leads with
+  var stats = [
+    ['9,930', 'launches a day', C.ink],
+    ['1.2%', 'reach the threshold', C.teal],
+    ['3.0 min', 'median time to graduate', C.ink],
+  ];
+  var x0 = 130, y0 = 400, cw = 330;
+  stats.forEach(function (s, k) {
+    var x = x0 + k * cw;
+    g.fillStyle = C.line; g.fillRect(x, y0 - 14, cw - 30, 1);
+    g.font = '800 68px ' + F.display; g.fillStyle = s[2];
+    g.fillText(s[0], x, y0 + 60);
+    g.font = '400 18px ' + F.mono; g.fillStyle = C.ink;
+    g.fillText(s[1].toUpperCase(), x, y0 + 94);
+  });
+
+  // stamp, tilted like the stickers on the page
+  g.save(); g.translate(1010, 120); g.rotate(-0.09);
+  g.strokeStyle = C.hot; g.lineWidth = 3; g.strokeRect(-130, -30, 260, 60);
+  g.font = '800 22px ' + F.display; g.fillStyle = C.hot; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText('SETTLED BY THE CHAIN', 0, 1);
+  g.restore();
+
+  // foot
+  g.font = '400 22px ' + F.mono; g.fillStyle = C.ink; g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+  g.fillText('zolt-smoky.vercel.app', 130, 582);
+  g.textAlign = 'right';
+  g.fillText('parimutuel · 1% fee · no oracle', W - 60, 582);
+  g.textAlign = 'left';
+
+  var url = cv.toDataURL('image/png');
+  var st = document.getElementById('status');
+  try {
+    var r = await fetch('/save-og', { method: 'POST', body: url });
+    st.textContent = 'saved: ' + (await r.text());
+  } catch (e) {
+    st.textContent = 'drawn; no helper to save to (' + e.message + ')';
+  }
+})();
+</script>
+</body>
+</html>
