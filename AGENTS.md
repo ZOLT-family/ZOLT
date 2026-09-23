@@ -19,6 +19,10 @@ request (cached a few seconds). `?id=12` for one market. Fields per market:
 | `outcome` | `open`, `yes`, `no`, `void` |
 | `stake.to`, `stake.yes`, `stake.no`, `stake.minValueWei` | the exact calldata for a YES or NO stake, sent with ETH as value |
 
+**`https://zolt-smoky.vercel.app/m/<id>`** is the page for one market, with link-preview tags and a card
+(`/api/card?id=<id>`, a 1200×630 PNG of its pools and clock) so a shared link shows that market. `/api/card` alone is
+the site's card.
+
 Or read the contract directly (any RPC to chain 4663; the public one is `https://rpc.mainnet.chain.robinhood.com`):
 `marketCount()`, `market(id)` (struct: token, openedAt, closesAt, deadline, window, outcome, yesPool, noPool, yesWeight,
 noWeight), `payout(id, who)`, `impliedYesBps(id)`. Selectors and event topics are in the page's `<script id="data">`

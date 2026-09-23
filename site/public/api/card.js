@@ -6,6 +6,7 @@
 // Noto Sans fetched for that text alone. If anything fails the request is sent to the static og.png instead, so a
 // shared link always has a picture. ?debug=1 shows the failure instead.
 const fs = require('fs');
+const path = require('path');
 const CONFIG = require('./config.json');
 const { siteCard, marketCard, W, H } = require('./_card.cjs');
 
@@ -47,7 +48,9 @@ function tools() {
     toolsPromise = (async () => {
       const satori = (await import('satori')).default;
       const resvg = require('@resvg/resvg-wasm');
-      await resvg.initWasm(fs.readFileSync(require.resolve('@resvg/resvg-wasm/index_bg.wasm')));
+      // the wasm sits next to this file (a copy of @resvg/resvg-wasm/index_bg.wasm): a require.resolve into
+      // node_modules is not traced into the function bundle, a file beside it is
+      await resvg.initWasm(fs.readFileSync(path.join(__dirname, 'resvg.wasm')));
       return { satori, Resvg: resvg.Resvg };
     })().catch((e) => { toolsPromise = null; throw e; });
   }

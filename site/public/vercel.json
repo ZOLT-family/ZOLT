@@ -1,6 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
+  "functions": {
+    "api/card.js": { "includeFiles": "api/resvg.wasm" }
+  },
   "rewrites": [
     { "source": "/m/:id", "destination": "/api/m?id=:id" }
   ],
