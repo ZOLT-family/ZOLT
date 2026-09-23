@@ -25,6 +25,7 @@ Nothing here is investment advice. Stake what you can lose in a bug.
 | `site/` | the page: `template.html` + `build-site.cjs` → `index.html`, `zolt.html`, `public/`. The board reads the chain from the browser; staking signs through the reader's own wallet. §06 is the ZOLT panel (approve, bond, unbond), wired to the v2 build and off until `contracts/deploy/odds-v2-4663.deployed.json` exists; `ZOLT_V2_RECORD=… ZOLT_PREVIEW_OUT=… ZOLT_PREVIEW_RPC=… node site/build-site.cjs` builds one preview page against a local fork without touching `public/`. `og-template.html` → `og-card.html` → `public/og.png`: open the card page through `node site/serve.cjs` and it saves itself |
 | `site/public/api/rpc.js` | a read-only JSON-RPC relay for readers whose network cannot reach the public RPC host |
 | `site/public/api/markets.js` | `GET /api/markets`: the last 24 markets as JSON with pools, implied odds, deadlines and the exact stake calldata, for bots and agents. Read-only; `AGENTS.md` is the guide |
+| `site/public/api/card.js`, `_card.cjs`, `m.js` | link-preview cards drawn on the server (satori + resvg, the page's fonts): `/api/card` for the site, `/api/card?id=N` for one market, and `/m/N`, the page with that market's preview tags. Falls back to `og.png` |
 | `keeper/Dockerfile`, `railway.toml` | the keeper on its own for a host that stays up; the key comes from the environment only |
 | `research/` | read-only scripts; `evidence/pons-24h.json` and `evidence/pons-calibration.json` are the base rate the page quotes |
 | `contracts/src/Zolt.sol`, `ZoltDopplerModule.sol`, `StepMath.sol` | the earlier work: a Uniswap v4 hook that prices ERC-8056 stock-token splits into swaps. Tested (26), not deployed, kept as an appendix; its page is archived at `/guard` |
@@ -47,7 +48,7 @@ placed when the answer is nearly known earns almost nothing from the pot. Once a
 ```bash
 cd contracts && npx hardhat test solidity   # 60 Solidity tests (17 market, 15 market v2, 26 split guard, 2 fork)
 node --test keeper/odds-logic.test.cjs      # 12 keeper tests
-node --test site/site.test.cjs              # 11 page tests: figures match files, one transaction target, relay is read-only
+node --test site/site.test.cjs              # 13 page tests: figures match files, one transaction target, relay and API read-only, token section state
 node --test site/encoding.test.cjs          # the page's hand-rolled calldata and struct decoding held to viem's, on a real return value
 ```
 
@@ -74,7 +75,7 @@ are not available. Both go through `research/rpc.cjs` (curl with DNS-over-HTTPS;
 
 ## Deploying
 
-Not done, and not something this repo will do for you. Two ways; both leave the signing to you.
+Done once, from a wallet (v1, 23 Sep 2026). Two ways; both leave the signing to you, and v2 will go the same way once the token exists (`site/deploy-v2.html`, `scripts/verify-odds-v2.cjs`).
 
 From a wallet, no key on disk:
 

@@ -20,6 +20,19 @@ Shorter, if the field is tight:
 >
 > Live on chain 4663 at 0xaC86…b097, not for US persons. zolt-smoky.vercel.app · github.com/ZOLT-family/ZOLT
 
+## A market post (any time a market is open)
+
+Press *share* on the market on the board; it copies this line with the live numbers, and the link carries the
+market's own card:
+
+> Will $AGE graduate in 1 h? YES 0.010 / NO 0.000 ETH on Zolt Odds → zolt-smoky.vercel.app/m/17
+
+Add one line of your own if you like ("curve at 58%, 13 minutes in"), from the board, not from memory.
+
+## For the bot crowd (a reply or a second post, later)
+
+> Every open market, with the exact calldata to stake either side: zolt-smoky.vercel.app/api/markets — read-only JSON, no key, no account. AGENTS.md in the repo has the rest.
+
 ## Rules for anything posted
 
 - Never "guaranteed", "risk-free", "insured". No talk of audits, either way.
