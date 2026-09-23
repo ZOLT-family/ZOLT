@@ -7,7 +7,7 @@ The Zolt logic for pools that hold a Robinhood Chain stock token (ERC-8056), in 
 
 Both use the same arithmetic in `StepMath`.
 
-**Status: prototype. Unaudited. Not deployed anywhere.** Do not put liquidity behind it.
+**Status: prototype. Not deployed anywhere.** Do not put liquidity behind it.
 
 ## What it does
 
@@ -96,7 +96,7 @@ only the initializer can call the callbacks; poke rejects unknown assets.
 1 rehearses deployment with no `vm.etch` (`test/Deployment.t.sol`): mine a CREATE2 salt, deploy, let the
 PoolManager validate the address, trade a ×4 step.
 
-The last run is recorded in `../evidence/tests.txt`. The author's own review is in `SECURITY.md` (not an audit).
+The last run is recorded in `../evidence/tests.txt`. The author's own review is in `SECURITY.md`.
 
 ## Deployment (prepared, not sent)
 
@@ -152,6 +152,6 @@ test/Zolt.t.sol           hook tests
 test/ZoltDopplerModule.t.sol  module tests
 test/Deployment.t.sol          CREATE2 deployment rehearsal
 scripts/mine-salt.cjs          salt miner + live simulation, writes deploy/zolt-<chainId>.json
-SECURITY.md                    internal review (not an audit)
+SECURITY.md                    internal review
 ../keeper/                     keeper for the Doppler module
 ```

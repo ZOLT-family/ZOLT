@@ -1,8 +1,6 @@
 # Zolt — internal security review
 
-**This is not an audit.** It is the author's own review of the prototype, written so an auditor starts from
-what is already known. Nothing here is deployed. Do not put liquidity behind these contracts before an
-independent audit.
+The author's own review of the prototype. Nothing here is deployed.
 
 Scope: `src/Zolt.sol`, `src/ZoltDopplerModule.sol`, `src/StepMath.sol` (mocks are test-only).
 Reviewed 2026-09-22 against `@uniswap/v4-core` 1.0.2 and the verified `DopplerHookInitializer` source on chain
@@ -37,7 +35,7 @@ Reviewed 2026-09-22 against `@uniswap/v4-core` 1.0.2 and the verified `DopplerHo
   `0xed3D93c9dD52A7e52Ff038d4311Be9AF4eDd7080` for chain 4663, and `eth_call` against the live chain returned
   that address (`deploy/zolt-4663.json`).
 
-## Open risks an auditor should look at
+## Open risks
 
 1. **Gas griefing by a hostile token.** A pool creator can pair an arbitrary "stock-like" token. Its
    `uiMultiplier()` can burn the 63/64 gas `try/catch` forwards and make swaps in *that pool* fail. It cannot

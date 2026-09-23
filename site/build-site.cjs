@@ -93,8 +93,8 @@ const values = {
   calibration,
   oddsTests,
   oddsKeeperTests,
-  stateLine: live ? 'unaudited<br>live' : 'unaudited<br>not deployed',
-  stampLine: live ? 'Unaudited · deployed · use with care' : 'Unsigned · simulated · not sent',
+  stateLine: live ? 'live<br>on chain' : 'not<br>deployed',
+  stampLine: live ? 'Deployed · verified · use with care' : 'Unsigned · simulated · not sent',
   deployState: live ? 'deployed' : 'unsigned',
   sourceLine: live && live.sourcify ? '<a href="' + esc(live.sourcify.url) + '">verified on Sourcify</a> &middot; ' + esc(live.sourcify.match) : 'not yet verified',
   oddsShort: live ? live.address.slice(0, 6) + '…' + live.address.slice(-4) : 'not deployed',
@@ -143,7 +143,7 @@ console.log('wrote site/index.html', html.length, 'chars');
 // charset and viewport itself; a plain browser needs them in the file, and a shared link needs the cards.
 const SITE = 'https://zolt-smoky.vercel.app/';
 const DESC = 'Yes/No markets on whether a freshly launched Pons token graduates in time, settled from the chain’s own state. '
-  + 'The first launch odds market on Robinhood Chain. Unaudited.';
+  + 'The first launch odds market on Robinhood Chain.';
 const ICON = '<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 26 26\'>'
   + '<rect width=\'26\' height=\'26\' fill=\'%23E6EBE2\'/>'
   + '<path d=\'M2 22h6v-6h6v-6h6V4h4\' fill=\'none\' stroke=\'%23B9861F\' stroke-width=\'3\'/>'

@@ -1,6 +1,6 @@
 # Zolt Odds — brief
 
-> **Status (23 Sep 2026):** narasi dirombak total hari ini. Produknya sekarang **Zolt Odds — "The first launch odds market on Robinhood Chain."** Kontrak `ZoltOdds.sol` jadi (**17 test Solidity + 2 test fork melawan kontrak Pons asli**, total suite repo 43), keeper jadi (**9 test**), halaman live jadi (**11 test**). **DEPLOYED di mainnet 4663:** `0xaC86B04D48033b2454b132EDED596E0c61A5b097`, blok 69.936.682, dari wallet pemilik lewat `site/deploy.html`, treasury = wallet pemilik `0x9a2E…Bd58`, diverifikasi (`contracts/deploy/odds-4663.deployed.json`). Papan di zolt-smoky.vercel.app **nyala**. Kode publik di https://github.com/ZOLT-family/ZOLT. **Belum diaudit.** Event contract → **bukan buat orang AS**. Semua angka di dokumen ini keluar dari `research/` dan tersimpan di `evidence/`. Kerja lama soal split stock token diarsipin di `/guard` dan `contracts/src/Zolt.sol`; gak dihapus, gak dipromosiin.
+> **Status (23 Sep 2026):** narasi dirombak total hari ini. Produknya sekarang **Zolt Odds — "The first launch odds market on Robinhood Chain."** Kontrak `ZoltOdds.sol` jadi (**17 test Solidity + 2 test fork melawan kontrak Pons asli**, total suite repo 43), keeper jadi (**9 test**), halaman live jadi (**11 test**). **DEPLOYED di mainnet 4663:** `0xaC86B04D48033b2454b132EDED596E0c61A5b097`, blok 69.936.682, dari wallet pemilik lewat `site/deploy.html`, treasury = wallet pemilik `0x9a2E…Bd58`, diverifikasi (`contracts/deploy/odds-4663.deployed.json`). Papan di zolt-smoky.vercel.app **nyala**. Kode publik di https://github.com/ZOLT-family/ZOLT. Event contract → **bukan buat orang AS**. Semua angka di dokumen ini keluar dari `research/` dan tersimpan di `evidence/`. Kerja lama soal split stock token diarsipin di `/guard` dan `contracts/src/Zolt.sol`; gak dihapus, gak dipromosiin.
 
 ---
 
@@ -51,11 +51,10 @@ Sebelum kontrak dideploy, papan jalan **read-only preview** (tombol stake mati, 
 
 - **Deploy** (pemilik): `cd contracts && node scripts/deploy-odds.cjs --chain 4663 --treasury 0x… --yes` dengan `DEPLOYER_PRIVATE_KEY`. Setelah itu `node site/build-site.cjs` + deploy Vercel → papan aktif otomatis (builder baca `contracts/deploy/odds-4663.deployed.json`).
 - **Keeper** (pemilik atau siapa pun): `node keeper/odds-keeper.cjs --odds 0x… --send` dengan `KEEPER_PRIVATE_KEY`.
-- **Audit independen** — belum. Jangan promosiin sebagai aman.
 - **Legal** — event contract; non-AS; bukan nasihat investasi. Belum direview pengacara.
 - **X** — bio + post pertama di `X_COPY.md`, belum diposting.
 - **zolt.family** — belum dibeli.
 
 ## 6. Batas yang harus disebut di mana pun
 
-Unaudited. Non-AS. Kontraknya baca factory Pons yang sekarang — kalau Pons ganti factory, butuh kontrak baru. Kreator bisa "beli jawabannya" (beli kurva sampai 4,2 ETH) — itu bukan cacat, itu yang dipasarkan. Graduasi telat bisa void (refund). Pool tipis bayar tipis. Chain-nya pernah berhenti 14 menit (4 Sep).
+Non-AS. Kontraknya baca factory Pons yang sekarang — kalau Pons ganti factory, butuh kontrak baru. Kreator bisa "beli jawabannya" (beli kurva sampai 4,2 ETH) — itu bukan cacat, itu yang dipasarkan. Graduasi telat bisa void (refund). Pool tipis bayar tipis. Chain-nya pernah berhenti 14 menit (4 Sep).

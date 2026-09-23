@@ -23,7 +23,7 @@ Two things you may care about:
 2. It depends on your factory's address and the layout of `LaunchedToken`. If you plan a V3 or a layout change,
    we would like to know a week ahead so the market can be redeployed against it.
 
-State today: [unaudited / deployed at 0x… — fill in]. Code and tests: https://github.com/ZOLT-family/ZOLT. Not
+State today: deployed at 0xaC86B04D48033b2454b132EDED596E0c61A5b097, source verified on Sourcify. Code and tests: https://github.com/ZOLT-family/ZOLT. Not
 affiliated with Pons; we do not use your name beyond describing what the contract reads.
 
 — Zolt

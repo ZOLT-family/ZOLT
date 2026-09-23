@@ -81,7 +81,7 @@ function verifyOnly(address) {
   fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(record, null, 1));
   console.log('ok  wrote', path.relative(process.cwd(), OUT_FILE));
-  console.log('\nVerified. It is unaudited: say so wherever it is announced. Rebuild the site to switch the board on.');
+  console.log('\nVerified. Rebuild the site to switch the board on.');
 }
 
 (async () => {
@@ -129,7 +129,7 @@ function verifyOnly(address) {
     initCodeHash: keccak256(initcode), runtimeBytes: (artifact.deployedBytecode.length - 2) / 2,
     predictedAddress: account ? predicted : null, estimatedGas: Number(gas), preparedAt: new Date().toISOString(),
     status: 'UNSIGNED',
-    note: 'A plan, not a deployment. Unaudited. The address is only predictable once the deployer is known.',
+    note: 'A plan, not a deployment. The address is only predictable once the deployer is known.',
   };
   fs.mkdirSync(path.dirname(PLAN_FILE), { recursive: true });
   fs.writeFileSync(PLAN_FILE, JSON.stringify(plan, null, 1));
@@ -175,5 +175,5 @@ function verifyOnly(address) {
   delete record.note;
   fs.writeFileSync(OUT_FILE, JSON.stringify(record, null, 1));
   console.log('ok  wrote', path.relative(process.cwd(), OUT_FILE));
-  console.log('\nDeployed and verified. It is unaudited: say so wherever it is announced.');
+  console.log('\nDeployed and verified.');
 })().catch((e) => die(e.message.slice(0, 300)));

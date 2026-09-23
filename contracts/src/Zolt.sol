@@ -29,7 +29,7 @@ import {StepMath} from "./StepMath.sol";
 /// direction pay the base fee. The guard clears once the pool trades within the base fee of the target or
 /// crosses it, or when the guard window ends.
 ///
-/// @dev PROTOTYPE. Unaudited, undeployed. Known limits are listed in README.md. The hook address must carry
+/// @dev PROTOTYPE. Undeployed. Known limits are listed in README.md. The hook address must carry
 /// exactly the BEFORE_INITIALIZE, AFTER_INITIALIZE and BEFORE_SWAP permission bits, and pools must be
 /// created with the dynamic fee flag.
 contract Zolt is IHooks {

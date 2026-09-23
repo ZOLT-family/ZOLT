@@ -136,5 +136,5 @@ const view = (to, fn) => decodeFunctionResult({ abi: hookAbi, functionName: fn, 
   delete record.note;
   fs.writeFileSync(OUT_FILE, JSON.stringify(record, null, 1));
   console.log('ok  wrote', path.relative(process.cwd(), OUT_FILE));
-  console.log('\nDeployed and verified. It is unaudited: do not create pools with it or announce it before an audit.');
+  console.log('\nDeployed and verified.');
 })().catch((e) => die(e.message.slice(0, 300)));

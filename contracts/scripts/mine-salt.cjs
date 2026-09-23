@@ -92,7 +92,7 @@ const out = {
   initCodeHash: initHash, flagsInAddress: '0x' + (BigInt(predicted) & MASK).toString(16),
   transaction: { to: PROXY, data: txData, value: '0x0' },
   simulation,
-  note: 'Send only after an audit. The address depends on the exact bytecode: rebuild and re-mine after any change.',
+  note: 'Not sent. The address depends on the exact bytecode: rebuild and re-mine after any change.',
 };
 fs.mkdirSync(path.join(__dirname, '..', 'deploy'), { recursive: true });
 const file = path.join(__dirname, '..', 'deploy', `zolt-${chainId}.json`);

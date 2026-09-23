@@ -37,7 +37,7 @@ interface IDopplerInitializerFees {
 ///
 /// Safety rule: this contract never reverts inside onSwap. A revert there would revert every swap in the pool.
 ///
-/// @dev PROTOTYPE. Unaudited, undeployed. Tested against a stand-in initializer with the same callback and
+/// @dev PROTOTYPE. Undeployed. Tested against a stand-in initializer with the same callback and
 /// fee-update surface (including the 10% cap), not against Doppler's own contracts.
 contract ZoltDopplerModule {
     using PoolIdLibrary for PoolKey;

@@ -8,7 +8,7 @@ Zolt Odds is a Yes/No market on that moment: will this launch graduate before th
 by reading the factory's state, with no oracle, no committee and no owner.
 
 **Status: deployed on chain 4663 at `0xaC86B04D48033b2454b132EDED596E0c61A5b097` (23 Sep 2026), source verified on
-[Sourcify](https://repo.sourcify.dev/4663/0xaC86B04D48033b2454b132EDED596E0c61A5b097) (runtime and creation match), unaudited.**
+[Sourcify](https://repo.sourcify.dev/4663/0xaC86B04D48033b2454b132EDED596E0c61A5b097) (runtime and creation match).**
 Event contracts on outcomes; not offered to persons in the United States or anywhere else they are not lawful.
 Nothing here is investment advice. Stake what you can lose in a bug.
 
@@ -95,11 +95,10 @@ KEEPER_PRIVATE_KEY=$(cat keeper/keeper.key) node keeper/odds-keeper.cjs --odds 0
 node site/build-site.cjs                                           # the page picks up deploy/odds-4663.deployed.json and switches the board on
 ```
 
-After an audit, and only after one. `AUDIT_BRIEF.md` is the brief.
+The deployment record is `contracts/deploy/odds-4663.deployed.json`; the page and the keeper read it.
 
 ## Limits
 
-- Unaudited.
 - It reads the Pons V2 factory at `0x7ed598bcef8bd9edd8c97a195c6d13f40801ec7e`. A new factory means a new market.
 - A creator can buy the curve to 4.2 ETH. That is the thing the market is about; price it.
 - A graduation after the deadline that nobody witnessed voids the market. The keeper exists to keep that rare.

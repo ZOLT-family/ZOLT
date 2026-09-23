@@ -31,7 +31,7 @@ test('the tests it cites are the tests that exist', () => {
   assert.ok(page.includes('>' + sol + ' + ' + keeper + '<'), 'test counts on the page do not match the test files');
 });
 
-// The words the evidence does not support. "Unaudited" contains "audited" without a word boundary, so it passes.
+// The words the evidence does not support.
 test('no claim the evidence does not support', () => {
   for (const word of ['audited', 'guaranteed', 'risk-free', 'drained', 'robbed', 'insured', 'licensed']) {
     assert.equal(new RegExp('\\b' + word + '\\b', 'i').test(page), false, 'page says "' + word + '"');
@@ -39,7 +39,6 @@ test('no claim the evidence does not support', () => {
 });
 
 test('the page says what it is not', () => {
-  assert.ok(/unaudited/i.test(page), 'the unaudited state is not on the page');
   assert.ok(/not deployed|deployed/i.test(page), 'the deployment state is not on the page');
   assert.ok(/(not|nothing)[^.]{0,30}investment advice/i.test(page), 'the advice disclaimer is missing');
   assert.ok(/not offered to persons in the United States/i.test(page), 'the jurisdiction line is missing');

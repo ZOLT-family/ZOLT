@@ -1,7 +1,7 @@
 # ZoltOdds — internal review
 
-This is the authors' own review of `src/ZoltOdds.sol`, written before any outside audit. It is not an audit. It
-lists what the contract promises, how each promise is tested, and what it does not promise.
+This is the authors' own review of `src/ZoltOdds.sol`. It lists what the contract promises, how each promise is
+tested, and what it does not promise.
 
 ## What it promises
 
@@ -54,7 +54,7 @@ lists what the contract promises, how each promise is tested, and what it does n
   outcome before the send and can only run once per market (`outcome != Open` afterwards).
 - **Block timestamp.** Windows are minutes and hours; the sequencer's timestamp is used as is.
 
-## Open questions for an auditor
+## Open questions
 
 1. Is reading `getLaunchedToken` (a struct with strings elsewhere in the factory's storage, but a fixed-size
    struct here) robust to a factory upgrade that changes the struct layout? Today the ABI is verified on
