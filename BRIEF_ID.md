@@ -16,7 +16,7 @@
 >
 > **Update 23 Sep 2026 (sore, keeper cloud didanai):** kamu isi 0,005 ETH ke `0xe925…Fa6E` → keeper laptop dimatikan (proses + Startup launcher dihapus); sekarang satu keeper: Railway `zolt-keeper`. Sisa 0,0028 ETH di keeper laptop `0xa5C7…b695` tetap ada (kunci di `keeper/keeper.key`), cadangan kalau Railway mati.
 >
-> **Update 23 Sep 2026 (sore, "gaas" ke-4):** (1) keeper punya endpoint health (`GET /` → health.json) buat dicek dari luar; (2) **refresh base rate otomatis** tiap pagi 05:20 UTC lewat GitHub Actions (`.github/workflows/base-rate.yml`): ukur ulang 24 jam Pons, rebuild + test, commit, dan deploy kalau repo punya secret `VERCEL_TOKEN` — tanpa secret itu dia cuma refresh + commit (deploy tetap manual). Secret-nya cuma bisa kamu yang nambahin: GitHub → repo ZOLT → Settings → Secrets → `VERCEL_TOKEN` (token dari vercel.com/account/tokens).
+> **Update 23 Sep 2026 (sore, "gaas" ke-4):** (1) keeper punya endpoint health publik: **https://zolt-keeper-production.up.railway.app/** (health.json: pass, tx, saldo, gas, pasar terbuka); siklus pertama pakai ETH kamu 13:51 UTC: nyatet NO pasar #18 (0,000003 ETH) lalu buka pasar #19 (0,000007 ETH); (2) **refresh base rate otomatis** tiap pagi 05:20 UTC lewat GitHub Actions (`.github/workflows/base-rate.yml`): ukur ulang 24 jam Pons, rebuild + test, commit, dan deploy kalau repo punya secret `VERCEL_TOKEN` — tanpa secret itu dia cuma refresh + commit (deploy tetap manual). Secret-nya cuma bisa kamu yang nambahin: GitHub → repo ZOLT → Settings → Secrets → `VERCEL_TOKEN` (token dari vercel.com/account/tokens).
 
 ---
 

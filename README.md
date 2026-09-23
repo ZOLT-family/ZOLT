@@ -114,7 +114,8 @@ the address with a little ETH; nothing in the image holds a key. A second key pa
 logs `LOW BALANCE` until that address holds ETH. Run one keeper per contract: two racing for the same outcome only
 waste the loser's gas. `railway up --detach -y --service zolt-keeper` redeploys from a checkout; `.railwayignore`
 keeps keys and dependencies out of the upload. With `PORT` set (or `--http <port>`), the keeper answers `GET /` with
-its `health.json`: passes, sends, balance, gas, open markets, last actions, last error.
+its `health.json`: passes, sends, balance, gas, open markets, last actions, last error. The Railway service answers at
+`https://zolt-keeper-production.up.railway.app/`.
 
 ## For bots and agents
 
