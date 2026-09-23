@@ -192,8 +192,12 @@ async function pass() {
   // optionally seed the board: launches of the last --max-age seconds whose curve shows life and has no market yet;
   // only while gas is cheap, so a quiet chain keeps the board alive and a memecoin rush does not drain the keeper
   let opens = [];
-  const openNow = AUTO_OPEN && gasNow <= OPEN_MAX_GWEI;
-  if (AUTO_OPEN && !openNow && health.passes % 120 === 0) log(`auto-open paused: gas ${gasNow.toFixed(3)} gwei is above --open-max-gwei ${OPEN_MAX_GWEI}`);
+  // an unfunded keeper plans nothing: one line every 120 passes instead of a refusal per candidate
+  const funded = !SEND || BigInt(rpc('eth_getBalance', [account.address, 'latest'])) > RESERVE_WEI;
+  const openNow = AUTO_OPEN && gasNow <= OPEN_MAX_GWEI && funded;
+  if (AUTO_OPEN && !openNow && health.passes % 120 === 0) {
+    log(!funded ? `auto-open paused: balance is at the reserve; fund ${account.address}` : `auto-open paused: gas ${gasNow.toFixed(3)} gwei is above --open-max-gwei ${OPEN_MAX_GWEI}`);
+  }
   if (openNow) {
     const span = Math.ceil(OPEN_CFG.maxAgeSeconds * 10) + 100;
     const launched = getLogsChunked({ address: FACTORY, topics: [T_LAUNCHED] }, head - span, head).map(decodeTokenLaunched);

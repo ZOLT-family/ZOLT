@@ -202,14 +202,14 @@ const head = [
   '<meta property="og:title" content="Zolt Odds — will it graduate?">',
   '<meta property="og:description" content="' + DESC + '">',
   '<meta property="og:url" content="' + SITE + '">',
-  '<meta property="og:image" content="' + SITE + 'og.png">',
+  '<meta property="og:image" content="' + SITE + 'api/card">',
   '<meta property="og:image:width" content="1200">',
   '<meta property="og:image:height" content="630">',
   '<meta property="og:image:alt" content="Will it graduate? The first launch odds market on Robinhood Chain.">',
   '<meta name="twitter:card" content="summary_large_image">',
   '<meta name="twitter:title" content="Zolt Odds — will it graduate?">',
   '<meta name="twitter:description" content="' + DESC + '">',
-  '<meta name="twitter:image" content="' + SITE + 'og.png">',
+  '<meta name="twitter:image" content="' + SITE + 'api/card">',
 ].join('\n');
 const standalone = '<!doctype html>\n<html lang="en">\n<head>\n' + head + '\n</head>\n<body>\n' + html + '\n</body>\n</html>\n';
 if (PREVIEW) {
@@ -253,6 +253,8 @@ fs.writeFileSync(path.join(PUB, 'robots.txt'), 'User-agent: *\nAllow: /\nSitemap
 // what the serverless functions need to know: the same addresses the page carries, from the same records
 fs.writeFileSync(path.join(PUB, 'api', 'config.json'), JSON.stringify({
   chainId: 4663, site: SITE, factory: FACTORY, odds: market ? market.address : null, v2: !!liveV2, zolt: liveV2 ? liveV2.zolt : null,
+  // the three figures the link-preview card leads with, the same ones as the page
+  figures: { launches24h: values.launches24h, gradRate24h: values.gradRate24h, gradMedian: values.gradMedian },
   keeper: fs.existsSync(path.join(ROOT, 'keeper', 'keeper.address')) ? fs.readFileSync(path.join(ROOT, 'keeper', 'keeper.address'), 'utf8').trim() : null,
 }, null, 1) + '\n');
 fs.writeFileSync(path.join(PUB, 'sitemap.xml'),

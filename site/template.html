@@ -783,7 +783,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
     // a link to one market, with a line ready to paste; ?m=<id> on this page picks that market's launch and window
     $$('[data-share]').forEach(function(b){ b.addEventListener('click', function(){
       var sym = b.getAttribute('data-sym');
-      var line = 'Will ' + (sym && sym !== '?' ? '$' + sym : short(b.getAttribute('data-token'))) + ' graduate in ' + WINDOW_NAMES[Number(b.getAttribute('data-w'))] + '? YES ' + b.getAttribute('data-yes') + ' / NO ' + b.getAttribute('data-no') + ' ETH on Zolt Odds → ' + (DATA.site || location.origin + '/') + '?m=' + b.getAttribute('data-share');
+      var line = 'Will ' + (sym && sym !== '?' ? '$' + sym : short(b.getAttribute('data-token'))) + ' graduate in ' + WINDOW_NAMES[Number(b.getAttribute('data-w'))] + '? YES ' + b.getAttribute('data-yes') + ' / NO ' + b.getAttribute('data-no') + ' ETH on Zolt Odds → ' + (DATA.site || location.origin + '/') + 'm/' + b.getAttribute('data-share');
       var done = function(){ b.textContent = 'copied'; };
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(line).then(done).catch(function(){ window.prompt('Copy this line', line); });
       else window.prompt('Copy this line', line);
