@@ -240,10 +240,23 @@ async function pass() {
   return { head, open: Object.keys(open).length, actions: actions.length + opens.length };
 }
 
+// --http <port> or PORT: answer GET / with keeper/health.json, so a host (Railway) or a browser can see the keeper is
+// alive, funded and acting. The pass itself is synchronous, so an answer can wait a few seconds; the wait between
+// passes is asynchronous so it does not.
+const PORT = Number(process.env.PORT || arg('http', '0'));
+if (PORT) {
+  require('http').createServer((req, res) => {
+    let body = '{"passes":0}';
+    try { body = fs.readFileSync(HEALTH_FILE, 'utf8'); } catch (e) { /* before the first pass */ }
+    res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store', 'access-control-allow-origin': '*' });
+    res.end(body);
+  }).listen(PORT, () => log(`health on port ${PORT}`));
+}
+
 (async () => {
   if (flag('once')) { const r = await pass(); log(`head ${r.head}: ${r.open} open market(s), ${r.actions} action(s)`); return; }
   for (;;) {
     try { await pass(); } catch (e) { log('pass failed:', e.message.slice(0, 200)); health.lastError = { at: new Date().toISOString(), what: 'pass', why: e.message.slice(0, 200) }; try { writeHealth({}); } catch (e2) { /* the log line is enough */ } }
-    sleep(INTERVAL * 1000);
+    await new Promise((r) => setTimeout(r, INTERVAL * 1000));
   }
 })();

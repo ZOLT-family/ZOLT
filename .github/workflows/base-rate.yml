@@ -1,0 +1,48 @@
+# Once a day: re-measure the last 24 hours of Pons (launches, graduations, time to graduation, the curve
+# calibration), rebuild the page from the new evidence, run its tests, commit the result, and deploy the site.
+# The deploy step needs a VERCEL_TOKEN repository secret; without it the workflow still refreshes and commits.
+name: base rate
+
+on:
+  schedule:
+    - cron: '20 5 * * *' # 05:20 UTC, daily
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: contracts dependencies (viem, for the calibration)
+        run: cd contracts && npm ci --no-audit --no-fund
+      - name: measure the last 24 hours
+        run: |
+          node research/pons-24h.cjs
+          node research/pons-calibration.cjs
+      - name: build and test the page
+        run: |
+          node site/build-site.cjs
+          node --test site/site.test.cjs
+          node --test site/encoding.test.cjs
+      - name: commit the evidence and the built page
+        run: |
+          git config user.name "zolt base rate"
+          git config user.email "actions@users.noreply.github.com"
+          git add evidence site
+          git diff --cached --quiet && echo "nothing changed" || git commit -m "base rate: the day to $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push
+      - name: deploy the site
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: team_fv7H5jScV5BGX7zuaajvpzai
+          VERCEL_PROJECT_ID: prj_YWJC2klVMyRIUDlqkI3Dv2Zr5Q5E
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then echo "no VERCEL_TOKEN secret: refreshed and committed, not deployed"; exit 0; fi
+          cd site/public && npx vercel@latest deploy --prod --yes --token "$VERCEL_TOKEN"
