@@ -640,9 +640,10 @@ html.has-coin,html.has-coin *{cursor:none !important}
       state.keeperLast = null;
       if (DATA.keeper) resolvedLogs.forEach(function(l){ if (addrOf(l.topics[2]).toLowerCase() === DATA.keeper.toLowerCase()) state.keeperLast = parseInt(l.blockNumber, 16); });
       state.resolvedCount = resolvedLogs.length;
-      var launches = (r[0] || []).map(function(l){
+      var all = (r[0] || []).map(function(l){
         return { token: addrOf(l.topics[1]), curve: addrOf(l.topics[2]), pair: addrOf(word(l.data, 0)), threshold: big(word(l.data, 2)), block: parseInt(l.blockNumber, 16) };
-      }).reverse().slice(0, 40);
+      }).reverse();
+      var launches = all.slice(0, 40);
       var graduated = (r[1] || []).map(function(l){ return { token: addrOf(l.topics[1]), block: parseInt(l.blockNumber, 16) }; }).reverse().slice(0, 12);
       var opened = (r[2] || []).map(function(l){ return { id: Number(big(l.topics[1])), token: addrOf(l.topics[2]), window: Number(big(word(l.data, 0))), closesAt: Number(big(word(l.data, 1))), deadline: Number(big(word(l.data, 2))), outcome: 0, yesPool: 0n, noPool: 0n, yesWeight: 0n, noWeight: 0n }; });
       state.launches = launches; state.graduated = graduated; state.opened = opened;
@@ -663,20 +664,52 @@ html.has-coin,html.has-coin *{cursor:none !important}
           m.outcome = Number(big(word(d, 5))); m.yesPool = big(word(d, 6)); m.noPool = big(word(d, 7));
           m.yesWeight = big(word(d, 8)); m.noWeight = big(word(d, 9));
         });
-        // liveliest first: launches still on their curve with real fill, then everything else newest first
-        launches.sort(function(a, b){
-          var la = a.phase === 0 && a.fill >= 20 ? 1 : 0, lb = b.phase === 0 && b.fill >= 20 ? 1 : 0;
-          if (la !== lb) return lb - la;
-          return la ? b.fill - a.fill : b.block - a.block;
+        var finish = function(){
+          // liveliest first: launches still on their curve with real fill, then everything else newest first
+          launches.sort(function(a, b){
+            var la = a.phase === 0 && a.fill >= 20 ? 1 : 0, lb = b.phase === 0 && b.fill >= 20 ? 1 : 0;
+            if (la !== lb) return lb - la;
+            return la ? b.fill - a.fill : (b.block || 0) - (a.block || 0);
+          });
+          state.read = true;
+          txt('b-block', state.block.toLocaleString('en-US'));
+          txt('b-launches', String(all.length));
+          var openCount = opened.filter(function(m){ return m.outcome === 0; }).length;
+          txt('b-open', ODDS ? String(openCount) : 'not deployed', ODDS ? (openCount ? 'hot' : '') : 'calm');
+          txt('b-state', 'read at block ' + state.block.toLocaleString('en-US') + (endpoint === RELAY ? ' · via this site’s relay' : ' · straight from the chain'), 'lab');
+          render();
+          btn.disabled = false;
+        };
+        // every open market gets a row, even when its launch has left the newest 40 or the 30-minute window:
+        // the launch record then comes from the factory's getLaunchedToken and the fill from its curve
+        var shown = {}; launches.forEach(function(x){ shown[x.token] = true; });
+        var extra = [];
+        opened.forEach(function(m){
+          if (m.outcome !== 0 || shown[m.token]) return;
+          shown[m.token] = true;
+          extra.push(all.filter(function(l){ return l.token === m.token; })[0] || { token: m.token, curve: null, pair: null, threshold: 0n, block: null });
         });
-        state.read = true;
-        txt('b-block', state.block.toLocaleString('en-US'));
-        txt('b-launches', String(launches.length));
-        var openCount = opened.filter(function(m){ return m.outcome === 0; }).length;
-        txt('b-open', ODDS ? String(openCount) : 'not deployed', ODDS ? (openCount ? 'hot' : '') : 'calm');
-        txt('b-state', 'read at block ' + state.block.toLocaleString('en-US') + (endpoint === RELAY ? ' · via this site’s relay' : ' · straight from the chain'), 'lab');
-        render();
-        btn.disabled = false;
+        if (!extra.length) return finish();
+        var more = [];
+        extra.forEach(function(x){ more.push({ to: x.token, data: SEL.symbol }, { to: FACTORY, data: SEL.launched + pad(x.token) }); });
+        return multicall(more).then(function(r2){
+          var j = 0;
+          extra.forEach(function(x){
+            var sym = r2[j++], lt = r2[j++];
+            x.symbol = decodeString(sym);
+            if (lt && lt.length >= 2 + 64 * 15) {
+              x.curve = x.curve || addrOf(word(lt, 1)); x.pair = x.pair || addrOf(word(lt, 4));
+              if (x.threshold === 0n) x.threshold = big(word(lt, 5));
+              x.phase = Number(big(word(lt, 10)));
+            } else { x.phase = null; }
+          });
+          var withCurve = extra.filter(function(x){ return x.curve; });
+          if (!withCurve.length) return finish();
+          return multicall(withCurve.map(function(x){ return { to: x.curve, data: SEL.reserve }; })).then(function(r3){
+            withCurve.forEach(function(x, q){ x.reserve = big(r3[q]); x.fill = x.threshold > 0n ? Number(x.reserve * 10000n / x.threshold) / 100 : 0; launches.push(x); });
+            finish();
+          });
+        });
       });
     }).catch(function(err){
       txt('b-state', 'could not reach the chain: ' + err.message, 'lab');
@@ -700,7 +733,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
         ? '<button type="button" class="btn sm ' + (canOpen ? 'yes' : 'ghost') + '" data-pick="' + x.token + '"' + (canOpen ? '' : ' disabled') + '>' + (ODDS ? 'stake' : 'not deployed') + '</button>'
         : '<span class="mono hot" style="font-size:11px">graduated</span>';
       var pr = pairOf(x.pair);
-      return '<tr' + (x.phase === 0 && x.fill >= 20 ? ' class="live"' : '') + '><td class="sym">' + esc(x.symbol) + '</td><td class="n">' + short(x.token) + '</td><td class="n">' + ago((x.block - state.block) / 10) + '</td>'
+      return '<tr' + (x.phase === 0 && x.fill >= 20 ? ' class="live"' : '') + '><td class="sym">' + esc(x.symbol) + '</td><td class="n">' + short(x.token) + '</td><td class="n">' + (x.block === null ? 'over 30 min ago' : ago((x.block - state.block) / 10)) + '</td>'
         + '<td class="n"><span class="meter' + (x.fill >= 100 ? ' full' : '') + '"><i style="width:' + Math.min(100, x.fill) + '%"></i></span>' + x.fill.toFixed(1) + '%</td>'
         + '<td class="n">' + unit(x.reserve, pr[1]) + ' / ' + unit(x.threshold, pr[1]) + ' ' + esc(pr[0]) + '</td><td>' + (markets || '<span class="dim mono" style="font-size:11px">none</span>') + '</td><td><div class="acts">' + act + '</div></td></tr>';
     }).join('');
@@ -745,6 +778,12 @@ html.has-coin,html.has-coin *{cursor:none !important}
     el('ticket').hidden = false; el('t-preview').hidden = false;
     var x = state.launches.filter(function(l){ return l.token === token; })[0];
     txt('t-token', (x ? x.symbol + ' · ' : '') + short(token), 'mono');
+    // when a market is already open on this launch, the ticket starts on its window so the stake joins it
+    var openFor = state.opened.filter(function(m){ return m.token.toLowerCase() === token.toLowerCase() && m.outcome === 0; })[0];
+    if (openFor && openFor.window !== state.window) {
+      var wb = $$('#t-window button').filter(function(b){ return Number(b.getAttribute('data-w')) === openFor.window; })[0];
+      if (wb) wb.click();
+    }
     preview();
     el('ticket').scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
   }
