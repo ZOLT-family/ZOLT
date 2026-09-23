@@ -72,6 +72,8 @@ node research/pons-calibration.cjs   # curve fill at 2 and 10 minutes vs sweepin
 The 24-hour measurement reads `TokenLaunched` and `PoolGraduated` from the factory; the calibration reads `CurveBuy`
 and `CurveSell` on every sampled curve, because the public node is not an archive node and historical balances
 are not available. Both go through `research/rpc.cjs` (curl with DNS-over-HTTPS; override with `RH_RPC`).
+`.github/workflows/base-rate.yml` does this every morning at 05:20 UTC, rebuilds and tests the page, commits the
+result, and deploys it when the repository has a `VERCEL_TOKEN` secret (it refreshes and commits without one).
 
 ## Deploying
 
@@ -111,7 +113,8 @@ the address with a little ETH; nothing in the image holds a key. A second key pa
 (project of the same name), keeper address `0xe925c7c5FD5CaB9D665Cbb38654ABB855275Fa6E`; it reads the chain and
 logs `LOW BALANCE` until that address holds ETH. Run one keeper per contract: two racing for the same outcome only
 waste the loser's gas. `railway up --detach -y --service zolt-keeper` redeploys from a checkout; `.railwayignore`
-keeps keys and dependencies out of the upload.
+keeps keys and dependencies out of the upload. With `PORT` set (or `--http <port>`), the keeper answers `GET /` with
+its `health.json`: passes, sends, balance, gas, open markets, last actions, last error.
 
 ## For bots and agents
 

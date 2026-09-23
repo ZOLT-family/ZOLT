@@ -15,6 +15,8 @@
 > **Update 23 Sep 2026 (malam, "gaas" ke-3):** **kartu link-preview per pasar**: `/api/card` (kartu situs, angka base rate dari config) dan `/api/card?id=N` (kartu satu pasar: pool YES/NO, implied yes, jam, stempel STAKING OPEN / RESOLVED) digambar di server pakai satori + resvg dengan font halaman; glyph non-Latin (牛) diisi subset Noto Sans. `/m/N` = halaman dengan tag preview pasar itu (tombol share sekarang ngasih link ini). Gagal apa pun → jatuh ke `og.png`. Keeper cloud di-redeploy dengan log yang lebih tenang pas belum didanai.
 >
 > **Update 23 Sep 2026 (sore, keeper cloud didanai):** kamu isi 0,005 ETH ke `0xe925…Fa6E` → keeper laptop dimatikan (proses + Startup launcher dihapus); sekarang satu keeper: Railway `zolt-keeper`. Sisa 0,0028 ETH di keeper laptop `0xa5C7…b695` tetap ada (kunci di `keeper/keeper.key`), cadangan kalau Railway mati.
+>
+> **Update 23 Sep 2026 (sore, "gaas" ke-4):** (1) keeper punya endpoint health (`GET /` → health.json) buat dicek dari luar; (2) **refresh base rate otomatis** tiap pagi 05:20 UTC lewat GitHub Actions (`.github/workflows/base-rate.yml`): ukur ulang 24 jam Pons, rebuild + test, commit, dan deploy kalau repo punya secret `VERCEL_TOKEN` — tanpa secret itu dia cuma refresh + commit (deploy tetap manual). Secret-nya cuma bisa kamu yang nambahin: GitHub → repo ZOLT → Settings → Secrets → `VERCEL_TOKEN` (token dari vercel.com/account/tokens).
 
 ---
 
