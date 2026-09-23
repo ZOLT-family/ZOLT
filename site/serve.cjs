@@ -2,6 +2,7 @@
 //   /             the page, as the artifact platform would wrap it
 //   /deploy.html  the wallet-signed deploy page (never published)
 //   /guard.html   the archived split-guard page
+//   /og-card.html the social card; opening it draws the card and POSTs the PNG to /save-og, which writes public/og.png
 // Serves only files inside site/. Nothing here talks to the chain; the pages do, from the browser.
 const http = require('http');
 const fs = require('fs');
@@ -12,6 +13,21 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '
 
 http.createServer((req, res) => {
   const name = decodeURIComponent(req.url.split('?')[0]);
+  if (name === '/save-og' && req.method === 'POST') {
+    // the one write this server does: the card page posts a PNG data URL, it lands at public/og.png and nowhere else
+    let body = '';
+    req.on('data', (d) => { body += d; if (body.length > 4 * 1024 * 1024) req.destroy(); });
+    req.on('end', () => {
+      const m = /^data:image\/png;base64,([A-Za-z0-9+/=]+)$/.exec(body);
+      if (!m) { res.writeHead(400); res.end('expected a png data url'); return; }
+      const png = Buffer.from(m[1], 'base64');
+      const out = path.join(__dirname, 'public', 'og.png');
+      fs.writeFileSync(out, png);
+      res.writeHead(200, { 'content-type': 'text/plain' });
+      res.end('wrote ' + out + ' (' + png.length + ' bytes)');
+    });
+    return;
+  }
   if (name === '/') {
     fs.readFile(path.join(__dirname, 'index.html'), 'utf8', (err, body) => {
       if (err) { res.writeHead(500); res.end('build first: node site/build-site.cjs'); return; }

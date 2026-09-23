@@ -20,7 +20,7 @@ Nothing here is investment advice. Stake what you can lose in a bug.
 | `contracts/test/ZoltOdds.t.sol` | 17 tests, including every-wei conservation over 256 random markets and a re-entrancy attempt |
 | `contracts/scripts/deploy-odds.cjs` | the only script that can send a transaction. Dry-run unless `--yes`; checks the chain id, probes the factory, simulates, writes a plan |
 | `keeper/odds-keeper.cjs` | records outcomes the moment they are knowable so no market waits on a holder. Dry-run unless `--send` |
-| `site/` | the page: `template.html` + `build-site.cjs` → `index.html`, `zolt.html`, `public/`. The board reads the chain from the browser; staking signs through the reader's own wallet |
+| `site/` | the page: `template.html` + `build-site.cjs` → `index.html`, `zolt.html`, `public/`. The board reads the chain from the browser; staking signs through the reader's own wallet. `og-template.html` → `og-card.html` → `public/og.png`: open the card page through `node site/serve.cjs` and it saves itself |
 | `site/public/api/rpc.js` | a read-only JSON-RPC relay for readers whose network cannot reach the public RPC host |
 | `research/` | read-only scripts; `evidence/pons-24h.json` and `evidence/pons-calibration.json` are the base rate the page quotes |
 | `contracts/src/Zolt.sol`, `ZoltDopplerModule.sol`, `StepMath.sol` | the earlier work: a Uniswap v4 hook that prices ERC-8056 stock-token splits into swaps. Tested (26), not deployed, kept as an appendix; its page is archived at `/guard` |
