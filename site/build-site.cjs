@@ -193,6 +193,17 @@ if (fs.existsSync(artifactFile)) {
   fs.writeFileSync(path.join(__dirname, 'deploy.html'), deployPage);
   console.log('wrote site/deploy.html (local deploy page, bytecode of this build)');
 }
+// The same for v2 (fee discount + witness bounty on a bonded ZOLT); it needs the token's address at deploy time.
+const artifactV2 = path.join(ROOT, 'contracts', 'artifacts', 'src', 'ZoltOddsV2.sol', 'ZoltOddsV2.json');
+if (fs.existsSync(artifactV2)) {
+  const a2 = JSON.parse(fs.readFileSync(artifactV2, 'utf8'));
+  const page2 = fs.readFileSync(path.join(__dirname, 'deploy-v2-template.html'), 'utf8')
+    .replace(/\{\{factoryAddr\}\}/g, FACTORY)
+    .replace(/\{\{bytecodeV2\}\}/g, a2.bytecode)
+    .replace(/\{\{deployGasV2\}\}/g, '1.7 million');
+  fs.writeFileSync(path.join(__dirname, 'deploy-v2.html'), page2);
+  console.log('wrote site/deploy-v2.html (local deploy page for v2, bytecode of this build)');
+}
 
 // The folder Vercel serves: the page, the archived split-guard page, and the two files a crawler asks for.
 const PUB = path.join(__dirname, 'public');

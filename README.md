@@ -18,6 +18,8 @@ Nothing here is investment advice. Stake what you can lose in a bug.
 | --- | --- |
 | `contracts/src/ZoltOdds.sol` | the market: open, stake (time-weighted), witnessYes / witnessNo / voidUnobserved, claim. 1% of the losing pool to a fixed treasury |
 | `contracts/test/ZoltOdds.t.sol` | 17 tests, including every-wei conservation over 256 random markets and a re-entrancy attempt |
+| `contracts/src/ZoltOddsV2.sol` | the same market with two jobs for the ZOLT token: a 0.5% fee for winners bonded with `discountBond`, a 0.2% witness bounty for a witness bonded with `keeperBond`; bonds lock seven days. Written and tested, not deployed (needs the token) |
+| `contracts/test/ZoltOddsV2.t.sol` | 15 tests: bond lock, fee at claim, bounty only to a bonded witness, void pays neither, v1 word layout kept, conservation over 256 random markets |
 | `contracts/scripts/deploy-odds.cjs` | the only script that can send a transaction. Dry-run unless `--yes`; checks the chain id, probes the factory, simulates, writes a plan |
 | `keeper/odds-keeper.cjs` | records outcomes the moment they are knowable so no market waits on a holder. Dry-run unless `--send` |
 | `site/` | the page: `template.html` + `build-site.cjs` → `index.html`, `zolt.html`, `public/`. The board reads the chain from the browser; staking signs through the reader's own wallet. `og-template.html` → `og-card.html` → `public/og.png`: open the card page through `node site/serve.cjs` and it saves itself |
@@ -41,8 +43,8 @@ placed when the answer is nearly known earns almost nothing from the pot. Once a
 ## Tests
 
 ```bash
-cd contracts && npx hardhat test solidity   # 43 Solidity tests (17 market, 26 split guard)
-node --test keeper/odds-logic.test.cjs      # 9 keeper tests
+cd contracts && npx hardhat test solidity   # 60 Solidity tests (17 market, 15 market v2, 26 split guard, 2 fork)
+node --test keeper/odds-logic.test.cjs      # 12 keeper tests
 node --test site/site.test.cjs              # 11 page tests: figures match files, one transaction target, relay is read-only
 node --test site/encoding.test.cjs          # the page's hand-rolled calldata and struct decoding held to viem's, on a real return value
 ```

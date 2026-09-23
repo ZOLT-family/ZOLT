@@ -1,6 +1,7 @@
 // Local preview of the built site and the local deploy page: node site/serve.cjs -> http://localhost:4521
 //   /             the page, as the artifact platform would wrap it
 //   /deploy.html  the wallet-signed deploy page (never published)
+//   /deploy-v2.html  the same for ZoltOddsV2 (needs the ZOLT token address)
 //   /guard.html   the archived split-guard page
 //   /og-card.html the social card; opening it draws the card and POSTs the PNG to /save-og, which writes public/og.png
 // Serves only files inside site/. Nothing here talks to the chain; the pages do, from the browser.

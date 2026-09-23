@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Deploy Zolt Odds v2</title>
+<style>
+:root{--paper:#E6EBE2;--sheet:#F3F6F0;--band:#DBE4D5;--edge:#11171A;--ink:#11171A;--ink-2:#4A5852;--ink-3:#7C8A82;--signal:#D2401F;--teal:#0E5A50;--amber:#B9861F;
+  --mono:"Fragment Mono",ui-monospace,Consolas,monospace;--body:"Onest",system-ui,sans-serif}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.6 var(--body)}
+main{max-width:760px;margin:0 auto;padding:40px 20px 80px}
+h1{font:800 26px/1.1 var(--body);margin:0 0 8px}
+p{margin:0 0 12px;color:var(--ink-2)}
+.lab{font:400 10.5px var(--mono);text-transform:uppercase;letter-spacing:.14em;color:var(--ink-3)}
+.box{border:1px solid var(--edge);background:var(--sheet);padding:16px;margin:16px 0}
+.row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin:10px 0}
+input{font:400 13px var(--mono);padding:9px 11px;border:1px solid var(--edge);background:var(--sheet);color:var(--ink);width:100%}
+.btn{font:400 11.5px var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--sheet);background:var(--edge);border:1px solid var(--edge);padding:10px 16px;cursor:pointer}
+.btn.go{background:var(--signal);border-color:var(--signal)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.mono{font-family:var(--mono);font-size:12px;word-break:break-all}
+.warn{border-left:3px solid var(--signal);padding-left:12px;color:var(--ink-2);font-size:13.5px}
+.ok{color:var(--teal)}.bad{color:var(--signal)}
+pre{background:var(--band);padding:12px;font:400 11.5px/1.5 var(--mono);white-space:pre-wrap;word-break:break-all}
+</style>
+</head>
+<body>
+<main>
+  <span class="lab">Zolt Odds v2 &middot; chain 4663 &middot; local page, not published</span>
+  <h1>Deploy the v2 market contract</h1>
+  <p>Your wallet signs one transaction that creates <code>ZoltOddsV2</code>: the same market, plus a fee discount and a witness bounty for addresses that bond ZOLT. Nothing here holds a key. The contract has no owner: after this, nobody can change it, including you.</p>
+  <div class="warn">The ZOLT token must already exist (launched on Pons). Every figure below is immutable once sent. Read <code>contracts/SECURITY-ODDS.md</code> first. Cost is about {{deployGasV2}} gas.</div>
+
+  <div class="box">
+    <span class="lab">1 &middot; wallet</span>
+    <div class="row"><span class="mono" id="w">not connected</span><button type="button" class="btn" id="connect">Connect</button></div>
+    <span class="lab">2 &middot; treasury (receives the fee on winning shares; immutable)</span>
+    <div class="row"><input id="treasury" placeholder="0x… defaults to the connected wallet" spellcheck="false"><span></span></div>
+    <span class="lab">3 &middot; ZOLT token address (the Pons launch)</span>
+    <div class="row"><input id="zolt" placeholder="0x…" spellcheck="false"><span></span></div>
+    <span class="lab">4 &middot; discount bond, in whole ZOLT (bond at least this for the 0.5% fee)</span>
+    <div class="row"><input id="discount" value="1000000" spellcheck="false"><span></span></div>
+    <span class="lab">5 &middot; keeper bond, in whole ZOLT (bond at least this to be paid the 0.2% witness bounty)</span>
+    <div class="row"><input id="keeper" value="5000000" spellcheck="false"><span></span></div>
+    <span class="lab">6 &middot; factory it will read</span>
+    <div class="mono" style="margin:6px 0 14px">{{factoryAddr}} &middot; PonsV2LaunchFactory, verified on Sourcify</div>
+    <div class="row"><span class="mono" id="status">idle</span><button type="button" class="btn go" id="deploy" disabled>Deploy</button></div>
+  </div>
+
+  <div class="box" id="result" hidden>
+    <span class="lab">deployed</span>
+    <div class="mono" id="addr"></div>
+    <p style="margin-top:10px">Now record and check it from the repo (this reads the chain and writes <code>contracts/deploy/odds-v2-4663.deployed.json</code>):</p>
+    <pre id="next"></pre>
+  </div>
+</main>
+<script>
+(function(){
+  var FACTORY = '{{factoryAddr}}';
+  var BYTECODE = '{{bytecodeV2}}';
+  var CHAIN_HEX = '0x1237';
+  var pad = function(a){ return a.replace(/^0x/, '').toLowerCase().padStart(64, '0'); };
+  var padNum = function(n){ return n.toString(16).padStart(64, '0'); };
+  var el = function(id){ return document.getElementById(id); };
+  var wallet = null;
+  function say(s, cls){ el('status').textContent = s; el('status').className = 'mono ' + (cls || ''); }
+  el('connect').addEventListener('click', function(){
+    var w = window.ethereum;
+    if (!w) { say('no wallet in this browser', 'bad'); return; }
+    w.request({ method: 'eth_requestAccounts' }).then(function(acc){
+      wallet = acc[0];
+      el('w').textContent = wallet;
+      return w.request({ method: 'eth_chainId' });
+    }).then(function(cid){
+      if (cid !== CHAIN_HEX) return w.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN_HEX }] });
+    }).then(function(){ say('on chain 4663', 'ok'); el('deploy').disabled = false; })
+      .catch(function(e){ say(e.message || 'the wallet said no', 'bad'); });
+  });
+  el('deploy').addEventListener('click', function(){
+    var t = (el('treasury').value.trim() || wallet);
+    var z = el('zolt').value.trim();
+    if (!/^0x[0-9a-fA-F]{40}$/.test(t) || /^0x0{40}$/.test(t)) { say('treasury is not an address', 'bad'); return; }
+    if (!/^0x[0-9a-fA-F]{40}$/.test(z) || /^0x0{40}$/.test(z)) { say('ZOLT is not an address', 'bad'); return; }
+    var d = el('discount').value.trim(), k = el('keeper').value.trim();
+    if (!/^[1-9][0-9]*$/.test(d) || !/^[1-9][0-9]*$/.test(k)) { say('bonds must be whole positive numbers of ZOLT', 'bad'); return; }
+    // ZOLT has 18 decimals (a Pons launcher token)
+    var dWei = BigInt(d) * 1000000000000000000n, kWei = BigInt(k) * 1000000000000000000n;
+    var data = BYTECODE + pad(FACTORY) + pad(t) + pad(z) + padNum(dWei) + padNum(kWei);
+    say('waiting for your wallet…');
+    el('deploy').disabled = true;
+    window.ethereum.request({ method: 'eth_sendTransaction', params: [{ from: wallet, data: data, value: '0x0' }] }).then(function(h){
+      say('sent ' + h + ' — waiting for the receipt…');
+      var poll = function(){
+        window.ethereum.request({ method: 'eth_getTransactionReceipt', params: [h] }).then(function(r){
+          if (!r) { setTimeout(poll, 1500); return; }
+          if (r.status !== '0x1') { say('the transaction reverted: ' + h, 'bad'); el('deploy').disabled = false; return; }
+          say('mined in block ' + parseInt(r.blockNumber, 16), 'ok');
+          el('result').hidden = false;
+          el('addr').textContent = r.contractAddress;
+          el('next').textContent = 'cd contracts && node scripts/verify-odds-v2.cjs --chain 4663 --address ' + r.contractAddress + ' --tx ' + h;
+        }).catch(function(){ setTimeout(poll, 2000); });
+      };
+      poll();
+    }).catch(function(e){ say(e.message || 'the wallet said no', 'bad'); el('deploy').disabled = false; });
+  });
+})();
+</script>
+</body>
+</html>
