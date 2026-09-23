@@ -13,6 +13,8 @@
 > **Update 23 Sep 2026 (sore, "gaas" → keeper cloud):** keeper jalan di **Railway** (project + service `zolt-keeper`, dari `keeper/Dockerfile`; CLI `railway` udah login akun kamu). Alamat keeper cloud **`0xe925c7c5FD5CaB9D665Cbb38654ABB855275Fa6E`** — belum didanai, jadi dia cuma baca chain dan log `LOW BALANCE`. Begitu kamu isi ~0,005 ETH ke situ, gua matiin keeper laptop biar gak dobel. Catatan: kunci cloud pertama sempat kecetak di transkrip sesi (belum pernah didanai) → dibuang, diganti; jangan pernah kirim ETH ke `0x0034…F58a`.
 >
 > **Update 23 Sep 2026 (malam, "gaas" ke-3):** **kartu link-preview per pasar**: `/api/card` (kartu situs, angka base rate dari config) dan `/api/card?id=N` (kartu satu pasar: pool YES/NO, implied yes, jam, stempel STAKING OPEN / RESOLVED) digambar di server pakai satori + resvg dengan font halaman; glyph non-Latin (牛) diisi subset Noto Sans. `/m/N` = halaman dengan tag preview pasar itu (tombol share sekarang ngasih link ini). Gagal apa pun → jatuh ke `og.png`. Keeper cloud di-redeploy dengan log yang lebih tenang pas belum didanai.
+>
+> **Update 23 Sep 2026 (sore, keeper cloud didanai):** kamu isi 0,005 ETH ke `0xe925…Fa6E` → keeper laptop dimatikan (proses + Startup launcher dihapus); sekarang satu keeper: Railway `zolt-keeper`. Sisa 0,0028 ETH di keeper laptop `0xa5C7…b695` tetap ada (kunci di `keeper/keeper.key`), cadangan kalau Railway mati.
 
 ---
 

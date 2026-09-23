@@ -81,6 +81,9 @@ const market = liveV2 || live;
 const oddsV2Tests = countTests('contracts/test/ZoltOddsV2.t.sol', /function test/g);
 const wholeTokens = (wei) => int(Number(BigInt(wei) / 10n ** 18n));
 const gasPlan = live && live.estimatedGas ? live : plan; // a wallet deploy records no estimate; the dry-run plan has one
+// the public addresses of the keepers this repo runs (the cloud one first, the laptop one behind it): the board
+// names either as "keeper" and shows when the first last acted
+const keeperAddrs = ['keeper-cloud.address', 'keeper.address'].map((f) => path.join(ROOT, 'keeper', f)).filter((p) => fs.existsSync(p)).map((p) => fs.readFileSync(p, 'utf8').trim());
 // priced at 2 gwei: the chain sat near 0.05 gwei when quiet and 1.7-3.5 gwei during the memecoin rush of 23 Sep
 const gasEth = gasPlan && gasPlan.estimatedGas ? (gasPlan.estimatedGas * 2e-9).toFixed(4) + ' at 2 gwei' : '–';
 
@@ -137,8 +140,8 @@ const values = {
     v1: live ? live.address : null,
     zolt: liveV2 ? liveV2.zolt : null,
     bonds: liveV2 ? { discount: liveV2.discountBond, keeper: liveV2.keeperBond } : null,
-    // the public address of the keeper this repo runs, if one was made here: the board shows when it last acted
-    keeper: fs.existsSync(path.join(ROOT, 'keeper', 'keeper.address')) ? fs.readFileSync(path.join(ROOT, 'keeper', 'keeper.address'), 'utf8').trim() : null,
+    keeper: keeperAddrs[0] || null,
+    keepers: keeperAddrs,
     sel: {
       symbol: '0x95d89b41', launched: '0x3cf28b5a', reserve: '0x4f1f58fd', market: '0x28861d22',
       openAndStake: '0x34feb02b', claim: '0x379607f5', payout: '0xbe95e01a',
@@ -255,7 +258,8 @@ fs.writeFileSync(path.join(PUB, 'api', 'config.json'), JSON.stringify({
   chainId: 4663, site: SITE, factory: FACTORY, odds: market ? market.address : null, v2: !!liveV2, zolt: liveV2 ? liveV2.zolt : null,
   // the three figures the link-preview card leads with, the same ones as the page
   figures: { launches24h: values.launches24h, gradRate24h: values.gradRate24h, gradMedian: values.gradMedian },
-  keeper: fs.existsSync(path.join(ROOT, 'keeper', 'keeper.address')) ? fs.readFileSync(path.join(ROOT, 'keeper', 'keeper.address'), 'utf8').trim() : null,
+  keeper: keeperAddrs[0] || null,
+  keepers: keeperAddrs,
 }, null, 1) + '\n');
 fs.writeFileSync(path.join(PUB, 'sitemap.xml'),
   '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

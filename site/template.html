@@ -560,6 +560,9 @@ html.has-coin,html.has-coin *{cursor:none !important}
   var RPC = DATA.rpc, RELAY = '/api/rpc', endpoint = DATA.rpc;
   var CHAIN_HEX = '0x' + Number(DATA.chainId).toString(16);
   var FACTORY = DATA.factory, ODDS = DATA.odds || null, ZOLT = DATA.zolt || null, V2 = !!DATA.v2;
+  // every keeper this site has run counts as "keeper" in the ledger; the first is the one whose last act the board shows
+  var KEEPERS = (DATA.keepers || (DATA.keeper ? [DATA.keeper] : [])).map(function(a){ return a.toLowerCase(); });
+  function isKeeperAddr(a){ return !!a && KEEPERS.indexOf(a.toLowerCase()) >= 0; }
   var SEL = DATA.sel, TOPIC = DATA.topics, PAIRS = DATA.pairs || {};
   var pairOf = function(addr){ return PAIRS[addr.toLowerCase()] || [addr.slice(0, 6) + '…', 18]; };
   var unit = function(v, dec){ var n = Number(v) / Math.pow(10, dec); return n >= 100 ? n.toFixed(0) : n >= 1 ? n.toFixed(2) : n.toFixed(3); };
@@ -669,7 +672,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
       // when the keeper this site runs last recorded an outcome, from the Resolved events it signed
       var resolvedLogs = r[3] || [];
       state.keeperLast = null;
-      if (DATA.keeper) resolvedLogs.forEach(function(l){ if (addrOf(l.topics[2]).toLowerCase() === DATA.keeper.toLowerCase()) state.keeperLast = parseInt(l.blockNumber, 16); });
+      if (KEEPERS.length) resolvedLogs.forEach(function(l){ if (isKeeperAddr(addrOf(l.topics[2]))) state.keeperLast = parseInt(l.blockNumber, 16); });
       state.resolvedCount = resolvedLogs.length;
       var all = (r[0] || []).map(function(l){
         return { token: addrOf(l.topics[1]), curve: addrOf(l.topics[2]), pair: addrOf(word(l.data, 0)), threshold: big(word(l.data, 2)), block: parseInt(l.blockNumber, 16) };
@@ -968,7 +971,7 @@ html.has-coin,html.has-coin *{cursor:none !important}
         var tokens = []; list.forEach(function(m){ if (tokens.indexOf(m.token) < 0) tokens.push(m.token); });
         return multicall(tokens.map(function(t){ return { to: t, data: SEL.symbol }; })).then(function(syms){
           var symOf = {}; tokens.forEach(function(t, i){ symOf[t] = decodeString(syms[i]); });
-          var who = function(a){ return !a ? '—' : (DATA.keeper && a.toLowerCase() === DATA.keeper.toLowerCase()) ? 'keeper' : short(a); };
+          var who = function(a){ return !a ? '—' : isKeeperAddr(a) ? 'keeper' : short(a); };
           el('l-out').innerHTML = list.length
             ? '<div class="wrapx"><table><thead><tr><th>#</th><th>Launch</th><th>Window</th><th class="n">Opened</th><th class="n">YES</th><th class="n">NO</th><th class="n">Stakers</th><th>Outcome</th><th>Recorded by</th><th class="n">Fee</th></tr></thead><tbody>'
               + list.map(function(m){ return '<tr><td class="n">' + m.id + '</td><td class="sym">' + esc(symOf[m.token] || '?') + '</td><td class="n">' + WINDOW_NAMES[m.window] + '</td><td class="n">' + ago((m.block - head) / 10) + '</td><td class="n">' + eth(m.yes).toFixed(4) + '</td><td class="n">' + eth(m.no).toFixed(4) + '</td><td class="n">' + m.stakers + '</td><td>' + ['<span class="dim">open</span>', '<span class="hot">YES</span>', '<span class="calm">NO</span>', 'void'][m.outcome] + '</td><td class="n">' + who(m.by) + '</td><td class="n">' + (m.fee ? eth(m.fee).toFixed(5) : '—') + (m.bounty ? ' <span class="dim">+ ' + eth(m.bounty).toFixed(5) + ' bounty</span>' : '') + '</td></tr>'; }).join('')
