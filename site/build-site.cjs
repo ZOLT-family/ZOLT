@@ -129,6 +129,7 @@ const values = {
   json: JSON.stringify({
     rpc: (PREVIEW && process.env.ZOLT_PREVIEW_RPC) || 'https://rpc.mainnet.chain.robinhood.com',
     chainId: 4663,
+    site: 'https://zolt-smoky.vercel.app/',
     factory: FACTORY,
     odds: market ? market.address : null,
     deployedBlock: market && market.deployedBlock ? market.deployedBlock : null,
@@ -249,6 +250,11 @@ fs.mkdirSync(PUB, { recursive: true });
 fs.writeFileSync(path.join(PUB, 'index.html'), standalone);
 fs.copyFileSync(path.join(__dirname, 'guard.html'), path.join(PUB, 'guard.html'));
 fs.writeFileSync(path.join(PUB, 'robots.txt'), 'User-agent: *\nAllow: /\nSitemap: ' + SITE + 'sitemap.xml\n');
+// what the serverless functions need to know: the same addresses the page carries, from the same records
+fs.writeFileSync(path.join(PUB, 'api', 'config.json'), JSON.stringify({
+  chainId: 4663, site: SITE, factory: FACTORY, odds: market ? market.address : null, v2: !!liveV2, zolt: liveV2 ? liveV2.zolt : null,
+  keeper: fs.existsSync(path.join(ROOT, 'keeper', 'keeper.address')) ? fs.readFileSync(path.join(ROOT, 'keeper', 'keeper.address'), 'utf8').trim() : null,
+}, null, 1) + '\n');
 fs.writeFileSync(path.join(PUB, 'sitemap.xml'),
   '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
   + '  <url><loc>' + SITE + '</loc><lastmod>' + new Date().toISOString().slice(0, 10) + '</lastmod></url>\n'

@@ -1,0 +1,12 @@
+{
+  "name": "zolt-odds-keeper",
+  "private": true,
+  "description": "The Zolt Odds keeper on its own: records outcomes and, while gas is cheap, keeps one market open. Needs KEEPER_PRIVATE_KEY and ODDS_ADDRESS.",
+  "scripts": {
+    "start": "node odds-keeper.cjs --odds $ODDS_ADDRESS --send --auto-open --max-open 1 --window 1 --open-max-gwei 0.3 --interval 5",
+    "test": "node --test odds-logic.test.cjs"
+  },
+  "dependencies": {
+    "viem": "^2.56.3"
+  }
+}

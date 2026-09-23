@@ -635,7 +635,8 @@ html.has-coin,html.has-coin *{cursor:none !important}
   }
 
   /* ------------------------------------------------ the board */
-  var state = { block: 0, now: 0, launches: [], opened: [], read: false, wallet: null, pick: null, window: 0, side: 1, feeBps: 100, bond: null };
+  var state = { block: 0, now: 0, launches: [], opened: [], read: false, wallet: null, pick: null, window: 0, side: 1, feeBps: 100, bond: null,
+    deepLink: (function(){ var v = new URLSearchParams(location.search).get('m'); return v !== null && /^\d+$/.test(v) ? Number(v) : null; })() };
   var WINDOW_NAMES = ['10 min', '1 h', '6 h'];
   var txt = function(id, s, cls){ var n = el(id); if (!n) return; n.textContent = s; n.className = cls || ''; };
   function ago(sec){ var d = Math.abs(sec); var s = d < 90 ? Math.round(d) + ' s' : d < 5400 ? Math.round(d / 60) + ' min' : Math.round(d / 3600) + ' h'; return sec >= 0 ? 'in ' + s : s + ' ago'; }
@@ -755,7 +756,8 @@ html.has-coin,html.has-coin *{cursor:none !important}
         var total = m.yesPool + m.noPool, yes = total > 0n ? Number(m.yesPool * 1000n / total) / 10 : null;
         var closing = now < m.closesAt;
         return '<div class="mono" style="font-size:11px">#' + m.id + ' ' + WINDOW_NAMES[m.window] + ' · YES ' + eth(m.yesPool).toFixed(3) + ' / NO ' + eth(m.noPool).toFixed(3) + ' ETH' + (yes === null ? '' : ' · ' + yes + '% yes')
-          + ' · ' + (closing ? 'closes ' : 'deadline ') + '<span data-until="' + (closing ? m.closesAt : m.deadline) + '">' + ago((closing ? m.closesAt : m.deadline) - now) + '</span></div>';
+          + ' · ' + (closing ? 'closes ' : 'deadline ') + '<span data-until="' + (closing ? m.closesAt : m.deadline) + '">' + ago((closing ? m.closesAt : m.deadline) - now) + '</span>'
+          + ' <button type="button" class="btn sm ghost" data-share="' + m.id + '" data-sym="' + esc(x.symbol) + '" data-token="' + x.token + '" data-w="' + m.window + '" data-yes="' + eth(m.yesPool).toFixed(3) + '" data-no="' + eth(m.noPool).toFixed(3) + '">share</button></div>';
       }).join('');
       var canOpen = !!ODDS && x.phase === 0;
       var act = x.phase === 0
@@ -777,6 +779,19 @@ html.has-coin,html.has-coin *{cursor:none !important}
       + (resolved.length ? '<p class="msg">Recently resolved: ' + resolved.map(function(m){ return '#' + m.id + ' ' + ['open', '<span class="hot">YES</span>', '<span class="calm">NO</span>', 'void'][m.outcome]; }).join(' · ') + (state.wallet ? ' — <button type="button" class="btn sm ghost" id="b-claims">check my claims</button>' : '') + '</p>' : '')
       + (past.length ? '<p class="msg">' + past.length + ' market(s) past the deadline. <button type="button" class="btn sm ghost" id="b-witness">record outcomes</button></p>' : '');
     $$('[data-pick]').forEach(function(b){ b.addEventListener('click', function(){ pick(b.getAttribute('data-pick')); }); });
+    // a link to one market, with a line ready to paste; ?m=<id> on this page picks that market's launch and window
+    $$('[data-share]').forEach(function(b){ b.addEventListener('click', function(){
+      var sym = b.getAttribute('data-sym');
+      var line = 'Will ' + (sym && sym !== '?' ? '$' + sym : short(b.getAttribute('data-token'))) + ' graduate in ' + WINDOW_NAMES[Number(b.getAttribute('data-w'))] + '? YES ' + b.getAttribute('data-yes') + ' / NO ' + b.getAttribute('data-no') + ' ETH on Zolt Odds → ' + (DATA.site || location.origin + '/') + '?m=' + b.getAttribute('data-share');
+      var done = function(){ b.textContent = 'copied'; };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(line).then(done).catch(function(){ window.prompt('Copy this line', line); });
+      else window.prompt('Copy this line', line);
+    }); });
+    if (state.deepLink !== null) {
+      var dm = state.opened.filter(function(m){ return m.id === state.deepLink; })[0];
+      state.deepLink = null;
+      if (dm) pick(dm.token);
+    }
     if (el('b-claims')) el('b-claims').addEventListener('click', checkClaims);
     if (el('b-witness')) el('b-witness').addEventListener('click', witnessAll);
   }

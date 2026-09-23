@@ -115,6 +115,21 @@ test('the relay forwards bounded read-only calls only', () => {
   assert.ok(relay.includes("req.method !== 'POST'"), 'the relay answers more than POST');
 });
 
+// /api/markets reads the chain for bots and agents. It may only read, it must say who may read it, and it must carry
+// the same contract address the page does.
+test('the markets API is read-only and points at the same contract as the page', () => {
+  const fn = fs.readFileSync(path.join(__dirname, 'public', 'api', 'markets.js'), 'utf8');
+  const methods = [...fn.matchAll(/method: '(eth_\w+)'/g)].map((m) => m[1]);
+  assert.ok(methods.length > 0, 'the function names no RPC method');
+  for (const m of methods) assert.ok(/^eth_(call|blockNumber|getBlockByNumber)$/.test(m), 'the markets API calls ' + m);
+  assert.ok(fn.includes("if (req.method !== 'GET')"), 'the markets API answers more than GET');
+  assert.ok(fn.includes("'access-control-allow-origin', '*'") && fn.includes('s-maxage='), 'the markets API is missing its CORS or cache headers');
+  const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, 'public', 'api', 'config.json'), 'utf8'));
+  assert.equal(cfg.odds, data.odds, 'config.json and the page disagree on the contract');
+  assert.equal(cfg.chainId, 4663);
+  assert.equal(cfg.factory.toLowerCase(), data.factory.toLowerCase());
+});
+
 test('the archived split-guard page is still served', () => {
   assert.ok(fs.existsSync(path.join(__dirname, 'public', 'guard.html')), 'guard.html missing from the deploy folder');
   assert.ok(page.includes('href="guard.html"'), 'the page does not link to the archive');

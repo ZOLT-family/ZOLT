@@ -1,0 +1,9 @@
+# Railway: run the keeper from keeper/Dockerfile. Set KEEPER_PRIVATE_KEY and ODDS_ADDRESS in the service's variables;
+# fund the keeper address with a little ETH on chain 4663 (about 0.0003 ETH a day when quiet).
+[build]
+builder = "dockerfile"
+dockerfilePath = "keeper/Dockerfile"
+
+[deploy]
+restartPolicyType = "always"
+restartPolicyMaxRetries = 0

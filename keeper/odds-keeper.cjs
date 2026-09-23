@@ -24,7 +24,10 @@
 // the same nonce, so nothing queues up behind a stuck one.
 const fs = require('fs');
 const path = require('path');
-const viemRequire = require('module').createRequire(path.join(__dirname, '..', 'contracts', 'package.json'));
+// viem comes from keeper/node_modules when the keeper runs on its own (the Docker image), else from contracts/
+const viemRequire = (function () {
+  try { require.resolve('viem'); return require; } catch (e) { return require('module').createRequire(path.join(__dirname, '..', 'contracts', 'package.json')); }
+})();
 const { encodeFunctionData, decodeFunctionResult, parseAbi, getAddress } = viemRequire('viem');
 const { rpc, hex, getLogsChunked, sleep } = require('../research/rpc.cjs');
 const { planActions, planOpens, decodeMarketOpened, decodeTokenLaunched } = require('./odds-logic.cjs');
