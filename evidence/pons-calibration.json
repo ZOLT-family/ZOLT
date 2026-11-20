@@ -1,1739 +1,38 @@
 {
- "head": 118285203,
- "from": 117381203,
- "to": 118245203,
- "ethLaunches": 661,
- "sweptTotal": 6,
+ "head": 119103572,
+ "from": 118199572,
+ "to": 119063572,
+ "ethLaunches": 665,
+ "sweptTotal": 8,
  "sampleEvery": 3,
  "method": "sum of CurveBuy quoteIn minus fee and tax, minus CurveSell quoteOut, per curve, at 120 s and 600 s after launch; ETH-paired launches; every swept launch in the window plus one in N of the rest",
  "rows": [
   {
-   "token": "0x2edd2762ec5a928f749380309eca0e33941b3e3e",
-   "launchBlock": 117822494,
-   "sweptBlock": 117822515,
-   "secondsToSweep": 2.1,
-   "trades600": 66,
-   "eth120": 4.211000223970279,
-   "eth600": 4.211000223970279
-  },
-  {
-   "token": "0x4eb9ade7369a51762f913b8f96812b4ad5bd1bef",
-   "launchBlock": 118162040,
-   "sweptBlock": 118192289,
-   "secondsToSweep": 3024.9,
-   "trades600": 51,
-   "eth120": 0.3456052302987152,
-   "eth600": 0.12073723328351464
-  },
-  {
-   "token": "0xfd336a9b9dbb98f8572ad0d9da41f3c519de09a4",
-   "launchBlock": 117384269,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 83,
-   "eth120": 0.32950954593467874,
-   "eth600": 0.7652507685790023
-  },
-  {
-   "token": "0x9cc39858551093d636ddaa3fd9f3f083ed5480d6",
-   "launchBlock": 117388082,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 29,
-   "eth120": 0.4873913909755482,
-   "eth600": 0.008517014037198458
-  },
-  {
-   "token": "0xa40a5350806139fe7d9acad4eea6925bf75678a1",
-   "launchBlock": 117390539,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 7,
-   "eth120": 0.002904299999999999,
-   "eth600": 0.003411221847624841
-  },
-  {
-   "token": "0x34abfc88dae3b23848c657dcba1e83915825eb5e",
-   "launchBlock": 117391256,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 35,
-   "eth120": 0.024777316725546592,
-   "eth600": 0.03022626453020442
-  },
-  {
-   "token": "0x2d4a28ef874bb15ea71c58cfaaa318e5f97e0b65",
-   "launchBlock": 117396498,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 2,
-   "eth120": 0.002724599999999999,
-   "eth600": 0.002724599999999999
-  },
-  {
-   "token": "0x88c793f61fa3ad734906de55e859a996f2885402",
-   "launchBlock": 117398625,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 69,
-   "eth120": 0.3985962349401413,
-   "eth600": 0.6058937883001904
-  },
-  {
-   "token": "0x39a6d9836f4b2a677a77600abe52305a78a79553",
-   "launchBlock": 117401116,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 1,
-   "eth120": 0.00873,
-   "eth600": 0.00873
-  },
-  {
-   "token": "0x9b5c6fcda52da8b00e5eab58766516fd073b4da5",
-   "launchBlock": 117403756,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.002035859999999999,
-   "eth600": 0.002035859999999999
-  },
-  {
-   "token": "0xf3e2292083b2cb340942c93420d378fc1bc392ac",
-   "launchBlock": 117404753,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.001855629999999999,
-   "eth600": 0.001855629999999999
-  },
-  {
-   "token": "0xe934a70c454e9ea235340979b3540f510896609a",
-   "launchBlock": 117406194,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 106,
-   "eth120": 0.14122593097234457,
-   "eth600": 0.03330808516576616
-  },
-  {
-   "token": "0xdd9106c81667cd3254ecfd0f19bf727d47ceeb49",
-   "launchBlock": 117406825,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.00005198437983,
-   "eth600": 0.00005198437983
-  },
-  {
-   "token": "0x379aa85a8cad6cb512b9e42e2ddcf4f899c808b7",
-   "launchBlock": 117409792,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 54,
-   "eth120": 0.5839305699673296,
-   "eth600": 0.07194524408573931
-  },
-  {
-   "token": "0xfe86657d44914d2b80634fe1868abe602c3fcfff",
-   "launchBlock": 117411873,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 14,
-   "eth120": 0.006973365745203485,
-   "eth600": 0.006973365745203485
-  },
-  {
-   "token": "0xad804713264d15588c5cb8ecb2c0b7d6ec4fc556",
-   "launchBlock": 117413598,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 23,
-   "eth120": 0.00859436563466365,
-   "eth600": 0.01678842773596569
-  },
-  {
-   "token": "0x69fbc90696c4bd513b8fd0ffc9c3bea1d4e8246d",
-   "launchBlock": 117415060,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 59,
-   "eth120": 0.5711285880270148,
-   "eth600": 0.42919392368401493
-  },
-  {
-   "token": "0x5c3058eed3da25fd84e4249eb17e9c90679a76c9",
-   "launchBlock": 117416165,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 11,
-   "eth120": 0.015830328575614658,
-   "eth600": 0.004912493783024613
-  },
-  {
-   "token": "0x9c3a085398a39d58e6d777f54151fa3aa5a3a61c",
-   "launchBlock": 117419315,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.001021121805866399,
-   "eth600": 0.001021121805866399
-  },
-  {
-   "token": "0x9c19eb8d1ba7543c57caca55840adf96a0b82dc1",
-   "launchBlock": 117420636,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 79,
-   "eth120": 0.3786016684866671,
-   "eth600": 0.028371186432315953
-  },
-  {
-   "token": "0xe65b04d9c1b2f2fce46b2205a1baea9c4d7b6c47",
-   "launchBlock": 117422881,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 33,
-   "eth120": 0.011693244726613056,
-   "eth600": 0.007260562747003866
-  },
-  {
-   "token": "0x7406fece5e9ae4c47cd64191913a04e502fd5d05",
-   "launchBlock": 117423825,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 0,
-   "eth120": 0,
-   "eth600": 0
-  },
-  {
-   "token": "0x219a665fcb5beec566052972926b723ad458b43c",
-   "launchBlock": 117425038,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 20,
-   "eth120": 0.09984150158555712,
-   "eth600": 0.22299421803534233
-  },
-  {
-   "token": "0xaf176e129f0fc195985c3a57f4768ec38b372674",
-   "launchBlock": 117427600,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.10427184561888286,
-   "eth600": 0.003128155368566484
-  },
-  {
-   "token": "0x754dc806cedaf12c6a3f767846ac46a9ebcac6b0",
-   "launchBlock": 117430351,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.018881262777714933,
-   "eth600": 0.000566437883331446
-  },
-  {
-   "token": "0xc9e2655f75bc0916a0c9c0d15e96a34969399981",
-   "launchBlock": 117432603,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.038606,
-   "eth600": 0.001158180000000001
-  },
-  {
-   "token": "0xf53cd94c22057eb8515bc8203d14c66f97ef9677",
-   "launchBlock": 117435813,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 26,
-   "eth120": 0.015934118035114343,
-   "eth600": 0.015934118035114343
-  },
-  {
-   "token": "0x2eafdfb617c482b7de894b14b06a7f8ed10915a4",
-   "launchBlock": 117437827,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 15,
-   "eth120": 0.002585086711354825,
-   "eth600": 0.002585086711354825
-  },
-  {
-   "token": "0x682a073ad01d6b7d562c3e0a851e58a3cb4eb684",
-   "launchBlock": 117440819,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 74,
-   "eth120": 0.03883834126693061,
-   "eth600": 0.05669503677835808
-  },
-  {
-   "token": "0x20492ab9104ea5ac8f34394842bfb6689127000f",
-   "launchBlock": 117445403,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 9,
-   "eth120": 0.011911669865597893,
-   "eth600": 0.0108581585934178
-  },
-  {
-   "token": "0x45a0185df05ccbb17253171b710f794c61006649",
-   "launchBlock": 117447048,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 22,
-   "eth120": 0.03216718560565936,
-   "eth600": 0.030618562416459917
-  },
-  {
-   "token": "0xab8cdd800ef658477e20753cae087350158a6bba",
-   "launchBlock": 117449437,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 33,
-   "eth120": 0.40797826138928056,
-   "eth600": 0.6380692279656222
-  },
-  {
-   "token": "0x5120b5baf31b8ccd9b6152e927d99ddbbde30e91",
-   "launchBlock": 117452190,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 16,
-   "eth120": 0.08789468442413882,
-   "eth600": 0.005202853310095991
-  },
-  {
-   "token": "0xe76f9a30890cb60c19b5aee3b3988e3623bd60ed",
-   "launchBlock": 117454981,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 8,
-   "eth120": 0.001375778473659999,
-   "eth600": 0.001376149501659998
-  },
-  {
-   "token": "0x5b8c332f6674960d3e02d935799b2b3dec81d09b",
-   "launchBlock": 117455400,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 2,
-   "eth120": 0,
-   "eth600": 5.94431999999e-7
-  },
-  {
-   "token": "0xcc50f22d896fc4d72e117b3a9cb777a559772b5a",
-   "launchBlock": 117456556,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 87,
-   "eth120": 1.5409361649622217,
-   "eth600": 0.02304850200058032
-  },
-  {
-   "token": "0x53a015a845532ad5dbd9be51030c29c2ba6d79ff",
-   "launchBlock": 117458628,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 3,
-   "eth120": 0.06737147641641084,
-   "eth600": 0.06737147641641084
-  },
-  {
-   "token": "0xa21cb220e22f069d98be9eef9170853d28fa8a84",
-   "launchBlock": 117460760,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 2,
-   "eth120": 4.19912999999e-7,
-   "eth600": 4.19912999999e-7
-  },
-  {
-   "token": "0x15f1a9c6d06143931d98d89b55ce320e49d0644c",
-   "launchBlock": 117465032,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 136,
-   "eth120": 1.3640830647795557,
-   "eth600": 0.06720442687569618
-  },
-  {
-   "token": "0x0b5a67e095c8faca703978aba76e87df26e2db6a",
-   "launchBlock": 117469960,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 34,
-   "eth120": 0.013009695845297514,
-   "eth600": 0.00688139365906796
-  },
-  {
-   "token": "0x2fe26200991cf417df3858f721776c8cb573e837",
-   "launchBlock": 117471157,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 2,
-   "eth120": 5.64479999999e-7,
-   "eth600": 5.64479999999e-7
-  },
-  {
-   "token": "0x66ecaa9a6f1e64c1f702913df0a2625573114cc3",
-   "launchBlock": 117474085,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 16,
-   "eth120": 0.030937154482975928,
-   "eth600": 0.0010557697073446
-  },
-  {
-   "token": "0xad8b917dd80baa7217db8d461c205ff25753202b",
-   "launchBlock": 117475238,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 20,
-   "eth120": 0.012376114650069816,
-   "eth600": 0.00865726292000283
-  },
-  {
-   "token": "0x25b4ad243cbcda9e02ece1da7b9acb1a862bfebf",
-   "launchBlock": 117477148,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.003914092648534613,
-   "eth600": 0.00038417694
-  },
-  {
-   "token": "0x31e2da8cee2f1df4ead65457304627963002b1e8",
-   "launchBlock": 117481055,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 50,
-   "eth120": 0.6184401105991374,
-   "eth600": 0.6901706384097384
-  },
-  {
-   "token": "0x468acb1da3c550303ed3ced6ee4ca5eb68fb34cf",
-   "launchBlock": 117482166,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 99,
-   "eth120": 0.4580841168264347,
-   "eth600": 0.7211069371529338
-  },
-  {
-   "token": "0x32a59f997005d029850092b1d33b74f2ed42767e",
-   "launchBlock": 117483001,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 62,
-   "eth120": 0.28728607024094593,
-   "eth600": 0.39711505788810564
-  },
-  {
-   "token": "0xd2b5e947e8d9d8268a74be4ad0e1aba584d7ae01",
-   "launchBlock": 117483383,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 0,
-   "eth120": 0,
-   "eth600": 0
-  },
-  {
-   "token": "0x39bfa4098e83168f67b4592178932cbe158cdca1",
-   "launchBlock": 117489973,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 38,
-   "eth120": 0.32193192599492276,
-   "eth600": 0.1395169148635972
-  },
-  {
-   "token": "0x7208d4db4489e564fe31db315ef8a25c794bc4bd",
-   "launchBlock": 117490319,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 14,
-   "eth120": 0.0114698566291418,
-   "eth600": 0.000671588027329855
-  },
-  {
-   "token": "0x0430962ec3588cc502a5b58e2fbd3d3afee996af",
-   "launchBlock": 117496351,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 23,
-   "eth120": 0.03147385570188769,
-   "eth600": 0.012495590533202528
-  },
-  {
-   "token": "0x08f65293e33efaca2d01e4fdd6bef79ba04f5db5",
-   "launchBlock": 117501920,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 34,
-   "eth120": 0.2841329182847536,
-   "eth600": 0.05287493320005333
-  },
-  {
-   "token": "0x307f6bf37f8b9e52db2334ea1aab6da7fe55d6b7",
-   "launchBlock": 117505402,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 36,
-   "eth120": 0.2778351143342797,
-   "eth600": 0.4659734678934538
-  },
-  {
-   "token": "0x3c4b7d3320e270cab490105cc88016260ea0e076",
-   "launchBlock": 117511418,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 2,
-   "eth120": 0.00485,
-   "eth600": 0.000145500000000014
-  },
-  {
-   "token": "0xda9b58011387b1896480c9c9a44d48e8f6cf8e3b",
-   "launchBlock": 117514529,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.000023673153474425,
-   "eth600": 0.000023673153474425
-  },
-  {
-   "token": "0x452a3f0ead90015a75cbf433b206baa248ac8e20",
-   "launchBlock": 117520483,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 3,
-   "eth120": 0.0124246,
-   "eth600": 0.0124246
-  },
-  {
-   "token": "0x3f958ad9340c11900fa9a23c67a6d768b7c7e9e9",
-   "launchBlock": 117521276,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 8,
-   "eth120": 0.001313385198569585,
-   "eth600": 0.000864716358347217
-  },
-  {
-   "token": "0x639989359b451a123a7c85620eadc2deb49f2742",
-   "launchBlock": 117522231,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 12,
-   "eth120": 0.003066638455616118,
-   "eth600": 0.003066638455616118
-  },
-  {
-   "token": "0x6ce320f2d0e36238e65ce6e9c28787c7fdb863a3",
-   "launchBlock": 117524093,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 8,
-   "eth120": 0.0005900945007261,
-   "eth600": 0.0005900945007261
-  },
-  {
-   "token": "0x176a71ebb6dacf9f786d37393f4ac426390afbc9",
-   "launchBlock": 117525834,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 62,
-   "eth120": 0.45498462276038804,
-   "eth600": 0.4710505482991767
-  },
-  {
-   "token": "0x88d3ec550e58875e68c98fd554379b1c45045de6",
-   "launchBlock": 117530623,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 5,
-   "eth120": 0.015356216533,
-   "eth600": 0.015117666663325
-  },
-  {
-   "token": "0x1e9a63448bd5f2f00139fb8f28132ee6a032d1c3",
-   "launchBlock": 117534334,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 17,
-   "eth120": 0.013427946216045247,
-   "eth600": 0.014393196216045248
-  },
-  {
-   "token": "0x54807c8a8c4cb8fa5f48c12efdd49236dae6f8bc",
-   "launchBlock": 117536430,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.018068437983,
-   "eth600": 0.00018068437983
-  },
-  {
-   "token": "0x066d4ff0e86fe5f2c2bf803fe31e3a1fd462da1a",
-   "launchBlock": 117539125,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 8,
-   "eth120": 0.014836640282958332,
-   "eth600": 0.000880650917327899
-  },
-  {
-   "token": "0x7fd670a8a1b310e2f72f15dd7ae6a20c5b52e939",
-   "launchBlock": 117540463,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.010169485636193668,
-   "eth600": 0.000417684479649373
-  },
-  {
-   "token": "0xcd5c01ea857df6253323a1bde87cd1d3a442a8f7",
-   "launchBlock": 117542209,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 86,
-   "eth120": 1.2419433324733264,
-   "eth600": 1.4797097773583907
-  },
-  {
-   "token": "0x1baf1e8cb935e0faac59df70b43b2f1e06393965",
-   "launchBlock": 117544725,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.001617995985557117,
-   "eth600": 0.001617995985557117
-  },
-  {
-   "token": "0x2d5a3c318bf6af2ba06eeefb10b49512853f6479",
-   "launchBlock": 117545803,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 0,
-   "eth120": 0,
-   "eth600": 0
-  },
-  {
-   "token": "0xf2fff054d43a24d7a7261a8ca39a899c4b698412",
-   "launchBlock": 117546405,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 34,
-   "eth120": 0.016112891130652385,
-   "eth600": 0.009548685144984513
-  },
-  {
-   "token": "0xc0cefa63ccef43f103dc7d4d3faa4338f172ecdc",
-   "launchBlock": 117549441,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 2,
-   "eth120": 0.000261899999999999,
-   "eth600": 0.000261899999999999
-  },
-  {
-   "token": "0x78873c48c780b4fef3e29147fc76d173cd0b6154",
-   "launchBlock": 117552008,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 1,
-   "eth120": 0.0000495,
-   "eth600": 0.0000495
-  },
-  {
-   "token": "0x00e54a6c27bc5570afe6a73b8bfefe29c8144fe5",
-   "launchBlock": 117554694,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 22,
-   "eth120": 0.1970899541223619,
-   "eth600": 0.01389096015000548
-  },
-  {
-   "token": "0x5ef2dfc2129e77433235ef4292e81841f16b21d0",
-   "launchBlock": 117556485,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 30,
-   "eth120": 0.19082673644541037,
-   "eth600": 0.04880975740673545
-  },
-  {
-   "token": "0x2b47e19e8f8630961f27de64c169ddc328ac31f8",
-   "launchBlock": 117568969,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 1,
-   "eth120": 0.00196,
-   "eth600": 0.00196
-  },
-  {
-   "token": "0x982ebb444bed90e288f1a5dc113c11bfbb2fd61b",
-   "launchBlock": 117576004,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 28,
-   "eth120": 0.011268176136210143,
-   "eth600": 0.007372328498072486
-  },
-  {
-   "token": "0xdc0de5f471a0b85d0b0e5fb3ba9a1ebcd05f710e",
-   "launchBlock": 117577556,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.049061341770569,
-   "eth600": 0.001291541900894
-  },
-  {
-   "token": "0x318c2a6234d500647e275c5a60af2c98793601a9",
-   "launchBlock": 117578464,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 24,
-   "eth120": 0.013076312755764713,
-   "eth600": 0.009275877362449616
-  },
-  {
-   "token": "0x508f8b604e0aa0342116cf4b517d4d67e16e73b0",
-   "launchBlock": 117579775,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 92,
-   "eth120": 0.5534427484867264,
-   "eth600": 0.038190587823494715
-  },
-  {
-   "token": "0x70f5025ff78436e343a6c75759d2b61624cd4fc9",
-   "launchBlock": 117583635,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 14,
-   "eth120": 0.04857959997592853,
-   "eth600": 0.026673713820836897
-  },
-  {
-   "token": "0x08856aeac42d2408c5ec134915056c3b34d00af2",
-   "launchBlock": 117586040,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.000516099975928529,
-   "eth600": 0.000516099975928529
-  },
-  {
-   "token": "0x372b8c5a1cdb1255657e117dacfaabc7a407121f",
-   "launchBlock": 117590309,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 63,
-   "eth120": 0.951001719991874,
-   "eth600": 0.9651358414226007
-  },
-  {
-   "token": "0xafdd622ae729dca8dfc52d415b85af18e9fa8339",
-   "launchBlock": 117597828,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 24,
-   "eth120": 0.000018304071369171,
-   "eth600": 0.027875378301550544
-  },
-  {
-   "token": "0x8315f55c07d9f62fa89f00730735580f04ea1d40",
-   "launchBlock": 117602304,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.000046053543378271,
-   "eth600": 0.000046053543378271
-  },
-  {
-   "token": "0x2ca338eb6a2a73f3d421f33ca7a8091d5edb4922",
-   "launchBlock": 117607886,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 120,
-   "eth120": 0.8034353183805941,
-   "eth600": 1.0154724094952021
-  },
-  {
-   "token": "0x636ad7f39fb1c4c5c9106883a7db74078bdb14ff",
-   "launchBlock": 117609786,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 13,
-   "eth120": 0.11502419128586723,
-   "eth600": 0.003450725738576014
-  },
-  {
-   "token": "0xf922f507a52bf3e1f19b7d09f841b07215ea0607",
-   "launchBlock": 117610925,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 15,
-   "eth120": 0.1455886300014593,
-   "eth600": 0.00372195770053429
-  },
-  {
-   "token": "0xee2411be8d6cd686b090ad7baa3dba54d456d60d",
-   "launchBlock": 117621435,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.003622631326117517,
-   "eth600": 0.003622631326117517
-  },
-  {
-   "token": "0x3e29f6ade32b04a4162ee584d8ac10be58593286",
-   "launchBlock": 117623004,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 22,
-   "eth120": 0.09573772142861947,
-   "eth600": 0.004928368686373248
-  },
-  {
-   "token": "0x7f5424f6e882af3e4a69a27f260b80db616083ec",
-   "launchBlock": 117626164,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 9,
-   "eth120": 0.030170298650041637,
-   "eth600": 0.025688359464437815
-  },
-  {
-   "token": "0xfa26c8a031c900dff71d48cea98140f0c47bb4bf",
-   "launchBlock": 117626873,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 16,
-   "eth120": 0.2459193320236937,
-   "eth600": 0.03358980201018034
-  },
-  {
-   "token": "0xc8f832d5b06eccbaba378e33483090c833eeebeb",
-   "launchBlock": 117631141,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 7,
-   "eth120": 0.05578558437231754,
-   "eth600": 0.0359916863322319
-  },
-  {
-   "token": "0x6cea5006dceee763c8fa0843b58b94c3a1cb8a15",
-   "launchBlock": 117631641,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.000550247881240128,
-   "eth600": 0.000550247881240128
-  },
-  {
-   "token": "0x45413dba99f65979919fda6ee84204bbd56d8989",
-   "launchBlock": 117635372,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 3,
-   "eth120": 0.009994666533,
-   "eth600": 0.009756116663325
-  },
-  {
-   "token": "0x01f8b6682fdc66af8dca13efbfbd16074ee3317d",
-   "launchBlock": 117637608,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.001040247881240126,
-   "eth600": 0.001040247881240126
-  },
-  {
-   "token": "0x98dc37172b8b2de5e895b41acc7e54bce4ff9ee2",
-   "launchBlock": 117640396,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 61,
-   "eth120": 0.5996102205646944,
-   "eth600": 0.015441930717259989
-  },
-  {
-   "token": "0x329732b8b9fe4e56a3bad0fe247b4d84b54b6160",
-   "launchBlock": 117646929,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 102,
-   "eth120": 0.11954302242432761,
-   "eth600": 0.030562660370599792
-  },
-  {
-   "token": "0xbd36b110e612f3a399d4f28b96fb2aa68e9b207a",
-   "launchBlock": 117651114,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 52,
-   "eth120": 0.5498627531716005,
-   "eth600": 0.01816618539821965
-  },
-  {
-   "token": "0x9fd6581512adcdd72ce86401c417b3115f95fe50",
-   "launchBlock": 117655832,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.05910166853086776,
-   "eth600": 0.001236663321527758
-  },
-  {
-   "token": "0x0ef36983d3401a50d4a8412c1b7cb704b2628a92",
-   "launchBlock": 117660657,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 83,
-   "eth120": 0.577513558058048,
-   "eth600": 0.4496769669205399
-  },
-  {
-   "token": "0x5f82e58b2ddb2282cd5b823671072a011f66e570",
-   "launchBlock": 117663982,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 3,
-   "eth120": 0.030546835587215177,
-   "eth600": 0.003212282828557695
-  },
-  {
-   "token": "0x17633a052db10f4efe9d0f0ba94aef100513d61f",
-   "launchBlock": 117669520,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 7,
-   "eth120": 0.003555134222238135,
-   "eth600": 0.003555134222238135
-  },
-  {
-   "token": "0x10c03dd973fea5eb6214d4b2a0600dd2bd5fadbb",
-   "launchBlock": 117676464,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 11,
-   "eth120": 0.088487963683,
-   "eth600": 0.01382967502940386
-  },
-  {
-   "token": "0x6351d95e8167a1408ec1008e961f7c24135a6268",
-   "launchBlock": 117678155,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.014795214,
-   "eth600": 0.000681713999999999
-  },
-  {
-   "token": "0xd5de358b1b054e7afd742da756dbbf04f0fc6b1d",
-   "launchBlock": 117681982,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 43,
-   "eth120": 0.011550295115432489,
-   "eth600": 0.011550295115432489
-  },
-  {
-   "token": "0xd5b33ec1a5d6a960f00dd812be40546129877dcd",
-   "launchBlock": 117683703,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 0,
-   "eth120": 0,
-   "eth600": 0
-  },
-  {
-   "token": "0xcf4410c5f84ce7e7c18a6a614bc07b297854d357",
-   "launchBlock": 117689149,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 0,
-   "eth120": 0,
-   "eth600": 0
-  },
-  {
-   "token": "0x967ee6322d98a54a3fe50e73c081397eccb9d54c",
-   "launchBlock": 117691822,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.00005445,
-   "eth600": 0.00005445
-  },
-  {
-   "token": "0x0864572ae24d16a588d336e2b171a3ed61ebd627",
-   "launchBlock": 117696730,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 12,
-   "eth120": 0.001224303321527758,
-   "eth600": 0.001237335500888503
-  },
-  {
-   "token": "0x691a4eab552c0b025ff026e30a24c8659bb1e3ac",
-   "launchBlock": 117698601,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 16,
-   "eth120": 0.04892495982189181,
-   "eth600": 0.04892495982189181
-  },
-  {
-   "token": "0xbd4a07a0720ffb6256ebaf0288bb1d645bf833a9",
-   "launchBlock": 117700266,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 20,
-   "eth120": 0.005790086163248059,
-   "eth600": 0.005216265013976582
-  },
-  {
-   "token": "0xd56bcfdd63afca30bf4f5b35f8f97ac0eda6444a",
-   "launchBlock": 117707772,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 20,
-   "eth120": 0.003435737539309883,
-   "eth600": 0.003041176149254563
-  },
-  {
-   "token": "0x7d114f21db4175136074db0923bd3d1d8da1bb4b",
-   "launchBlock": 117715524,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 3,
-   "eth120": 0.005888596582147341,
-   "eth600": 0.006138553285415248
-  },
-  {
-   "token": "0x121d8f61db0341f92c83dff1e21a5925bd4ef5d6",
-   "launchBlock": 117721520,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 14,
-   "eth120": 0.003609575266674295,
-   "eth600": 0.003609575266674295
-  },
-  {
-   "token": "0x127a281ddd659333ea535234ad94573b7f78237a",
-   "launchBlock": 117723064,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 153,
-   "eth120": 2.842930152520257,
-   "eth600": 2.283274276182463
-  },
-  {
-   "token": "0x2596e780b841f1625d30eb3fb0f7dc7bb8564b06",
-   "launchBlock": 117726121,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.002525344847867756,
-   "eth600": 0.002525344847867756
-  },
-  {
-   "token": "0x541062f4495ab8fdff89b8670f309f3016bcf40d",
-   "launchBlock": 117731152,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 14,
-   "eth120": 0.014869666533,
-   "eth600": 0.18260289038662195
-  },
-  {
-   "token": "0x37dea7f93b280f07849f33e7c10d97fcb4f29769",
-   "launchBlock": 117753292,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 0,
-   "eth120": 0,
-   "eth600": 0
-  },
-  {
-   "token": "0x20db6218d549a8f9045d0d742446db49afd8333f",
-   "launchBlock": 117759381,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 1,
-   "eth120": 0.00297,
-   "eth600": 0.00297
-  },
-  {
-   "token": "0xeda792fa42c0b5746be31c06e7e7fa9594b365d2",
-   "launchBlock": 117766726,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.02522,
-   "eth600": 0.002296960000000008
-  },
-  {
-   "token": "0x1f082706c208a557a2d134d8d6340c02e7ace120",
-   "launchBlock": 117778534,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 15,
-   "eth120": 0.060720231361334545,
-   "eth600": 0.004013330700551309
-  },
-  {
-   "token": "0x72bf3fe76edb6ed7e42e81acb3125b7fb88e334d",
-   "launchBlock": 117782979,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 74,
-   "eth120": 0.7984063603661653,
-   "eth600": 1.5657326866394345
-  },
-  {
-   "token": "0xe3ed74e6f4180b07bec67e9354752b0dda34685b",
-   "launchBlock": 117802810,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 65,
-   "eth120": 1.3825910018457017,
-   "eth600": 0.020592587934659783
-  },
-  {
-   "token": "0xf6720b982b8aac64787af14ce9c95fe9e1c83e39",
-   "launchBlock": 117819670,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.000455968285719102,
-   "eth600": 0.000455968285719102
-  },
-  {
-   "token": "0xf1013e30fb67b95293ac96e17a80f097819280b8",
-   "launchBlock": 117834940,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.000029931495419047,
-   "eth600": 0.013863174129344707
-  },
-  {
-   "token": "0x5a9e2b99addb2c158b3b06050c8c7af97adf74d2",
-   "launchBlock": 117844981,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.018528589246970827,
-   "eth600": 0.05056866178073228
-  },
-  {
-   "token": "0x17c4735e9da7f1eeb76d1cc17c2f196f38de64b3",
-   "launchBlock": 117865231,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 47,
-   "eth120": 0.1748124430030401,
-   "eth600": 0.6702466251948077
-  },
-  {
-   "token": "0xf8e5765d699a407a0599fa577b7908aa03fa6167",
-   "launchBlock": 117870259,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.087598,
-   "eth600": 0.002189949999999998
-  },
-  {
-   "token": "0x645702cd9b450249ea9a26ec1f35447dbf76fd8f",
-   "launchBlock": 117872220,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 74,
-   "eth120": 0.6372600093955983,
-   "eth600": 0.04192576279588857
-  },
-  {
-   "token": "0x3128c8240c99eb1ba427f42e3889deaae726c04e",
-   "launchBlock": 117876098,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.10716314669211371,
-   "eth600": 0.11451397263483545
-  },
-  {
-   "token": "0x3cf9e465e4c0a4f4332855eb2087967c311d8fc8",
-   "launchBlock": 117879390,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 107,
-   "eth120": 0.5301659972160991,
-   "eth600": 0.06246127130286794
-  },
-  {
-   "token": "0x3f9bf243e4a9062899917ae2b5ede1c1e5f58cb4",
-   "launchBlock": 117883515,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 2,
-   "eth120": 0.001957999999999999,
-   "eth600": 0.001957999999999999
-  },
-  {
-   "token": "0x4d52d5196883a7347e20f2780e2fe0f980b53618",
-   "launchBlock": 117895179,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.002709713361984142,
-   "eth600": 0.014522504599848534
-  },
-  {
-   "token": "0xe190fe5ae13c5e492877e50791705ea09b2f6d5f",
-   "launchBlock": 117909933,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 75,
-   "eth120": 0.8267633567435078,
-   "eth600": 1.085543752504286
-  },
-  {
-   "token": "0x9e08bd7c7c87ebcbd44d2aa7a2345dfa3b99e8a1",
-   "launchBlock": 117916274,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.000055392217595883,
-   "eth600": 0.000055972471595882
-  },
-  {
-   "token": "0x03c7343a74996ca37af1e394036c2cb3ba4c8f27",
-   "launchBlock": 117918260,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 66,
-   "eth120": 0.007077432774399636,
-   "eth600": 0.006729783114665342
-  },
-  {
-   "token": "0xe152aeb351a8e320283e7b39d2dbff06971b2e98",
-   "launchBlock": 117923245,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 5,
-   "eth120": 0.012986131639,
-   "eth600": 0.01274512642966
-  },
-  {
-   "token": "0x534124f7912624a52464cdbeb4c149bcdc6f01d5",
-   "launchBlock": 117930459,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 8,
-   "eth120": 0.000035160423531942,
-   "eth600": 0.000035160423531942
-  },
-  {
-   "token": "0xc23d08216af2095fa6641997a9fbcba01a2ff896",
-   "launchBlock": 117931709,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.000021934231298914,
-   "eth600": 0.000021934231298914
-  },
-  {
-   "token": "0xdd3046f28a41cbb5f6ce7b00b2184b34376332bd",
-   "launchBlock": 117941222,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.001576047766504028,
-   "eth600": 0.013637414709257636
-  },
-  {
-   "token": "0xf66c8d256bc7d241d88fa077438f441f82d9561c",
-   "launchBlock": 117952505,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 1,
-   "eth120": 0.0001976,
-   "eth600": 0.0001976
-  },
-  {
-   "token": "0xcbb9677ee117d2b940bebd274fc685180068c947",
-   "launchBlock": 117960124,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 2,
-   "eth120": 0.00776,
-   "eth600": 0.0087203
-  },
-  {
-   "token": "0x47d049d2ed0cd99190334a221e999b93f3d36f82",
-   "launchBlock": 117968997,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 19,
-   "eth120": 0.012239873731102378,
-   "eth600": 0.007337990274043923
-  },
-  {
-   "token": "0x36db380be3133e9b8739fbe211c318dbaf045cb0",
-   "launchBlock": 117980597,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 59,
-   "eth120": 0.35571584283100627,
-   "eth600": 0.34592247885386446
-  },
-  {
-   "token": "0xd50b25dba1e609553a59599df2115b80727dcaca",
-   "launchBlock": 117988107,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 2,
-   "eth120": 0.00975,
-   "eth600": 0.009846525
-  },
-  {
-   "token": "0x83241e910dca911effa1341667d43b9bfb05b1f2",
-   "launchBlock": 118006180,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 53,
-   "eth120": 0.2867748797855934,
-   "eth600": 0.012299523336870198
-  },
-  {
-   "token": "0x9818c0cd3df467341afa9f91d127a7dbd86d78bf",
-   "launchBlock": 118013180,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 8,
-   "eth120": 0.002002402080026163,
-   "eth600": 0.002002402080026163
-  },
-  {
-   "token": "0x238f7a4e63d9e2e9a5822fe75f4406987fff4448",
-   "launchBlock": 118017266,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.001748969720651777,
-   "eth600": 0.001748969720651777
-  },
-  {
-   "token": "0x4236a978307ff7bf3b7bb129688ae2216c9d5aaa",
-   "launchBlock": 118020338,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 18,
-   "eth120": 0.03628964474900768,
-   "eth600": 0.019067875017541425
-  },
-  {
-   "token": "0xd937adacd896daa99cd361c5d7db8f7009a67a7c",
-   "launchBlock": 118022842,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 34,
-   "eth120": 0.23907201367273812,
-   "eth600": 0.035881648135099996
-  },
-  {
-   "token": "0x4e2c0a81372543dfb9dd63e0aca0b17a0272c8bb",
-   "launchBlock": 118025099,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.001522327977258389,
-   "eth600": 0.001522327977258389
-  },
-  {
-   "token": "0x64975e33f93bc73dc137da948a7a548904b55b99",
-   "launchBlock": 118029734,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 3,
-   "eth120": 0.000089,
-   "eth600": 0.000089974594499999
-  },
-  {
-   "token": "0xcb84d8c80e83385f64d7030ac18696da22671dcc",
-   "launchBlock": 118031453,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 35,
-   "eth120": 0.19053916981297475,
-   "eth600": 0.07870133353408953
-  },
-  {
-   "token": "0x1b17c04fc3ca26ea86f52e6751888f1642074f58",
-   "launchBlock": 118035133,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 20,
-   "eth120": 0.02397322051818108,
-   "eth600": 0.02397322051818108
-  },
-  {
-   "token": "0xefa6d6af54fbe723366dddb3caf1aae9e61dbe70",
-   "launchBlock": 118037120,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 40,
-   "eth120": 0.20617778171660445,
-   "eth600": 0.010767307903040682
-  },
-  {
-   "token": "0x47222bd52e55e464a6749f9183304db169f3fdca",
-   "launchBlock": 118040615,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.001599143314136113,
-   "eth600": 0.001599143314136113
-  },
-  {
-   "token": "0x01e1313d5b74eb39c55160f653ed59f18a0ee968",
-   "launchBlock": 118042706,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 3,
-   "eth120": 0.00099,
-   "eth600": 0.00099009801
-  },
-  {
-   "token": "0x801c457e86024fadfeeb99f2c09e48e16e51ab56",
-   "launchBlock": 118044675,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 50,
-   "eth120": 0.0073893377997361,
-   "eth600": 0.0073893377997361
-  },
-  {
-   "token": "0x1755ec634a283dd13e8223233df68b66b5cd3af7",
-   "launchBlock": 118049067,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 92,
-   "eth120": 1.2882892669008246,
-   "eth600": 0.04928486940833888
-  },
-  {
-   "token": "0xe89734610ff555ef5aef2902573bafb6c29198c3",
-   "launchBlock": 118053062,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 19,
-   "eth120": 0.006147977010947583,
-   "eth600": 0.006147977010947583
-  },
-  {
-   "token": "0x2aebc208c12567a35d6792c0c84e717fff31d68b",
-   "launchBlock": 118054991,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.016775213353189808,
-   "eth600": 0.06866929097737674
-  },
-  {
-   "token": "0x3be02bc883667f333321fc49c7b756c5ae137c6d",
-   "launchBlock": 118058627,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.001521527314136115,
-   "eth600": 0.001521527314136115
-  },
-  {
-   "token": "0x3ea7f2d345c4899ab187692ae373e8eb3e11ef93",
-   "launchBlock": 118059706,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.0760763657068058,
-   "eth600": 0.05565651174844653
-  },
-  {
-   "token": "0x2f4113291a74e8db6cd56f49b23768df2f904d98",
-   "launchBlock": 118072697,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 166,
-   "eth120": 0.07274124452918722,
-   "eth600": 0.11889146726391715
-  },
-  {
-   "token": "0xe51afb049023c177f07a0418f2bed6a34212e52c",
-   "launchBlock": 118079422,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 21,
-   "eth120": 0.052383766918543496,
-   "eth600": 0.05958211399501748
-  },
-  {
-   "token": "0x6cf5a61c40c42c1bf7adb58ad5c25e1c931ac52e",
-   "launchBlock": 118081155,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 32,
-   "eth120": 0.2937525322959947,
-   "eth600": 0.038043793808610775
-  },
-  {
-   "token": "0xd822c53be936b91f841b4d86a1fe410e1bf05275",
-   "launchBlock": 118083950,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.0921760930206103,
-   "eth600": 0.08923908637083754
-  },
-  {
-   "token": "0xd379bb5a08a02cdf1f75a39c376262beddfb3f8c",
-   "launchBlock": 118087538,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.001738713599999999,
-   "eth600": 0.001738713599999999
-  },
-  {
-   "token": "0x8fecfeba409008ac8abb835452ff47a07d5ac209",
-   "launchBlock": 118090526,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 2,
-   "eth120": 0.069355,
-   "eth600": 0.069355
-  },
-  {
-   "token": "0xd401bc390dfeede68669622216fc2b6bf5060fad",
-   "launchBlock": 118093092,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 40,
-   "eth120": 0.3858126147346313,
-   "eth600": 0.4840766883346313
-  },
-  {
-   "token": "0x5469b5fd3dbc67c192855f6a61aef2163dac43fb",
-   "launchBlock": 118098663,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.04302880524794213,
-   "eth600": 0.002354474328965864
-  },
-  {
-   "token": "0x608278e9de9967ace5df8cc26c4c29ebb75b9d0f",
-   "launchBlock": 118101789,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 2,
-   "eth120": 0.01746,
-   "eth600": 0.008948123604128546
-  },
-  {
-   "token": "0x110399b1e68ad03ca4984164b69f1b47d828ae6b",
-   "launchBlock": 118107438,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 78,
-   "eth120": 0.11520446386852076,
-   "eth600": 0.9214461921133439
-  },
-  {
-   "token": "0x77a578766921e1a8f6d3f3493a60b0b9c7d2bc96",
-   "launchBlock": 118113427,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 26,
-   "eth120": 0.08158545794148307,
-   "eth600": 0.013491564377783503
-  },
-  {
-   "token": "0xc4bf6b5d22dd50056cb99b3b6908ea80de00afb9",
-   "launchBlock": 118118598,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 4,
-   "eth120": 0.019645214,
-   "eth600": 0.000827213999999999
-  },
-  {
-   "token": "0x7560988919e371290533af803c0261cd434c79e6",
-   "launchBlock": 118122432,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 12,
-   "eth120": 0.05032062001666796,
-   "eth600": 0.004540323192677999
-  },
-  {
-   "token": "0x5753e4f771c3434c9d4f26ff94d64060e162a46e",
-   "launchBlock": 118128016,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 1,
-   "eth120": 0.00873,
-   "eth600": 0.00873
-  },
-  {
-   "token": "0x3ab681362b855d060375bf159f5686c960059d1f",
-   "launchBlock": 118134400,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.000071289102517955,
-   "eth600": 0.001269330702517954
-  },
-  {
-   "token": "0x010e078cb47bdb4ddceaafb7a3cdbf2b829103c8",
-   "launchBlock": 118137242,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 47,
-   "eth120": 0.47578280929105793,
-   "eth600": 0.7175180910037631
-  },
-  {
-   "token": "0xc2caef85a46ff068e73ae1bcd4314a25686671ca",
-   "launchBlock": 118141008,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 17,
-   "eth120": 0.1533676177438534,
-   "eth600": 0.32085745392376824
-  },
-  {
-   "token": "0x7d53a135864c8490302f5b486259debfdca25c63",
-   "launchBlock": 118142511,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 36,
-   "eth120": 0.13371490329778912,
-   "eth600": 0.01825587104887608
-  },
-  {
-   "token": "0x85a3d4f0b28e9090402a9a72848e1cb31afcbbc4",
-   "launchBlock": 118152712,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 7,
-   "eth120": 0.048999261696205075,
-   "eth600": 0.010189199999999997
-  },
-  {
-   "token": "0x31095bc6d8656ce3c9ddde88b4bf6b822cd44ad4",
-   "launchBlock": 118159728,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.000589878034334274,
-   "eth600": 0.000589878034334274
-  },
-  {
-   "token": "0xaeaf9c710cb412f88ce8c71a6a829c742d75cc84",
-   "launchBlock": 118161584,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 44,
-   "eth120": 0.3596375334873934,
-   "eth600": 0.008244250664995924
-  },
-  {
-   "token": "0x5fcd43d2aa2060e3031174e30856a1d193a64a96",
-   "launchBlock": 118165503,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.04682345493086776,
-   "eth600": 0.015715950638452218
-  },
-  {
-   "token": "0x8ee83adce5083bd79cd15d881ab0bb37b8098cf6",
-   "launchBlock": 118170114,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 28,
-   "eth120": 0.006861350500174192,
-   "eth600": 0.006861350500174192
-  },
-  {
-   "token": "0x924dac32a0f19719225760d404887fefe81e9b91",
-   "launchBlock": 118173363,
-   "sweptBlock": null,
-   "secondsToSweep": null,
+   "token": "0x8e75c1108190aa421c91865744fcdcd8b7df753e",
+   "launchBlock": 118206152,
+   "sweptBlock": 119065451,
+   "secondsToSweep": 85929.9,
+   "trades600": 57,
+   "eth120": 0.3329580161363492,
+   "eth600": 0.4780584975991619
+  },
+  {
+   "token": "0xf1061131c89144e5369b7df7294a9ad7df8d2f58",
+   "launchBlock": 118307813,
+   "sweptBlock": 118307833,
+   "secondsToSweep": 2,
    "trades600": 37,
-   "eth120": 0.012105783563996353,
-   "eth600": 0.013722002391563033
+   "eth120": 4.2,
+   "eth600": 4.2
   },
   {
-   "token": "0x801b9ec1b339281dc587352a881fe673745d4999",
-   "launchBlock": 118181293,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 11,
-   "eth120": 0.006416354100258584,
-   "eth600": 0.006845072830525505
-  },
-  {
-   "token": "0x6b699b0ff5520c715bb20fdbcd63b70e58a6a17b",
-   "launchBlock": 118182615,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 3,
-   "eth120": 0.013998026009703792,
-   "eth600": 0.009828940780291113
-  },
-  {
-   "token": "0x5f796f17af670d933538b2f6d2bd3e2fa94d4b20",
-   "launchBlock": 118185112,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.001014280834742823,
-   "eth600": 0.00078447965776266
-  },
-  {
-   "token": "0x680f1d2332ffd0a5b91c24d291b3dcdc70601f71",
-   "launchBlock": 118192292,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 24,
-   "eth120": 0.0132481836900897,
-   "eth600": 0.010708184089891154
-  },
-  {
-   "token": "0x4dd4cc11f29f71bbe5898911dfaa459c861820a3",
-   "launchBlock": 118193654,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 20,
-   "eth120": 0.0941081810596987,
-   "eth600": 0.002846960879543273
-  },
-  {
-   "token": "0xafd112acd01b37a580a4e82f1c3e73b52332f190",
-   "launchBlock": 118196907,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.059360548689530536,
-   "eth600": 0.003397535117999997
+   "token": "0xa25362061c4081b7913f276a629f020bf5baf29e",
+   "launchBlock": 118397786,
+   "sweptBlock": 118397792,
+   "secondsToSweep": 0.6,
+   "trades600": 12,
+   "eth120": 4.2,
+   "eth600": 4.2
   },
   {
    "token": "0xf54e5651c1d3cef3ffb664ca342b71861723e037",
@@ -1754,53 +53,926 @@
    "eth600": 1.580704489420589
   },
   {
-   "token": "0x8e75c1108190aa421c91865744fcdcd8b7df753e",
-   "launchBlock": 118206152,
+   "token": "0x171bde6308ecd3a82180fa57f948af60c62afc37",
+   "launchBlock": 118206805,
    "sweptBlock": null,
    "secondsToSweep": null,
-   "trades600": 57,
-   "eth120": 0.3329580161363492,
-   "eth600": 0.4780584975991619
+   "trades600": 28,
+   "eth120": 0.12112346882657495,
+   "eth600": 0.006192433551285581
   },
   {
-   "token": "0x750bce9633a3f57faca59d4c3d103dc8ff37ad89",
-   "launchBlock": 118208485,
+   "token": "0x81a52c4d3f2da597b2ed9d002cd1dd905c1a144b",
+   "launchBlock": 118209990,
    "sweptBlock": null,
    "secondsToSweep": null,
-   "trades600": 54,
-   "eth120": 0.5001084860921462,
-   "eth600": 0.48710437697796366
+   "trades600": 27,
+   "eth120": 0.32995716866051994,
+   "eth600": 0.015777332484770347
   },
   {
-   "token": "0x377434eff74c55c6a1fbf63ba9aa307041e43361",
-   "launchBlock": 118210818,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 2,
-   "eth120": 0.019912057043508624,
-   "eth600": 0.019912057043508624
-  },
-  {
-   "token": "0x7184b05bb097022ccd7e58534f3b4eee85a7f98c",
-   "launchBlock": 118213013,
+   "token": "0x128476d56457dec138c4873b122f28e9312916b3",
+   "launchBlock": 118212513,
    "sweptBlock": null,
    "secondsToSweep": null,
    "trades600": 20,
-   "eth120": 0.008927567283326571,
-   "eth600": 0.003990963049527753
+   "eth120": 0.008031299859836057,
+   "eth600": 0.003247247613123822
   },
   {
-   "token": "0xab666654f59d350b9197db11c8de45f4a1ce78f6",
-   "launchBlock": 118214239,
+   "token": "0x5abf604b1ef9e95eb30ce76bcec629f3da7d1e9f",
+   "launchBlock": 118213640,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 5,
+   "eth120": 0.0266843464,
+   "eth600": 0.010209530392
+  },
+  {
+   "token": "0xb5b396c73fd19acd533ea0954acd8923d20179db",
+   "launchBlock": 118214483,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 7,
+   "eth120": 0.001403271228598315,
+   "eth600": 0.001403271228598315
+  },
+  {
+   "token": "0xe33c4ff0bd885b2e020d41a25c2589ec65a472ff",
+   "launchBlock": 118216465,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 22,
+   "eth120": 0.21729781754537228,
+   "eth600": 0.02794318372184426
+  },
+  {
+   "token": "0x46f9035e4e1ddb55138015244256edbd91f6167a",
+   "launchBlock": 118217479,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 3,
+   "eth120": 0.008044666533,
+   "eth600": 0.007806116663324999
+  },
+  {
+   "token": "0xbc83877f238dd2704066fc7d6aa8571c2a271480",
+   "launchBlock": 118218293,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 19,
+   "eth120": 0.002189322486192234,
+   "eth600": 0.001754592160673289
+  },
+  {
+   "token": "0xf27d8e2a86f8e06c843db8bd3d39847dc4cc9358",
+   "launchBlock": 118219196,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 18,
+   "eth120": 0.2150357575249789,
+   "eth600": 0.21435007164710154
+  },
+  {
+   "token": "0xd5ad7f64442a40e6e8633d6765764dfb9775d189",
+   "launchBlock": 118220156,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.0170720664,
+   "eth600": 0.020166191129614167
+  },
+  {
+   "token": "0xdbee81e0dd61cf675aedb277e5429eff4d642c74",
+   "launchBlock": 118222997,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 9,
+   "eth120": 0.006175053399101699,
+   "eth600": 0.006175053399101699
+  },
+  {
+   "token": "0xc21b468c5b2fceecc4b3df443a3137d23d401589",
+   "launchBlock": 118224089,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 7,
+   "eth120": 0.006304222435458816,
+   "eth600": 0.006304222435458816
+  },
+  {
+   "token": "0x9317c1d40d7f05842826785f26c4e3cbbc502e36",
+   "launchBlock": 118225209,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 16,
+   "eth120": 0.007552420393046141,
+   "eth600": 0.002462239049527756
+  },
+  {
+   "token": "0xec908e14ceff9a20cfa69d3ccbc14afc10b908cb",
+   "launchBlock": 118226462,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 20,
+   "eth120": 0.032507184277584054,
+   "eth600": 0.005245193149182026
+  },
+  {
+   "token": "0x9aaee63c3a28840276331afd8e373c5613c9ee4c",
+   "launchBlock": 118229894,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 14,
+   "eth120": 0.1516633322048865,
+   "eth600": 0.006184200401537337
+  },
+  {
+   "token": "0x206287ec48edcdfc06a02018caf59836f565f2f9",
+   "launchBlock": 118232157,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 10,
+   "eth120": 0.003720830624999999,
+   "eth600": 0.003720830624999999
+  },
+  {
+   "token": "0x2d0d04402cd29648b35c0b5cd3adde5c6e4b535d",
+   "launchBlock": 118234763,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 19,
+   "eth120": 0.09534935874271273,
+   "eth600": 0.008562139112177047
+  },
+  {
+   "token": "0x5fddfe1e5acaceabec3b80863bf4a71c0e9817f8",
+   "launchBlock": 118235862,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.0097,
+   "eth600": 0.000291000000000006
+  },
+  {
+   "token": "0xecd842780f56f071cea1fda3cdb5a5a351846e82",
+   "launchBlock": 118236261,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 34,
+   "eth120": 0.011295012148126348,
+   "eth600": 0.011295012148126348
+  },
+  {
+   "token": "0x719a57e218cccd18eedee1ef043302612a1f4f0b",
+   "launchBlock": 118236830,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 49,
+   "eth120": 0.45104154987163647,
+   "eth600": 0.32123935459868436
+  },
+  {
+   "token": "0x2f07169cfd591548d6db2a35d7bae4a3a1d344f3",
+   "launchBlock": 118237440,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 19,
+   "eth120": 0.08133426312529798,
+   "eth600": 0.011423687586976239
+  },
+  {
+   "token": "0x8acb61ec32088834de3a1b4d7a5bc6fc228972e2",
+   "launchBlock": 118239553,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 14,
+   "eth120": 0.006347412722092915,
+   "eth600": 0.001387047269269506
+  },
+  {
+   "token": "0xd137a5d5b665f138cc8c5830c6946fb5cc78fc4b",
+   "launchBlock": 118240048,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 8,
+   "eth120": 0.006304222435458816,
+   "eth600": 0.001367618201659998
+  },
+  {
+   "token": "0x4305846d4c51f04976d120b85a816bb422f091d3",
+   "launchBlock": 118241206,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 10,
+   "eth120": 0.027216971878176816,
+   "eth600": 0.002570187083576998
+  },
+  {
+   "token": "0xcf745328128fc690afedccd1c037c7c934fc591c",
+   "launchBlock": 118242253,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 3,
+   "eth120": 0.00041109449429582,
+   "eth600": 0.00041109449429582
+  },
+  {
+   "token": "0x1dcb64bb90024c368a7d392feb203b647cc7f582",
+   "launchBlock": 118242750,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 1,
+   "eth120": 0.00485,
+   "eth600": 0.00485
+  },
+  {
+   "token": "0x9fecfed7f3df92c13f4485429cd76c97bb0bb1fe",
+   "launchBlock": 118243521,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0xe93527220b8d4141fd97c6ec2458bc78920e7135",
+   "launchBlock": 118244664,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 101,
+   "eth120": 0.7085707134142417,
+   "eth600": 0.04449026954252998
+  },
+  {
+   "token": "0x2613ea238c109f582a31001ee3dab33fa0695938",
+   "launchBlock": 118246639,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.046893923683,
+   "eth600": 0.000937878473659998
+  },
+  {
+   "token": "0x1d25317b5d026db642ea269cc3fa9b20aff8c995",
+   "launchBlock": 118248105,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 14,
+   "eth120": 0.001307626782089813,
+   "eth600": 0.001307626782089813
+  },
+  {
+   "token": "0x9fa079bbc27e5747a17a66a5c370338cac140b8b",
+   "launchBlock": 118248725,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 17,
+   "eth120": 0.0652292338358878,
+   "eth600": 0.003859805909436713
+  },
+  {
+   "token": "0xc1d7edb2047d6f849c93e25540ef36692927939b",
+   "launchBlock": 118250245,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 8,
+   "eth120": 0.0209591175,
+   "eth600": 0.002769170236721653
+  },
+  {
+   "token": "0xa94c9aa7efa64fb46ff56bccdbd3bdf4e126fee9",
+   "launchBlock": 118250920,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 15,
+   "eth120": 0.137525651213,
+   "eth600": 0.00909571857040918
+  },
+  {
+   "token": "0x87ce297df6843138dfc2ef0f0d194127eba03f70",
+   "launchBlock": 118251255,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 7,
+   "eth120": 0.006304222435458816,
+   "eth600": 0.006304222435458816
+  },
+  {
+   "token": "0xa67a62d6b0fe8a8c4460aa07cdebc084e435053d",
+   "launchBlock": 118254792,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 11,
+   "eth120": 0.006582004083188726,
+   "eth600": 0.006582004083188726
+  },
+  {
+   "token": "0xc04401f330c70d3a0006bb21b25578cfafb78596",
+   "launchBlock": 118256983,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 19,
+   "eth120": 0.025902937073752977,
+   "eth600": 0.025902937073752977
+  },
+  {
+   "token": "0x94877b2c81ad10b3594c655ac52c919786440636",
+   "launchBlock": 118258627,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 22,
+   "eth120": 0.004349933184000785,
+   "eth600": 0.004349933184000785
+  },
+  {
+   "token": "0x9e4893d2c3fd1d8cd129dd582dd523506134965b",
+   "launchBlock": 118259952,
    "sweptBlock": null,
    "secondsToSweep": null,
    "trades600": 31,
-   "eth120": 0.14655959244949665,
-   "eth600": 0.21067221051371193
+   "eth120": 0.005864942686040301,
+   "eth600": 0.005864942686040301
   },
   {
-   "token": "0xea5d87a75c37b812326a2daf8d13c38d645243d1",
-   "launchBlock": 118215956,
+   "token": "0xbfff72ddc426ca60552e1e5ec647f8ed95b44586",
+   "launchBlock": 118261305,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 20,
+   "eth120": 0.14177168449151487,
+   "eth600": 0.03548524067899517
+  },
+  {
+   "token": "0x3698e92d86cd90833be035184fbb7d64513fef17",
+   "launchBlock": 118264097,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0x00fc4327c610eb85682578f112b56bde9f3a1671",
+   "launchBlock": 118265569,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 62,
+   "eth120": 0.1244058755643123,
+   "eth600": 0.44228108108878655
+  },
+  {
+   "token": "0x42381343f9a4a0e2dd2f5c32e11e1ac90c467973",
+   "launchBlock": 118268557,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 8,
+   "eth120": 0.016629057898247358,
+   "eth600": 0.000498871736947418
+  },
+  {
+   "token": "0x1f64dbbaafbd7070cb910b1b31a6f98ed6ef8d91",
+   "launchBlock": 118270088,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0xe08158e316dc1ea5f1c694b132520f19cb23a8f4",
+   "launchBlock": 118271359,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.0388,
+   "eth600": 0.001164
+  },
+  {
+   "token": "0x7042447a14990fbf0e345a0f691c44a529eff977",
+   "launchBlock": 118273336,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 20,
+   "eth120": 0.11571227886475591,
+   "eth600": 0.11405644318906943
+  },
+  {
+   "token": "0xabea53830c61bfcbe602a78eebaf7cdf34788bbb",
+   "launchBlock": 118275214,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.002469639703161962,
+   "eth600": 0.001585019999999998
+  },
+  {
+   "token": "0xbb5f07393be8dcc3bdb8e72e7b3cada0af2915ac",
+   "launchBlock": 118276504,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 11,
+   "eth120": 0.001942603361787662,
+   "eth600": 0.001942603361787662
+  },
+  {
+   "token": "0xae9eec1a68c90a22313d9c0281077207905457de",
+   "launchBlock": 118278707,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 15,
+   "eth120": 0.07061784573475859,
+   "eth600": 0.006799141660971324
+  },
+  {
+   "token": "0x7ae08a0a340534d58e7a9a49ab0c86f296249f79",
+   "launchBlock": 118282241,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.001527167999999999,
+   "eth600": 0.001527167999999999
+  },
+  {
+   "token": "0xf47115d5c7b25800602337b583a1c84e9ff0e189",
+   "launchBlock": 118283600,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 8,
+   "eth120": 0.005031803999999997,
+   "eth600": 0.005031803999999997
+  },
+  {
+   "token": "0xde5d33a44256b406e2c3b915d6b11b6fecc747e2",
+   "launchBlock": 118285874,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 8,
+   "eth120": 0.02545720657381728,
+   "eth600": 0.013828255723344896
+  },
+  {
+   "token": "0xe093a7ac26d37808633fae9fa05b169cbbb53979",
+   "launchBlock": 118287156,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.000195999999999999,
+   "eth600": 0.000195999999999999
+  },
+  {
+   "token": "0x25b79a641af030269019c49f481da5027b555e9a",
+   "launchBlock": 118290205,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0x8ede9cb7d60e423e871bc83ded2ecd8ff851d7ed",
+   "launchBlock": 118292808,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 64,
+   "eth120": 0.3475427994559889,
+   "eth600": 0.5269714920992843
+  },
+  {
+   "token": "0xc42bbe9983707e7465ac5b1de5086bf3d556470e",
+   "launchBlock": 118295044,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.0097,
+   "eth600": 0.000290999999999999
+  },
+  {
+   "token": "0xad6907e64bd82bd089ec0aae8000ebadaf3a8d9c",
+   "launchBlock": 118299506,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 86,
+   "eth120": 0.4349134631897678,
+   "eth600": 0.39207079362289704
+  },
+  {
+   "token": "0x346fc77085a58d3fe4f28903fcc30deff1877ea7",
+   "launchBlock": 118301590,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 3,
+   "eth120": 0.007800487256249999,
+   "eth600": 0.007800487256249999
+  },
+  {
+   "token": "0x61acdf26fb9eb047a37b49088adb91fbcc0cdc20",
+   "launchBlock": 118302621,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 121,
+   "eth120": 0.08875117314420485,
+   "eth600": 0.08576492636204965
+  },
+  {
+   "token": "0xaad3821b245acd48a2881a0ab2aef552ef143c46",
+   "launchBlock": 118304527,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.000601613399999999,
+   "eth600": 0.000582588401999998
+  },
+  {
+   "token": "0x971991a7b243ae452fda2788308db6d8d64eabf7",
+   "launchBlock": 118304947,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 12,
+   "eth120": 0.016036449371257193,
+   "eth600": 0.012768000000000015
+  },
+  {
+   "token": "0xf014b9b4d1abbb31e2fe8af46e0d5fe49b7e8bda",
+   "launchBlock": 118305210,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 20,
+   "eth120": 0.04851014219918601,
+   "eth600": 0.007291216163353308
+  },
+  {
+   "token": "0x183bc1ec51d0875a63199ee9b0d39b8322b284c0",
+   "launchBlock": 118306107,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 12,
+   "eth120": 0.020801321408251493,
+   "eth600": 0.009656865867506744
+  },
+  {
+   "token": "0xa8d1d9b894b38ac2edde3b7fb0c84b3d867cb076",
+   "launchBlock": 118307714,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.000128457955990441,
+   "eth600": 0.000128457955990441
+  },
+  {
+   "token": "0x853e690fb4ddde4283a35ad39e6190aafad27408",
+   "launchBlock": 118309870,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 15,
+   "eth120": 0.07285081255058774,
+   "eth600": 0.03860563688771873
+  },
+  {
+   "token": "0xca5b3e84716c5815cb9dd315df799e048832904c",
+   "launchBlock": 118312692,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.0194,
+   "eth600": 0.000581999999999999
+  },
+  {
+   "token": "0x0f67deba67646d3b9cda53145e3f90bd8fc109fa",
+   "launchBlock": 118313746,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.000018610920838627,
+   "eth600": 0.000018610920838627
+  },
+  {
+   "token": "0x11a5ad2b2ec81ba9693ff2ed2da5da21dbe4876d",
+   "launchBlock": 118314070,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 13,
+   "eth120": 0.12368369308948342,
+   "eth600": 0.009376904049785804
+  },
+  {
+   "token": "0x9de7984460eb91d5f68ba47747401c5e8d08bd2a",
+   "launchBlock": 118314564,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 8,
+   "eth120": 0.027180826315223536,
+   "eth600": 0.015675095820005796
+  },
+  {
+   "token": "0xe0960b0a43e6ac7cd348b65b39774b4ca8294a11",
+   "launchBlock": 118315222,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 16,
+   "eth120": 0.002890810580938519,
+   "eth600": 0.001997766439747215
+  },
+  {
+   "token": "0x223af4a96208b72760c08bf43d248910425d6916",
+   "launchBlock": 118316457,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 10,
+   "eth120": 0.000812345619092736,
+   "eth600": 0.000812345619092736
+  },
+  {
+   "token": "0x70552570f1a8f1f9422247a916d0fe32dec67c3d",
+   "launchBlock": 118319546,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 14,
+   "eth120": 0.0097604221969598,
+   "eth600": 0.006488636159505424
+  },
+  {
+   "token": "0xace5eee5372e92ec1d56d0bc7e3f3d1157ea2dc0",
+   "launchBlock": 118321070,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.002045650644398785,
+   "eth600": 0.000920063086331961
+  },
+  {
+   "token": "0x772bd8b8dfa1eb612a42de8e2a339eeee45af48f",
+   "launchBlock": 118322276,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 24,
+   "eth120": 0.00718316403433427,
+   "eth600": 0.00718316403433427
+  },
+  {
+   "token": "0x3561ba5399433917a39b19cd778fd6215fd273af",
+   "launchBlock": 118323155,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.000983778473659999,
+   "eth600": 0.000983778473659999
+  },
+  {
+   "token": "0x7b5782cb5fa70b827fc0b48db044bb9b57a775a9",
+   "launchBlock": 118326044,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 18,
+   "eth120": 0.20090509281021232,
+   "eth600": 0.09447511336395126
+  },
+  {
+   "token": "0xc633154ceb449af684ed8f99d15039541a1f475c",
+   "launchBlock": 118327738,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 10,
+   "eth120": 0.001774664096708915,
+   "eth600": 0.000858054163324998
+  },
+  {
+   "token": "0xf645287ddd1f1505668ab1b89b6b3f937d3fcb32",
+   "launchBlock": 118330384,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 14,
+   "eth120": 0.003874069020571084,
+   "eth600": 0.001345716624173602
+  },
+  {
+   "token": "0x33977a585e947591489b25fb1688c1790e872640",
+   "launchBlock": 118332055,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 23,
+   "eth120": 0.005415056634449997,
+   "eth600": 0.005415056634449997
+  },
+  {
+   "token": "0x75009556359c339a0c48419331334394c3f3feff",
+   "launchBlock": 118333230,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 48,
+   "eth120": 0.37611649555205945,
+   "eth600": 0.5910222585013174
+  },
+  {
+   "token": "0xd6282eb80b6a9a49421a61fa216d7213dcb781b8",
+   "launchBlock": 118335137,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 104,
+   "eth120": 0.5529565562984937,
+   "eth600": 0.016742643710185745
+  },
+  {
+   "token": "0x0d8649a1e52aa560dcc5f6e5540f6675f9a308bf",
+   "launchBlock": 118337674,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 16,
+   "eth120": 0.001983925728041949,
+   "eth600": 0.001983925728041949
+  },
+  {
+   "token": "0xab08f89304bb16e3c0d53048978c698956806b5e",
+   "launchBlock": 118340284,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 1,
+   "eth120": 0.03704358816,
+   "eth600": 0.03704358816
+  },
+  {
+   "token": "0x377fce223b15d32c6ffbcd8a3a91d82bfd7b521b",
+   "launchBlock": 118341112,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 70,
+   "eth120": 0.15368476179659357,
+   "eth600": 0.017388187841716928
+  },
+  {
+   "token": "0x80be7ae31642c347f5633dd5e7f43b73e4497b31",
+   "launchBlock": 118344082,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.0076636,
+   "eth600": 0.000153271999999999
+  },
+  {
+   "token": "0xadbcf082347e72c8dfb06d4054fe21c80b2a5df9",
+   "launchBlock": 118344537,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 117,
+   "eth120": 0.8342062316861822,
+   "eth600": 1.373671753385828
+  },
+  {
+   "token": "0xb711d1ef0e07f2b826f4552a891e82100830a21a",
+   "launchBlock": 118346613,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.001118214000000007,
+   "eth600": 0.001118214000000007
+  },
+  {
+   "token": "0x0c1876d6b96eff8e216a8cee2f5021657b01b503",
+   "launchBlock": 118349084,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.005557963215506336,
+   "eth600": 0.000372808040763848
+  },
+  {
+   "token": "0xb83a4f67895b087cadecf9671a48cdafec49c701",
+   "launchBlock": 118351158,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 71,
+   "eth120": 0.3593912120514632,
+   "eth600": 0.018164942074329973
+  },
+  {
+   "token": "0x55723554c2d8736a664b8750bb16bd0bba7b2370",
+   "launchBlock": 118353850,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0x32ae2d31f32fc5ee6e31abb52b5322d968952330",
+   "launchBlock": 118356820,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.0046844,
+   "eth600": 0.000093687999999999
+  },
+  {
+   "token": "0x2f2d57a22154c6f8fbca44e14531add9b6dc5da4",
+   "launchBlock": 118357431,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.0046844,
+   "eth600": 0.000093687999999999
+  },
+  {
+   "token": "0xfe53c922dc50e003a6f557c100d7fb418d73b270",
+   "launchBlock": 118361351,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.0148374672,
+   "eth600": 0.01550191824
+  },
+  {
+   "token": "0xf84c6c067ae88c4221c85a2e6d14ac82f27dc9c2",
+   "launchBlock": 118364328,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0x2925c0c74aaa610c4a2f6371ad774a8f41c7f86b",
+   "launchBlock": 118370199,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.023387636,
+   "eth600": 0.000813407999999999
+  },
+  {
+   "token": "0x7d0cad8b5f80c9baa1107e99f24eca560c6b8f1d",
+   "launchBlock": 118373845,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.037291903283,
+   "eth600": 0.037291903283
+  },
+  {
+   "token": "0x8919eb49be13b34c03698ea1bf82dc556c999377",
+   "launchBlock": 118376770,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 23,
+   "eth120": 0.20280323003831224,
+   "eth600": 0.13566817591142313
+  },
+  {
+   "token": "0xf689bda7e39d27f5fa682bacff41bacacb5eba4d",
+   "launchBlock": 118378474,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.196049,
+   "eth600": 0.1860105136874463
+  },
+  {
+   "token": "0x09c2c04eeb99fde41eb6163547d9c74e04614af2",
+   "launchBlock": 118381316,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 1,
+   "eth120": 0.01455,
+   "eth600": 0.01455
+  },
+  {
+   "token": "0x22fd87f419bde2e42e29f241d8f3688b8f86b5be",
+   "launchBlock": 118382810,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 5,
+   "eth120": 0.043566106344540646,
+   "eth600": 0.015666504
+  },
+  {
+   "token": "0x8d26030a5e5685197a5596ede666eda827356d6d",
+   "launchBlock": 118385434,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.0281329,
+   "eth600": 0.00084117371
+  },
+  {
+   "token": "0x32ca6c3fc5b3103295222f7a55571952b53e90db",
+   "launchBlock": 118385668,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 1,
+   "eth120": 0.02231,
+   "eth600": 0.02231
+  },
+  {
+   "token": "0xf51469a00ee93695c07b5139d543f689faba9e71",
+   "launchBlock": 118389195,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 20,
+   "eth120": 0.09257199849929144,
+   "eth600": 0.002800726772842763
+  },
+  {
+   "token": "0x4b79ff52edf0640e852473055f60b1a84cb8c958",
+   "launchBlock": 118390559,
    "sweptBlock": null,
    "secondsToSweep": null,
    "trades600": 1,
@@ -1808,170 +980,62 @@
    "eth600": 0.0097
   },
   {
-   "token": "0x84c7aa37f6dcef0ea51ab8ff8289bde062fbb02c",
-   "launchBlock": 118217115,
+   "token": "0x290d57fbdbd9b57f31b8c7d6134afa42c07b8e6a",
+   "launchBlock": 118391047,
    "sweptBlock": null,
    "secondsToSweep": null,
-   "trades600": 17,
-   "eth120": 0.10278195299054547,
-   "eth600": 0.10229312765237702
+   "trades600": 1,
+   "eth120": 0.02548,
+   "eth600": 0.02548
   },
   {
-   "token": "0xc8c8d3d4ff914d301fba6086c78a31e5aa3a6ed2",
-   "launchBlock": 118217803,
+   "token": "0xad6897113d9130e86ed67cd9525d81ebd993027e",
+   "launchBlock": 118391772,
    "sweptBlock": null,
    "secondsToSweep": null,
    "trades600": 4,
-   "eth120": 0.02342538935940636,
-   "eth600": 0.003394200000000015
+   "eth120": 0.025283352,
+   "eth600": 0.001321752000000014
   },
   {
-   "token": "0x5681cb5c52ca0497f161b2ec49f64dc2604c6aa9",
-   "launchBlock": 118219108,
+   "token": "0x0d3542c0186e6af2d074617badd71df0d424b07c",
+   "launchBlock": 118395198,
    "sweptBlock": null,
    "secondsToSweep": null,
-   "trades600": 22,
-   "eth120": 0.005847389999999996,
-   "eth600": 0.005847389999999996
+   "trades600": 6,
+   "eth120": 0.00192634020104941,
+   "eth600": 0.00192634020104941
   },
   {
-   "token": "0x6825af4ff486c2036e7a5c95546876f189c5c262",
-   "launchBlock": 118220028,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 14,
-   "eth120": 0.17371372287060094,
-   "eth600": 0.00897716775610846
-  },
-  {
-   "token": "0xad579368be6a789bfa14594c58d1e8840e45850c",
-   "launchBlock": 118221933,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 22,
-   "eth120": 0.008560885447336533,
-   "eth600": 0.008050733402811538
-  },
-  {
-   "token": "0xb3c16e93af8c7f2bfe29d27d2e65293a3ba7a90e",
-   "launchBlock": 118223526,
+   "token": "0xbaf9f13fa69b2ddd96d5831202d711a3db74566b",
+   "launchBlock": 118399024,
    "sweptBlock": null,
    "secondsToSweep": null,
    "trades600": 2,
    "eth120": 0.00291,
-   "eth600": 0.000087299999999999
+   "eth600": 0.005599568222237433
   },
   {
-   "token": "0xa5fb4057b04d1bb03476700b1a380e215b0dc265",
-   "launchBlock": 118224510,
+   "token": "0xec836e68ab2c509bfb90d61459f21510186ff3f0",
+   "launchBlock": 118401863,
    "sweptBlock": null,
    "secondsToSweep": null,
-   "trades600": 19,
-   "eth120": 0.03719260170517057,
-   "eth600": 0.004563240787780129
+   "trades600": 27,
+   "eth120": 0.14326520485665656,
+   "eth600": 0.07007909221468565
   },
   {
-   "token": "0x7b53f7fcc07ba125fcfdf38e81ab249d90a4ea51",
-   "launchBlock": 118225684,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 10,
-   "eth120": 0.006275398784324416,
-   "eth600": 0.001327354201659998
-  },
-  {
-   "token": "0x1b5e3036b90714fe0d1cb671b3372956d54742de",
-   "launchBlock": 118229532,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 1,
-   "eth120": 0.01164,
-   "eth600": 0.01164
-  },
-  {
-   "token": "0x932a2db98650f28f362bf068af83a814f4fc8c51",
-   "launchBlock": 118231984,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 26,
-   "eth120": 0.3014435899089515,
-   "eth600": 0.009061331495352416
-  },
-  {
-   "token": "0x5306aab53c65972e47c1f49a1293619d588aac40",
-   "launchBlock": 118233338,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 5,
-   "eth120": 0.0306409048,
-   "eth600": 0.0012943348
-  },
-  {
-   "token": "0xadb63d0702a17d8976fb0e239b70299d322af12f",
-   "launchBlock": 118235634,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 0,
-   "eth120": 0,
-   "eth600": 0
-  },
-  {
-   "token": "0xae8d094a3df8786cf76a9839ffc63ae04c0bd237",
-   "launchBlock": 118235976,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 35,
-   "eth120": 0.38162162932606936,
-   "eth600": 0.3550420292952637
-  },
-  {
-   "token": "0x606861096f456fbadf998d80f95b6a95bee407d8",
-   "launchBlock": 118236557,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 52,
-   "eth120": 0.5890319616148457,
-   "eth600": 0.6941608813481714
-  },
-  {
-   "token": "0x07d95b69763d092ef182c6a8d4fd7a4448b3fed8",
-   "launchBlock": 118237367,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 26,
-   "eth120": 0.006952418222720384,
-   "eth600": 0.006952418222720384
-  },
-  {
-   "token": "0x883726d92d135258cc52ffe2edbcbe04f3626b04",
-   "launchBlock": 118238256,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 48,
-   "eth120": 0.0425847156004787,
-   "eth600": 0.037725232175114816
-  },
-  {
-   "token": "0x4d8656df4693881873f71d62f3b3cf11f291802b",
-   "launchBlock": 118240012,
+   "token": "0x63f8891338725484a8005285f460575db90737a3",
+   "launchBlock": 118405450,
    "sweptBlock": null,
    "secondsToSweep": null,
    "trades600": 22,
-   "eth120": 0.03536648060788623,
-   "eth600": 0.019811662272478256
+   "eth120": 0.10750325438058755,
+   "eth600": 0.00347943740937971
   },
   {
-   "token": "0x64f0d6acba097fe65bf77ee98028dc3f53951800",
-   "launchBlock": 118241054,
-   "sweptBlock": null,
-   "secondsToSweep": null,
-   "trades600": 6,
-   "eth120": 0.01195979984,
-   "eth600": 0.002705359840000001
-  },
-  {
-   "token": "0x8039e5a37d3e9a66d78a2fea18b8a5c4a0e37187",
-   "launchBlock": 118241629,
+   "token": "0x3d2fcd988442d7eb4770525dbd6e4af08f122379",
+   "launchBlock": 118407661,
    "sweptBlock": null,
    "secondsToSweep": null,
    "trades600": 0,
@@ -1979,8 +1043,26 @@
    "eth600": 0
   },
   {
-   "token": "0xd7e74da19afc6f9728bda96a2a4b953743bb1d62",
-   "launchBlock": 118242666,
+   "token": "0xadc7be4d948e0ad7428f4c1e5cf039646c39be40",
+   "launchBlock": 118410254,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.0016976544,
+   "eth600": 0.00006790617600001
+  },
+  {
+   "token": "0xa063bea656a04fae1690f26fcf8b413c746a180f",
+   "launchBlock": 118412895,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 66,
+   "eth120": 0.5218922341270162,
+   "eth600": 0.5211055456221482
+  },
+  {
+   "token": "0xe2cb71e638c9dd067a2e3e3d3603e78cfa8ebb46",
+   "launchBlock": 118415874,
    "sweptBlock": null,
    "secondsToSweep": null,
    "trades600": 0,
@@ -1988,23 +1070,959 @@
    "eth600": 0
   },
   {
-   "token": "0x2710a8d9b3fd7175dcc0e70488043c3fc1767697",
-   "launchBlock": 118242795,
+   "token": "0x0841dba4de2ec6397a4551e2e8f19aa9e3a45a57",
+   "launchBlock": 118421730,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 17,
+   "eth120": 0.02602440051574877,
+   "eth600": 0.02602440051574877
+  },
+  {
+   "token": "0xcc9dc267cab650646e02fe0f3912e57a5819b1f5",
+   "launchBlock": 118424579,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.010148437983,
+   "eth600": 0.010148437983
+  },
+  {
+   "token": "0x6afca5e6e9720c8cbdcdebf07e853d2af89fc673",
+   "launchBlock": 118431545,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 5,
+   "eth120": 0.000041902097632193,
+   "eth600": 0.000041902097632193
+  },
+  {
+   "token": "0x3fa96081381f081ce29318811801cd1a3c8eda98",
+   "launchBlock": 118437857,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 10,
+   "eth120": 0.015831115007404712,
+   "eth600": 0.002712893999999998
+  },
+  {
+   "token": "0x632d704273857ff6d2258120b06deee05be016c3",
+   "launchBlock": 118447551,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.000081093583052922,
+   "eth600": 0.000081093583052922
+  },
+  {
+   "token": "0x2839962c79114bd8d8791c96a84d9cc9c20d6653",
+   "launchBlock": 118453798,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 18,
+   "eth120": 0.045181146039159056,
+   "eth600": 0.013670274819125828
+  },
+  {
+   "token": "0x846079c131925ce6c102729373c9cf3197b68e02",
+   "launchBlock": 118454817,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 69,
+   "eth120": 0.2531448806499104,
+   "eth600": 0.790654217939117
+  },
+  {
+   "token": "0x6bf0841da80b3153bb6eb84b54a6ab5e855820b6",
+   "launchBlock": 118462401,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 9,
+   "eth120": 0.08220233834377844,
+   "eth600": 0.05805663096052533
+  },
+  {
+   "token": "0x6ed12d1b9130bc1a7913058b2adcebeb5f004c53",
+   "launchBlock": 118465164,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.0190835224,
+   "eth600": 0.002099187464000009
+  },
+  {
+   "token": "0xb488bd9a7b42ab6cf58b5fcc6c1ae30a45770e93",
+   "launchBlock": 118466615,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 3,
+   "eth120": 0.016130809,
+   "eth600": 0.016130809
+  },
+  {
+   "token": "0xcdbc2dbefe04d8ac68c71238130958b98b7cd51c",
+   "launchBlock": 118473307,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.000827213999999999,
+   "eth600": 0.000827213999999999
+  },
+  {
+   "token": "0xd702ffa2685cecf13592670b807a0de62df9284d",
+   "launchBlock": 118476422,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 7,
+   "eth120": 0.00712819475863272,
+   "eth600": 0.004174066489284846
+  },
+  {
+   "token": "0x9d87a2a91e7292e49e99c22fb1dcd4048f54245e",
+   "launchBlock": 118478096,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 11,
+   "eth120": 0.00839091389131326,
+   "eth600": 0.005332832769578289
+  },
+  {
+   "token": "0x8039d42010a7442c24e60264671ced9a13deab2a",
+   "launchBlock": 118487150,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 13,
+   "eth120": 0.09750432624638197,
+   "eth600": 0.01378165862574209
+  },
+  {
+   "token": "0x1237e0fa638f51bbc3986bc56c84a761205c7121",
+   "launchBlock": 118493894,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.0089,
+   "eth600": 0.012403841
+  },
+  {
+   "token": "0x3bcf1ae7c46aaf7be791d1d46a9b780b37513c71",
+   "launchBlock": 118500875,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 30,
+   "eth120": 0.14927175181569538,
+   "eth600": 0.00862962216814023
+  },
+  {
+   "token": "0x161a88c831991bafc51cde754dceea1cfc664479",
+   "launchBlock": 118506232,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0xe2422248fbd47dd169b4fa3d7799d67691336765",
+   "launchBlock": 118517532,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 14,
+   "eth120": 0.11498601411752685,
+   "eth600": 0.06278463080433881
+  },
+  {
+   "token": "0xd8c6f2b592e079b307cf172f97a13c9aaf4bb449",
+   "launchBlock": 118526072,
    "sweptBlock": null,
    "secondsToSweep": null,
    "trades600": 1,
-   "eth120": 0.0097,
-   "eth600": 0.0097
+   "eth120": 0.003969,
+   "eth600": 0.003969
   },
   {
-   "token": "0x7a9cc11b7176633948eab1070ce88af41396f39a",
-   "launchBlock": 118244330,
+   "token": "0x1648628d4f4f871ea9dc77f188c93156cff2cd84",
+   "launchBlock": 118546534,
    "sweptBlock": null,
    "secondsToSweep": null,
-   "trades600": 31,
-   "eth120": 0.24541159915813365,
-   "eth600": 0.05110731853709575
+   "trades600": 32,
+   "eth120": 0.10452336136321534,
+   "eth600": 0.22252091991404735
+  },
+  {
+   "token": "0xd035316c6c705e866368d9782ed5541ca1378381",
+   "launchBlock": 118547649,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 13,
+   "eth120": 0.24329304714591582,
+   "eth600": 0.2693085519724744
+  },
+  {
+   "token": "0x8c7524a9d36e6f4087c9ecc274edb56c0b364c04",
+   "launchBlock": 118550411,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.000008507280830391,
+   "eth600": 0.000008507280830391
+  },
+  {
+   "token": "0xb96be820431e158f80ad9ddced4b134960afb51f",
+   "launchBlock": 118566186,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 58,
+   "eth120": 0.5801264779351815,
+   "eth600": 0.5337986125660295
+  },
+  {
+   "token": "0xebabea3de6b012f5903b3ea5ee56910fb01a697b",
+   "launchBlock": 118574057,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.000013824119061013,
+   "eth600": 0.000013824119061013
+  },
+  {
+   "token": "0x7e534338ebd15972e98ad278dc055f6e3f95cb33",
+   "launchBlock": 118576089,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 5,
+   "eth120": 0.000038571339892085,
+   "eth600": 0.000038571339892085
+  },
+  {
+   "token": "0xc466b26ea82d1bb838f76f06a76b8c3664c22060",
+   "launchBlock": 118586282,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.0006776847,
+   "eth600": 0.0006776847
+  },
+  {
+   "token": "0xc01d3d966a265f9674fc55816bd3ec876c446755",
+   "launchBlock": 118597788,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 11,
+   "eth120": 0.07704536625075933,
+   "eth600": 0.05344136658217922
+  },
+  {
+   "token": "0x17ecbc3f34e6fccfe411b51058d7c77b540ef97e",
+   "launchBlock": 118608817,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0x294019f405f448e3022511f9b60766cdfb556421",
+   "launchBlock": 118621031,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0x960ab99336ebd346e9b977493c479efafe12734a",
+   "launchBlock": 118622740,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0,
+   "eth600": 0.000693340394758799
+  },
+  {
+   "token": "0x557de3194a4537a99f571aace2dfddfbcc650a96",
+   "launchBlock": 118628985,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 10,
+   "eth120": 0.006703670995802672,
+   "eth600": 0.00535383760267458
+  },
+  {
+   "token": "0x787f892cacf051c6fad027346d00494c3a128b6a",
+   "launchBlock": 118648753,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 13,
+   "eth120": 0.11910928565656516,
+   "eth600": 0.007398228396351483
+  },
+  {
+   "token": "0xf21b83ae2e1cc08fc143d8922c5bfb0166ab6b6f",
+   "launchBlock": 118653945,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 30,
+   "eth120": 0.2348158172884109,
+   "eth600": 0.16772271735447353
+  },
+  {
+   "token": "0x22bd01383b1a17f8e252f7c41d23d4747d63c866",
+   "launchBlock": 118667637,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 19,
+   "eth120": 0.014336031321306284,
+   "eth600": 0.00851850877807349
+  },
+  {
+   "token": "0x2697957fb503c951e7868232475282f80426b55a",
+   "launchBlock": 118682104,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.000017788373170696,
+   "eth600": 0.000047392803978004
+  },
+  {
+   "token": "0x66bffd5e5ecf3bec40b81c922c33604d8af3b0a7",
+   "launchBlock": 118693588,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.00975,
+   "eth600": 0.000243749999999999
+  },
+  {
+   "token": "0xedec49581b9ad1ec87d1d569f58fdd78e84193bb",
+   "launchBlock": 118696825,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0x45d023cb6ff6b00110dc2eba0984d226f68e6ab9",
+   "launchBlock": 118706194,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 35,
+   "eth120": 0.5828672089076318,
+   "eth600": 0.016802045486938838
+  },
+  {
+   "token": "0xc3948a476b48570e71e22de537dafef8d94c8bc6",
+   "launchBlock": 118719695,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0xdb44975882e5f919c4e21092188ef74a50b495f9",
+   "launchBlock": 118723212,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.000182080875535406,
+   "eth600": 0.000182080875535406
+  },
+  {
+   "token": "0x1dcae8310b4e3bbbd52437317e44db6ad4433e2d",
+   "launchBlock": 118731343,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 1,
+   "eth120": 0.00054332,
+   "eth600": 0.00054332
+  },
+  {
+   "token": "0x78fd5c7758e32ddd79d665e9cc7cc4d102faf005",
+   "launchBlock": 118749083,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 11,
+   "eth120": 0.1209655978754225,
+   "eth600": 0.16041044405857585
+  },
+  {
+   "token": "0x3a0627ae8dd2220e8f9dd46f161fb21e5c5aa3da",
+   "launchBlock": 118753455,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 7,
+   "eth120": 0.004591364790810472,
+   "eth600": 0.004591364790810472
+  },
+  {
+   "token": "0xede47013b775e70795e9303c2469fc0d6f937028",
+   "launchBlock": 118758335,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.003263720555412987,
+   "eth600": 0.001484099999999999
+  },
+  {
+   "token": "0x147b251fc0a88988659a7afef1c829e87f4416a4",
+   "launchBlock": 118759799,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 15,
+   "eth120": 0.004557118949183458,
+   "eth600": 0.02326978269436001
+  },
+  {
+   "token": "0x4f36cb234d19f94fbe4d4f6bb058794c4957c8de",
+   "launchBlock": 118762880,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 28,
+   "eth120": 0.0571476955994591,
+   "eth600": 0.04236523847328152
+  },
+  {
+   "token": "0x6735e0a913c670d32b4855444b7d3b7ee1ea77c7",
+   "launchBlock": 118769214,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 5,
+   "eth120": 0.1324958,
+   "eth600": 0.027497374
+  },
+  {
+   "token": "0x8bfdfbc78a6673e50f964109602393b9bb0421fe",
+   "launchBlock": 118777812,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.008248294738832929,
+   "eth600": 0.000374853296038998
+  },
+  {
+   "token": "0x41d34022dbe3a2267bbe9b7372916609a6380503",
+   "launchBlock": 118780181,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 30,
+   "eth120": 0.3612233029224188,
+   "eth600": 0.4660547722821677
+  },
+  {
+   "token": "0xcb961b405cf4fee89c0ec95d9d03d29e75ef59b0",
+   "launchBlock": 118786276,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 12,
+   "eth120": 0.049049923683,
+   "eth600": 0.002067535974476446
+  },
+  {
+   "token": "0x883d5cbfb456bb48889dd8ba92d6be8fda97f976",
+   "launchBlock": 118790922,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.008187294875535406,
+   "eth600": 0.000660094875535405
+  },
+  {
+   "token": "0xf47c20cdeb352035cb99fe31590cab6b542958e2",
+   "launchBlock": 118792896,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 5,
+   "eth120": 0.008197182730291255,
+   "eth600": 0.007958632860616256
+  },
+  {
+   "token": "0x9ca9f442d1b368d277d873d47eef56cc820c9d4e",
+   "launchBlock": 118812055,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0x60990319d0046da082f25a564afe74ab790f3d91",
+   "launchBlock": 118836122,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.000290999999999999,
+   "eth600": 0.000290999999999999
+  },
+  {
+   "token": "0x8005fff3022fdd90ec269a9fbdb643b99d94622a",
+   "launchBlock": 118858997,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.1121372,
+   "eth600": 0.003364115999999999
+  },
+  {
+   "token": "0xdd7ad845b0c904d8dd544f070a2b9e58351fc597",
+   "launchBlock": 118865835,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.013058313249972454,
+   "eth600": 0.013058313249972454
+  },
+  {
+   "token": "0xcc20d1a56fe2f0030bfd9bcdcc35f44190393f0d",
+   "launchBlock": 118870769,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.002493476400000009,
+   "eth600": 0.002493476400000009
+  },
+  {
+   "token": "0x72abd13ba6fdf33145a6347068e9f1a68d43c0ec",
+   "launchBlock": 118880935,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 9,
+   "eth120": 0.04845145457644928,
+   "eth600": 0.002024074799999999
+  },
+  {
+   "token": "0x806094e0a654288cf9b5e8b1b24d77616a824375",
+   "launchBlock": 118887562,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.0479009,
+   "eth600": 0.024504254785716804
+  },
+  {
+   "token": "0x391048e687a8cb4ad6cd466b4c4e1fffc3fb9fda",
+   "launchBlock": 118896487,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 10,
+   "eth120": 0.054923717514050355,
+   "eth600": 0.07924756743602507
+  },
+  {
+   "token": "0xde9b2ac839cda05ca0293f7f7535a57ec2c27f21",
+   "launchBlock": 118901662,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.000528635114225269,
+   "eth600": 0.000010572702284505
+  },
+  {
+   "token": "0x290cabc22cc5511ca36baf62c2aea7cbc6e0eeec",
+   "launchBlock": 118906883,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0x3716f845a52d39b696c1088dfebdfcf376d1feeb",
+   "launchBlock": 118909973,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 3,
+   "eth120": 0.029632154076345927,
+   "eth600": 0.029632154076345927
+  },
+  {
+   "token": "0xa4a986b4df59ce5ae748788b8068b669d3165521",
+   "launchBlock": 118911688,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 8,
+   "eth120": 0.01854296,
+   "eth600": 0.001674077999999998
+  },
+  {
+   "token": "0x53385850567c52c756296ab81cd9d7ab08650df0",
+   "launchBlock": 118916886,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.000282,
+   "eth600": 0.00047
+  },
+  {
+   "token": "0x0fa022f61c50c0a273969f74b0e4a5e585346cf1",
+   "launchBlock": 118919566,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 11,
+   "eth120": 0.08033630177822806,
+   "eth600": 0.01574506031125669
+  },
+  {
+   "token": "0x3e589dbe144efe594cc1418751af30443de59bc1",
+   "launchBlock": 118923682,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 16,
+   "eth120": 0.109272434309818,
+   "eth600": 0.004608042309818002
+  },
+  {
+   "token": "0xf3ab81874735e0e81ce6b9d8c179e4964dabd688",
+   "launchBlock": 118927928,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 34,
+   "eth120": 0.21800101900189955,
+   "eth600": 0.42280021750279556
+  },
+  {
+   "token": "0xd5353d78a8cdd1e92b3aac72528ab414e17652de",
+   "launchBlock": 118935956,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 16,
+   "eth120": 0.06277646677175382,
+   "eth600": 0.013390736220245333
+  },
+  {
+   "token": "0xb0275e3590098e8628233f45f144d40f11456c15",
+   "launchBlock": 118937355,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0x5900b282197408fa0c52942f4f8364299b828772",
+   "launchBlock": 118938451,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 3,
+   "eth120": 0.032687336327353204,
+   "eth600": 0.032687336327353204
+  },
+  {
+   "token": "0x6add2c75d70f2315c92cad7ad313e6e443565179",
+   "launchBlock": 118943283,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 8,
+   "eth120": 0.043128,
+   "eth600": 0.001783364015972623
+  },
+  {
+   "token": "0x94e7b3dd36929e08b43fc981bd4dc2f2ff1c5fc4",
+   "launchBlock": 118950650,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.00003536489492926,
+   "eth600": 0.017163882571159483
+  },
+  {
+   "token": "0x36874d02ed6d71165ccbbbad159ba4372ab807e4",
+   "launchBlock": 118955072,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 20,
+   "eth120": 0.015044369763688356,
+   "eth600": 0.000276149809163482
+  },
+  {
+   "token": "0x665128ea365d6104a969f7ce5e10fe44eb4482d1",
+   "launchBlock": 118962137,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0x571cfdbe7b62f98643607b51078aeabcaca0f0ca",
+   "launchBlock": 118971189,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 2,
+   "eth120": 0.000581999999999999,
+   "eth600": 0.000581999999999999
+  },
+  {
+   "token": "0x645326dbf2b553f5251ac20f30901c07c8121420",
+   "launchBlock": 118974913,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 15,
+   "eth120": 0.02705815,
+   "eth600": 0.03444920920822674
+  },
+  {
+   "token": "0xc4d3f3381ed5d8830d78b37c9a061987f2bb5a80",
+   "launchBlock": 118981507,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 4,
+   "eth120": 0.0316131875848091,
+   "eth600": 0.001125014076813615
+  },
+  {
+   "token": "0x164ff83e702f2b1fd980f055ce6c3e4edfba42ae",
+   "launchBlock": 118991745,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 3,
+   "eth120": 0.03146987717552494,
+   "eth600": 0.03146987717552494
+  },
+  {
+   "token": "0x484dcf81b0576231f958483c13823f2923a1734f",
+   "launchBlock": 118996894,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 10,
+   "eth120": 0.09338915775270233,
+   "eth600": 0.031849141164270726
+  },
+  {
+   "token": "0x5afcd9c0ee59579fb86046f690910fc809afb49a",
+   "launchBlock": 118998813,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 14,
+   "eth120": 0.157150015103,
+   "eth600": 0.05545657382031043
+  },
+  {
+   "token": "0x7f6fc0e3add6d4136e8f47c1d0c1c6ed9ac75185",
+   "launchBlock": 119001968,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 1,
+   "eth120": 0.0000098,
+   "eth600": 0.0000098
+  },
+  {
+   "token": "0xfc9b85de49285c3639322be03a690fadbbfd2ebf",
+   "launchBlock": 119004485,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 101,
+   "eth120": 1.0200197660311174,
+   "eth600": 0.7011166136739115
+  },
+  {
+   "token": "0xd8f88a06330db80e13beb2e2b46fd67667cc3cc3",
+   "launchBlock": 119007383,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 16,
+   "eth120": 0.006118240078933551,
+   "eth600": 0.003620741253055719
+  },
+  {
+   "token": "0x07f4d43e6bfe2131e23d990e6ce2faa8ed3612a9",
+   "launchBlock": 119008944,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 28,
+   "eth120": 0.3700392541623252,
+   "eth600": 0.3726009715533869
+  },
+  {
+   "token": "0xff57537df1a6f0d4646461caf2e75ca1fdd6a6c1",
+   "launchBlock": 119011703,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 16,
+   "eth120": 0.006593437034997351,
+   "eth600": 0.004004474809821832
+  },
+  {
+   "token": "0x210ebd42907faac1392f81daa4373fd09978d150",
+   "launchBlock": 119013912,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 102,
+   "eth120": 0.4273974882334007,
+   "eth600": 0.6293987203500337
+  },
+  {
+   "token": "0xf4ca90bdfed72662cc7ab1e0c6152602d1cc07a6",
+   "launchBlock": 119015920,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 18,
+   "eth120": 0.08343885378310036,
+   "eth600": 0.002525702981493007
+  },
+  {
+   "token": "0x407b44452c6264ca8868d3468c3aa2c4101374c8",
+   "launchBlock": 119016232,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 1,
+   "eth120": 0.0047,
+   "eth600": 0.0047
+  },
+  {
+   "token": "0xb3b5779964a5ca79f5fdcdf8d089dfdd9a3667ea",
+   "launchBlock": 119018780,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 7,
+   "eth120": 0.001579096542934158,
+   "eth600": 0.001204706347626759
+  },
+  {
+   "token": "0xd2f1704da9cc6e8ca1ae4f169f24cf0d3834890b",
+   "launchBlock": 119020860,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 10,
+   "eth120": 0.001329384626470891,
+   "eth600": 0.001329384626470891
+  },
+  {
+   "token": "0x6b7efdffd7d03f556c2041c7308620253e6a69e1",
+   "launchBlock": 119021844,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 18,
+   "eth120": 0.001052728400259554,
+   "eth600": 0.001091301467306627
+  },
+  {
+   "token": "0xd98b6669bdccd27c58809df15ea3ce97c4f46387",
+   "launchBlock": 119022521,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 18,
+   "eth120": 0.004348978211696672,
+   "eth600": 0.001731773150850369
+  },
+  {
+   "token": "0xb0ff880b6ae4bb43452970d21d1958fd0f55287b",
+   "launchBlock": 119023086,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 64,
+   "eth120": 0.7230174433779095,
+   "eth600": 0.042389023260008846
+  },
+  {
+   "token": "0x7b83983e55f35bc6cd82d209898a9bd71914f7dc",
+   "launchBlock": 119025042,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 10,
+   "eth120": 0.000385432802558951,
+   "eth600": 0.000385432802558951
+  },
+  {
+   "token": "0x447aace92bd219ee6feb127c8cd4227cd5a679cc",
+   "launchBlock": 119027413,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 1,
+   "eth120": 0.00094,
+   "eth600": 0.00094
+  },
+  {
+   "token": "0x0d5a2cce98c99dbb2507afb42cbab989868f25d8",
+   "launchBlock": 119030704,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 26,
+   "eth120": 0.006319104951902977,
+   "eth600": 0.00367744695089668
+  },
+  {
+   "token": "0x74657914fdb08f12c57da666b6b2643196a28a07",
+   "launchBlock": 119031844,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 14,
+   "eth120": 0.004953264092931616,
+   "eth600": 0.002417894258365473
+  },
+  {
+   "token": "0x2e23fc79bcefe2bc1015b99bd4cca231a0109aa9",
+   "launchBlock": 119035032,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 0,
+   "eth120": 0,
+   "eth600": 0
+  },
+  {
+   "token": "0x8205e99fdff9474c60bf08598ea4dbbe04bd67b5",
+   "launchBlock": 119036192,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 8,
+   "eth120": 0.07801244735119396,
+   "eth600": 0.05144401040196322
+  },
+  {
+   "token": "0x0b4fcab78a05c5cf2fa79edac87a9d2ddfad9eab",
+   "launchBlock": 119037791,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 73,
+   "eth120": 0.5271260606868258,
+   "eth600": 0.8011625055483663
+  },
+  {
+   "token": "0x36d8bb1fe8d5bb0c8c76dcaeb9dabb988c0e339b",
+   "launchBlock": 119041789,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 6,
+   "eth120": 0.002944584777481541,
+   "eth600": 0.002687297699999995
+  },
+  {
+   "token": "0x30f140a45d7b145635f67ee1cef29bc4158c5fc2",
+   "launchBlock": 119046203,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 15,
+   "eth120": 0.06659084386910231,
+   "eth600": 0.029867914444333635
+  },
+  {
+   "token": "0xd41838ec6ed53a230becca419f18f5cea9e93ddf",
+   "launchBlock": 119051676,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 1,
+   "eth120": 0.01455,
+   "eth600": 0.01455
+  },
+  {
+   "token": "0x101e9f393103f23a46ae176cf8c4e558ea26d296",
+   "launchBlock": 119055648,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 10,
+   "eth120": 0.128510179480553,
+   "eth600": 0.008117699058000007
+  },
+  {
+   "token": "0xd26ddffd1f044d6daf25f67fa5e0bd709e822d91",
+   "launchBlock": 119057984,
+   "sweptBlock": null,
+   "secondsToSweep": null,
+   "trades600": 50,
+   "eth120": 0.010488105607710508,
+   "eth600": 0.008600747957763506
   }
  ],
- "measuredAt": "2026-11-19T14:28:27.845Z"
+ "measuredAt": "2026-11-20T14:04:01.174Z"
 }
